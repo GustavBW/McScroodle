@@ -2,7 +2,9 @@ package com.Testing;
 
 public class InteractionHandler implements Runnable{
 
-    public InteractionHandler(){}
+    public InteractionHandler(){
+        System.out.println("INTER INTER HYPE");
+    }
 
     double interpolation = 0;
     private final int TICKS_PER_SECOND = 60, SKIP_TICKS = 1000 / TICKS_PER_SECOND, MAX_FRAMESKIP = 5;
@@ -24,6 +26,8 @@ public class InteractionHandler implements Runnable{
     }
 
     public void Tick(){
-        System.out.println("INTER INTER HYPE");
+        for(Interactable t : Interactable.interactables){
+
+        }
     }
 }

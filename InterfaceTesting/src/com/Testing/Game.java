@@ -1,34 +1,54 @@
 package com.Testing;
 
+import javax.swing.*;
 import java.awt.*;
-import java.beans.IntrospectionException;
 
 public class Game extends Canvas implements Runnable{
-
     public static boolean isRunning = false;
     private Thread renderThread, tickThread, interThread;
     private final GameWindow gameWindow;
-    private final RenderHandler renderHandler;
-    private final InteractionHandler interHandler;
+    private RenderHandler renderHandler;
+    private InteractionHandler interactionHandler;
     private static Graphics g;
+    public static Game instance;
+    private static JFrame frame;
+    private final Player player;
 
-    public static final int WIDTH = 1500;
-    public static final int HEIGHT = 1000;
+    public static final int WIDTH = 1500, HEIGHT = 1000;
     double interpolation = 0;
     private final int TICKS_PER_SECOND = 60, SKIP_TICKS = 1000 / TICKS_PER_SECOND, MAX_FRAMESKIP = 5;
 
     public static void main(String[] args) {
-        new Game();
+        instance = new Game();
     }
 
     public Game(){
-        interHandler = new InteractionHandler();
+        frame = new JFrame("TestTitle");
+
+        frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        frame.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+        frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        frame.add(this);
         gameWindow = new GameWindow(WIDTH, HEIGHT, "MockUp", this);
-        renderHandler = new RenderHandler(gameWindow);
 
-        new Player(1,2);
+        frame.requestFocus();
+        frame.setEnabled(true);
 
-        this.addKeyListener(new KeyInput(gameWindow));
+        player = new Player(WIDTH / 2,HEIGHT / 2);
+
+        interactionHandler = new InteractionHandler();
+        this.setName("aComponents");
+
+        renderHandler = new RenderHandler(this);
+        renderThread = new Thread(renderHandler);
+        renderThread.start();
+
+        this.addKeyListener(new KeyInput(gameWindow, player));
         this.addMouseListener(new MouseInput(gameWindow));
     }
 
@@ -55,10 +75,9 @@ public class Game extends Canvas implements Runnable{
 
     public synchronized void start() {
         tickThread = new Thread(this);
-        renderThread = new Thread(renderHandler);
-        interThread = new Thread(interHandler);
+        interThread = new Thread(interactionHandler);
+        System.out.println("Threads instatiated");
 
-        renderThread.start();
         tickThread.start();
         interThread.start();
 
@@ -75,5 +94,11 @@ public class Game extends Canvas implements Runnable{
         }
     }
 
+    public GameWindow getGameWindow(){return gameWindow;}
+
+
+    public Point getScreenDimensions(){
+        return new Point(WIDTH, HEIGHT);
+    }
 
 }

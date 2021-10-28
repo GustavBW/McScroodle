@@ -4,22 +4,40 @@ import java.awt.*;
 
 public class Player extends GameObject implements Evaluatable, Renderable{
 
+    private double velX = 0.0D, velY = 0.0D, drag = 0.9;
+
     public Player(int x, int y){
         super(x,y);
+
         onInstancedEval();
+        onInstancedRend();
     }
 
 
 
     @Override
     public void Tick() {
-        System.out.println("TICK TOCK MOTHERFUCKER!! " + x + " " + y);
-    }
+        x += velX;
+        y += velY;
 
+
+
+        velX *= drag;
+        velY *= drag;
+    }
 
     @Override
     public void Render(Graphics g) {
-        System.out.println("I'M RENDERING YA'LL!! " + x + " " + y);
+        g.setColor(Color.GRAY);
+        g.fillRect(x, y, 32, 32);
+    }
+
+
+    public void changeVelX(double change){
+        velX += change;
+    }
+    public void changeVelY(double change){
+        velY += change;
     }
 
     @Override
@@ -30,5 +48,4 @@ public class Player extends GameObject implements Evaluatable, Renderable{
     public void onInstancedEval() {
         Evaluatable.evaluatables.add(this);
     }
-
 }
