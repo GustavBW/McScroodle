@@ -45,7 +45,7 @@ public class MainApp extends javafx.application.Application {
         mainLayout = new VBox(buttonSpacing);
         mainLayout.setAlignment(Pos.CENTER);
 
-        createButtons(mainLayout);
+        createButtons(mainLayout, true);
 
         primaryScene = new Scene(mainLayout, WIDTH, HEIGHT);
 
@@ -63,7 +63,7 @@ public class MainApp extends javafx.application.Application {
         mainLayout.getChildren().add(newButton);
         contactButtons.add(newButton);
     }
-    private void createButtons(VBox layout) {
+    private void createButtons(VBox layout, boolean makeNewContactButton) {
         for(Contact c : contacts){
 
             Button newButton = new Button(c.getFornavn() + " " + c.getEfternavn());
@@ -75,14 +75,16 @@ public class MainApp extends javafx.application.Application {
             contactButtons.add(newButton);
         }
 
-        Button newContactButton = new Button("+");
-        newContactButton.setPrefWidth((int) (buttonWidth / 2));
-        newContactButton.setPrefHeight((int)(buttonHeight / 2));
-        newContactButton.setAlignment(Pos.CENTER);
-        newContactButton.setPadding(new Insets(buttonSpacing));
-        newContactButton.setOnAction(e -> primaryStage.setScene(getNewContactScene()));
+        if(makeNewContactButton) {
+            Button newContactButton = new Button("+");
+            newContactButton.setPrefWidth((int) (buttonWidth / 2));
+            newContactButton.setPrefHeight((int) (buttonHeight / 2));
+            newContactButton.setAlignment(Pos.CENTER);
+            newContactButton.setPadding(new Insets(buttonSpacing));
+            newContactButton.setOnAction(e -> primaryStage.setScene(getNewContactScene()));
 
-        layout.getChildren().add(newContactButton);
+            layout.getChildren().add(newContactButton);
+        }
     }
 
     private Scene getNewContactScene(){
@@ -128,10 +130,24 @@ public class MainApp extends javafx.application.Application {
                 number1.getCharacters().toString(),
                 number2.getCharacters().toString()
         );
+        makeNewMainLayout(newContact);
+    }
 
-        contacts.add(newContact);
+    private void makeNewMainLayout(Contact newC){
+        mainLayout.getChildren().clear();
+        contactButtons.clear();
+
+        contacts.add(newC);
         tr.addContact(contacts);
-        createSingleButton(newContact);
+
+        contacts.clear();
+
+        for(Contact c : tr.getContacts()){
+            contacts.add(c);
+        }
+
+        createButtons(mainLayout, false);
+        primaryStage.setScene(primaryScene);
     }
 
     private void makeAndAddTextFields(VBox layout, ArrayList<TextField> textfields){
