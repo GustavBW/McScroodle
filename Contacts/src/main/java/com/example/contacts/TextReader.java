@@ -1,9 +1,6 @@
 package com.example.contacts;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class TextReader {
@@ -22,20 +19,28 @@ public class TextReader {
             while((line = br.readLine()) != null){
                 String[] contact = line.split(splitBy);
 
-                allContacts.add(new Contact(Integer.parseInt(contact[0]),contact[1],contact[2],contact[3],Integer.parseInt(contact[4]),Integer.parseInt(contact[5])));
+                Contact newContact = new Contact(
+                        Integer.parseInt(contact[0]),
+                        contact[1],
+                        contact[2],
+                        contact[3],
+                        contact[4],
+                        contact[5]);
+
+                allContacts.add(newContact);
 
             }
 
             br.close();
 
-        }catch (IOException e){
+        }catch (Exception e){
             e.printStackTrace();
         }
 
         return allContacts;
     }
 
-    public boolean saveContact(Contact c){
+    public boolean editContact(Contact c){
         boolean success = false;
 
         try {
@@ -52,7 +57,7 @@ public class TextReader {
                     try {
                         fw.write(lineToWrite);
                         success2 = true;
-                    }catch(IOException e){
+                    }catch(Exception e){
                         e.printStackTrace();
                     }
                     if(success2){
@@ -68,6 +73,35 @@ public class TextReader {
         }catch (IOException e){
             e.printStackTrace();
         }
+
+        return success;
+    }
+
+    public boolean addContact(ArrayList<Contact> contacts){
+        boolean success = false;
+        String currentLine;
+        int lastKnownId = 0;
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filepath));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(filepath));
+
+            String contactsToData = "";
+
+            for (Contact c : contacts) {
+                contactsToData += lastKnownId + ";" + c.getFornavn() + ";" + c.getEfternavn() + ";" + c.getEmail() + ";" + c.getNummer() + ";" + c.getNummer2() + "\n";
+                lastKnownId++;
+            }
+            bw.write(contactsToData);
+
+
+            br.close();
+            bw.close();
+            success = true;
+        }catch (Exception e){
+          e.printStackTrace();
+        }
+
 
         return success;
     }
