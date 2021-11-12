@@ -15,6 +15,8 @@ import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class MainApp extends javafx.application.Application {
@@ -26,6 +28,7 @@ public class MainApp extends javafx.application.Application {
     public static ArrayList<Contact> contacts = new ArrayList<>();
     private ArrayList<Button> contactButtons = new ArrayList<>();
     private HashMap<Button, Scene> sceneMap = new HashMap<>();
+    private HashMap<Button, Contact> contactMap = new HashMap<>();
 
     private final int buttonSpacing = 5;
     private final int buttonWidth = (int) (buttonSpacing * 30);
@@ -34,13 +37,10 @@ public class MainApp extends javafx.application.Application {
 
     private VBox mainLayout;
 
-
     @Override
     public void start(Stage stage) throws IOException {
 
         primaryStage = stage;
-
-        tr.addContact(contacts);
 
         mainLayout = new VBox(buttonSpacing);
         mainLayout.setAlignment(Pos.CENTER);
@@ -54,16 +54,8 @@ public class MainApp extends javafx.application.Application {
         primaryStage.setScene(primaryScene);
         primaryStage.show();
     }
-    private void createSingleButton(Contact c){
-        Button newButton = new Button(c.getFornavn() + " " + c.getEfternavn());
-        createContactScene(newButton, c);
-
-        addContactButtonDetails(newButton);
-
-        mainLayout.getChildren().add(newButton);
-        contactButtons.add(newButton);
-    }
     private void createButtons(VBox layout, boolean makeNewContactButton) {
+
         for(Contact c : contacts){
 
             Button newButton = new Button(c.getFornavn() + " " + c.getEfternavn());
@@ -81,24 +73,25 @@ public class MainApp extends javafx.application.Application {
             newContactButton.setPrefHeight((int) (buttonHeight / 2));
             newContactButton.setAlignment(Pos.CENTER);
             newContactButton.setPadding(new Insets(buttonSpacing));
-            newContactButton.setOnAction(e -> primaryStage.setScene(getNewContactScene()));
+            newContactButton.setOnAction(e -> primaryStage.setScene(getNewContactScene(newContactButton)));
 
             layout.getChildren().add(newContactButton);
         }
     }
-
-    private Scene getNewContactScene(){
-
+    private Scene getNewContactScene(Button prevButton){
+        return getEditContactScene("Name","Surname", "Email","Main Number","2nd Number",false, prevButton);
+    }
+    private Scene getEditContactScene(String name, String surname, String email, String number1, String number2, boolean isEdit,Button b){
         VBox layout = new VBox(buttonSpacing);
         layout.setAlignment(Pos.CENTER);
 
         ArrayList<TextField> textfields = new ArrayList<>();
 
-        TextField nameInput = new TextField("Name");
-        TextField surnameInput = new TextField("Surname");
-        TextField number1Input = new TextField("Number 1");
-        TextField number2Input = new TextField("Number 2");
-        TextField emailInput = new TextField("Email");
+        TextField nameInput = new TextField(name);
+        TextField surnameInput = new TextField(surname);
+        TextField number1Input = new TextField(number1);
+        TextField number2Input = new TextField(number2);
+        TextField emailInput = new TextField(email);
         textfields.add(nameInput);
         textfields.add(surnameInput);
         textfields.add(emailInput);
@@ -110,19 +103,18 @@ public class MainApp extends javafx.application.Application {
         Button saveButton = new Button("Save");
         saveButton.setPrefWidth((int) (buttonWidth / 2));
         saveButton.setPrefHeight((int)(buttonHeight / 2));
+        saveButton.setPadding(new Insets(buttonSpacing));
         saveButton.setAlignment(Pos.CENTER);
-        saveButton.setOnAction(e -> getInputsAndCreateContact(nameInput, surnameInput, emailInput, number1Input, number2Input));
+        saveButton.setOnAction(e -> getInputsAndCreateContact(nameInput, surnameInput, emailInput, number1Input, number2Input,isEdit,b));
         layout.getChildren().add(saveButton);
 
         Scene newContactScene = new Scene(layout, WIDTH, HEIGHT);
 
-        addBackButton(layout);
+        addBackButton(layout, sceneMap.get(b));
 
         return newContactScene;
     }
-
-    private void getInputsAndCreateContact(TextField name, TextField surname, TextField email, TextField number1, TextField number2){
-
+    private void getInputsAndCreateContact(TextField name, TextField surname, TextField email, TextField number1, TextField number2,boolean isEdit,Button b){
         Contact newContact = new Contact(
                 name.getCharacters().toString(),
                 surname.getCharacters().toString(),
@@ -130,10 +122,12 @@ public class MainApp extends javafx.application.Application {
                 number1.getCharacters().toString(),
                 number2.getCharacters().toString()
         );
-        makeNewMainLayout(newContact);
+        if(isEdit){
+            deleteContact(b);
+        }
+        makeNewMainLayout(newContact,isEdit,b);
     }
-
-    private void makeNewMainLayout(Contact newC){
+    private void makeNewMainLayout(Contact newC,boolean isEdit, Button b){
         mainLayout.getChildren().clear();
         contactButtons.clear();
 
@@ -146,10 +140,14 @@ public class MainApp extends javafx.application.Application {
             contacts.add(c);
         }
 
-        createButtons(mainLayout, false);
-        primaryStage.setScene(primaryScene);
-    }
+        createButtons(mainLayout, true);
 
+        if(isEdit && b != null) {
+            primaryStage.setScene(sceneMap.get(b));
+        }else{
+            primaryStage.setScene(primaryScene);
+        }
+    }
     private void makeAndAddTextFields(VBox layout, ArrayList<TextField> textfields){
         for (TextField t : textfields){
             t.setAlignment(Pos.CENTER);
@@ -159,7 +157,6 @@ public class MainApp extends javafx.application.Application {
             layout.getChildren().add(t);
         }
     }
-
     private void addContactButtonDetails(Button newButton) {
         newButton.setPrefWidth(buttonWidth);
         newButton.setPrefHeight(buttonHeight);
@@ -167,41 +164,79 @@ public class MainApp extends javafx.application.Application {
         newButton.setAlignment(Pos.CENTER_LEFT);
         newButton.setOnAction(e -> primaryStage.setScene(sceneMap.get(newButton)));
     }
-
     private void createContactScene(Button button, Contact c){
         VBox newLayout = new VBox(buttonSpacing);
         newLayout.setAlignment(Pos.CENTER);
 
-        //Button name = new Button(c.getFornavn() + " " + c.getEfternavn());
         Button number1 = new Button(String.valueOf(c.getNummer()));
+        number1.setOnAction(e -> getEditContactScene(c.getFornavn(),c.getEfternavn(),c.getEmail(),c.getNummer(),c.getNummer2(),true,button));
         Button number2 = new Button(String.valueOf(c.getNummer2()));
         Button email = new Button(c.getEmail());
         Button name = new Button(c.getFornavn() + " " + c.getEfternavn());
 
         ArrayList<Button> buttonsInScene = new ArrayList<Button>();
+        buttonsInScene.add(name);
+        buttonsInScene.add(email);
         buttonsInScene.add(number1);
         buttonsInScene.add(number2);
-        buttonsInScene.add(email);
-        buttonsInScene.add(name);
 
         for(Button b : buttonsInScene){
             b.setPrefWidth(buttonWidth);
             b.setPrefHeight(buttonHeight);
             b.setPadding(new Insets(buttonSpacing));
-            b.setAlignment(Pos.CENTER_LEFT);
+            b.setAlignment(Pos.CENTER);
+            newLayout.getChildren().add(b);
         }
 
-        newLayout.getChildren().add(name);
-        newLayout.getChildren().add(number1);
-        newLayout.getChildren().add(number2);
-        newLayout.getChildren().add(email);
-        addBackButton(newLayout);
+        addEditContactButton(newLayout, c, button);
+        addDeleteContactButton(newLayout,button);
+        addBackButton(newLayout, primaryScene);
+
 
         Scene newScene = new Scene(newLayout, WIDTH, HEIGHT);
 
         sceneMap.put(button, newScene);
+        contactMap.put(button,c);
     }
+    private void addEditContactButton(VBox layout, Contact c, Button button){
+        Button editButton = new Button("Edit");
+        editButton.setPrefWidth((int) (buttonWidth / 2));
+        editButton.setPrefHeight((int) (buttonHeight / 2));
+        editButton.setPadding(new Insets(buttonSpacing));
+        editButton.setAlignment(Pos.CENTER);
 
+        sceneMap.put(editButton, getEditContactScene(c.getFornavn(),c.getEfternavn(),c.getEmail(),c.getNummer(),c.getNummer2(),true,button));
+        editButton.setOnAction(e -> primaryStage.setScene(sceneMap.get(editButton)));
+
+        layout.getChildren().add(editButton);
+    }
+    private void addDeleteContactButton(VBox layout, Button prevButton){
+        Button deleteContact = new Button("Remove");
+        deleteContact.setPrefHeight((int) (buttonHeight / 2));
+        deleteContact.setPrefWidth((int) (buttonWidth / 2));
+        deleteContact.setAlignment(Pos.CENTER);
+        deleteContact.setPadding(new Insets(buttonSpacing));
+        deleteContact.setOnAction(e -> deleteContact(prevButton));
+
+        layout.getChildren().add(deleteContact);
+    }
+    private void deleteContact(Button b){
+        Contact contactToRemove = contactMap.get(b);
+        mainLayout.getChildren().clear();
+        contactButtons.clear();
+
+        tr.removeContact(contactToRemove);
+
+        contacts.clear();
+
+        for(Contact c : tr.getContacts()){
+            contacts.add(c);
+        }
+
+        createButtons(mainLayout, true);
+        primaryStage.setScene(primaryScene);
+
+    }
     public static void main(String[] args) {
         tr = new TextReader();
 
@@ -211,13 +246,17 @@ public class MainApp extends javafx.application.Application {
 
         launch();
     }
-
-    private void addBackButton(VBox layout){
+    private void addBackButton(VBox layout, Scene sceneToGoBackTo){
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> primaryStage.setScene(primaryScene));
 
-        backButton.setPrefWidth((int) (buttonWidth / 2));
-        backButton.setPrefHeight((int) (buttonHeight / 2));
+        if(sceneToGoBackTo != null) {
+            backButton.setOnAction(e -> primaryStage.setScene(sceneToGoBackTo));
+        }else{
+            backButton.setOnAction(e -> primaryStage.setScene(primaryScene));
+        }
+
+        backButton.setPrefWidth((int) (buttonWidth / 1.5));
+        backButton.setPrefHeight((int) (buttonHeight / 1.5));
         backButton.setPadding(new Insets(buttonSpacing));
         backButton.setAlignment(Pos.CENTER);
 

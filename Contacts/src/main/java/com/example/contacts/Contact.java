@@ -1,6 +1,8 @@
 package com.example.contacts;
 
-public class Contact {
+import java.nio.charset.StandardCharsets;
+
+public class Contact{
 
     private String fornavn = null, efternavn = null, email = null;
     private String nummer, nummer2;

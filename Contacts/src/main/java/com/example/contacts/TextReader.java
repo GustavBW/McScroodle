@@ -41,50 +41,12 @@ public class TextReader {
         return allContacts;
     }
 
-    public boolean editContact(Contact c){
-        boolean success = false;
-
-        try {
-            String currentLine;
-            FileWriter fw = new FileWriter(filepath);
-            BufferedReader br = new BufferedReader(new FileReader(filepath));
-            String lineToWrite = c.getFornavn() + ";" + c.getEfternavn() + ";" + c.getEmail() + ";" + c.getNummer() + ";" + c.getNummer2();
-
-            while((currentLine = br.readLine()) != null){
-                String[] lineS = currentLine.split(splitBy);
-
-                if(Integer.parseInt(lineS[0]) == c.getId()){
-                    boolean success2 = false;
-                    try {
-                        fw.write(lineToWrite);
-                        success2 = true;
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                    if(success2){
-                        break;
-                    }
-                }
-            }
-
-            success = true;
-            fw.close();
-            br.close();
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        return success;
-    }
-
     public boolean addContact(ArrayList<Contact> contacts){
         boolean success = false;
         String currentLine;
         int lastKnownId = 0;
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(filepath));
             BufferedWriter bw = new BufferedWriter(new FileWriter(filepath));
 
             String contactsToData = "";
@@ -96,11 +58,37 @@ public class TextReader {
             bw.write(contactsToData);
 
 
-            br.close();
             bw.close();
             success = true;
         }catch (Exception e){
           e.printStackTrace();
+        }
+
+
+        return success;
+    }
+
+    public boolean removeContact(Contact c){
+        boolean success = false;
+
+        try{
+            BufferedWriter bw = new BufferedWriter(new FileWriter(filepath));
+
+            String contactsToData = "";
+
+            for (Contact co : MainApp.contacts){
+                if (co.getId() != c.getId()){
+                    contactsToData += co.getId() + ";" + co.getFornavn() + ";" + co.getEfternavn() + ";" + co.getEmail() + ";" + co.getNummer() + ";" + co.getNummer2() + "\n";
+                }
+            }
+
+            bw.write(contactsToData);
+            bw.close();
+
+            success = true;
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
 
