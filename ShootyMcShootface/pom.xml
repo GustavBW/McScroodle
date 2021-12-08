@@ -61,7 +61,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.shootymcshootface.shootymcshootface/com.shootymcshootface.shootymcshootface.RenderHandler
+                                com.shootymcshootface.shootymcshootface/com.shootymcshootface.shootymcshootface.gameloop.RenderHandler
                             </mainClass>
                         </configuration>
                     </execution>
