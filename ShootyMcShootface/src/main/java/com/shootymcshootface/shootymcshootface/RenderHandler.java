@@ -8,22 +8,31 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class RenderHandler extends Application implements Runnable{
 
+
+    public static boolean isRunning, isReady = false, isWaiting = false;
 
     private GraphicsContext gc;
     private Canvas canvas;
     private Stage mainStage;
+    private Scene mainScene;
+    private Game game;
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        BorderPane bp = new BorderPane();
+        game = Game.instance;
+
         mainStage = stage;
+        mainStage.setOnCloseRequest(e -> stop());
+
+        BorderPane bp = new BorderPane();
         canvas = new Canvas(Game.Width,Game.Height);
         gc = canvas.getGraphicsContext2D();
         bp.setCenter(canvas);
@@ -34,25 +43,44 @@ public class HelloApplication extends Application {
                 if(!Game.isRunning){
                     stop();
                 }
-                onUpdate(); //Calling the render pipeline below every time Application throws an event of this type.
+                onUpdate(canvas.getGraphicsContext2D());
             }
         };
         timer.start();
 
-        Scene scene = new Scene(bp, Game.Width,Game.Height);
+        mainScene = new Scene(bp, Game.Width,Game.Height);
+
         stage.setTitle("Shooty Mc Shootface");
-        stage.setScene(scene);
+        stage.setScene(mainScene);
         stage.show();
+        isReady = true;
     }
 
 
-    public void onUpdate(){
+    public void onUpdate(GraphicsContext gc){
 
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0,0,Game.Width,Game.Height);
 
     }
 
+
+
+    public synchronized void stop(){
+        System.out.println("RenderHandler.Stop() called");
+        isRunning = false;
+        mainStage.close();
+        System.exit(69);
+    }
 
     public static void main(String[] args) {
         launch();
+    }
+
+    @Override
+    public void run() {
+        isRunning = true;
+        String[] args = new String[]{}; //Tricking the Application to launch even though this is not initiated by the System thread.
+        launch(args);
     }
 }
