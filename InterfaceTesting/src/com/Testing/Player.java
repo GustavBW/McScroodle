@@ -1,8 +1,11 @@
 package com.Testing;
 
+import com.Testing.Interfaces.Evaluatable;
+import com.Testing.Interfaces.Renderable;
+
 import java.awt.*;
 
-public class Player extends GameObject implements Evaluatable, Renderable{
+public class Player extends GameObject implements Evaluatable, Renderable {
 
     private double velX = 0.0D, velY = 0.0D, drag = 0.9;
 
@@ -39,6 +42,12 @@ public class Player extends GameObject implements Evaluatable, Renderable{
     public void changeVelY(double change){
         velY += change;
     }
+
+    @Override
+    public Point getPos() {
+        return new Point(super.x, super.y);
+    }
+
 
     @Override
     public void onInstancedRend() {

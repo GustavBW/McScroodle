@@ -1,4 +1,4 @@
-package com.Testing;
+package com.Testing.Interfaces;
 
 import java.awt.*;
 import java.util.ArrayList;

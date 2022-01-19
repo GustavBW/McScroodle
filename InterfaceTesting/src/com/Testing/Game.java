@@ -1,5 +1,7 @@
 package com.Testing;
 
+import com.Testing.Interfaces.Evaluatable;
+
 import javax.swing.*;
 import java.awt.*;
 

@@ -10,7 +10,5 @@ public abstract class GameObject {
         this.y = y;
     }
 
-    public Point getPos(){
-        return new Point(x,y);
-    }
+    public abstract Point getPos();
 }

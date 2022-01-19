@@ -1,5 +1,7 @@
 package com.Testing;
 
+import com.Testing.Interfaces.Renderable;
+
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 

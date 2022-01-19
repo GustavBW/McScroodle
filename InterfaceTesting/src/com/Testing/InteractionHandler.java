@@ -1,5 +1,7 @@
 package com.Testing;
 
+import com.Testing.Interfaces.Interactable;
+
 public class InteractionHandler implements Runnable{
 
     public InteractionHandler(){
