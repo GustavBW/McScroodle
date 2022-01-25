@@ -8,11 +8,13 @@ public class RenderableSquare extends GameObject implements Renderable, Collidab
 
     private Point2D position;
     private double health = 10;
+    private Point2D[] vertexes;
     private double size, knockbackForce = 10, damage = 10;
 
     public RenderableSquare(Point2D pos, double size){
         this.position = pos;
         this.size = size;
+        vertexes = calcVertexes();
     }
 
 
@@ -45,9 +47,24 @@ public class RenderableSquare extends GameObject implements Renderable, Collidab
     public double getKnockbackForce() {
         return knockbackForce;
     }
+    private Point2D[] calcVertexes(){
+        return new Point2D[]{
+                new Point2D(position.getX(), position.getY()),
+                new Point2D(position.getX() + size, position.getY()),
+                new Point2D(position.getX(),position.getY() + size),
+                new Point2D(position.getX() + size,position.getY() + size)
+        };
+    }
+    @Override
+    public Point2D[] getVertexes(){
+        return vertexes;
+    }
 
     public void destroy(){
         WorldSpace.removeRenderable(this, LayerType.Background0);
         CollisionHandler.removeCollidable(this);
     }
+
+    @Override
+    public String toString(){return "RenderableSquare | " + position.getX() + " | " + position.getY();}
 }

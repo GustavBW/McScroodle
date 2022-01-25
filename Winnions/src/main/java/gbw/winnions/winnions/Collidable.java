@@ -8,5 +8,6 @@ public interface Collidable {
     void onCollision(Collidable obj);
     double getKnockbackForce();
     Point2D getPosition();
+    Point2D[] getVertexes();
 
 }

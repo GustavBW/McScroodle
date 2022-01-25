@@ -6,10 +6,11 @@ import javafx.scene.paint.Color;
 
 public class DummyProjectile extends GameObject implements Renderable, Tickable, Collidable {
 
-    private final double bulletspeed = 10, lifetime = 2000, size = 15, knockbackForce = 10;
+    private final double bulletspeed = 0, lifetime = 2000, size = 15, knockbackForce = 10;
     private long startTime = System.currentTimeMillis();
     private Point2D position, velocity;
     private Player owner;
+    private Point2D[] vertexes;
 
     public DummyProjectile(Point2D pos, Point2D vel, Player p1) {
         this.position = pos;
@@ -18,6 +19,7 @@ public class DummyProjectile extends GameObject implements Renderable, Tickable,
         velocity = velocity.multiply(bulletspeed);
 
         this.owner = p1;
+        vertexes = calcVertexes();
     }
 
     @Override
@@ -59,8 +61,26 @@ public class DummyProjectile extends GameObject implements Renderable, Tickable,
     public void onCollision(Collidable obj) {
         if(owner != Game.localPlayer) {
             Game.localPlayer.changeHealth(-10);
+            destroy();
         }
-        destroy();
+
+    }
+
+    private Point2D[] calcVertexes(){
+        return new Point2D[]{
+                new Point2D(0,0),
+                new Point2D(size, 0),
+                new Point2D(0,size),
+                new Point2D(size,size)
+        };
+    }
+    @Override
+    public Point2D[] getVertexes(){
+        Point2D[] updatedVerts = vertexes.clone();
+        for(Point2D p : updatedVerts){
+            p.add(position);
+        }
+        return updatedVerts;
     }
 
     @Override

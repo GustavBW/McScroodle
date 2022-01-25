@@ -1,29 +1,41 @@
 package gbw.winnions.winnions;
 
+import javafx.geometry.Point2D;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CollisionHandler implements Runnable{
 
+    private static double collisionPadding = 10;
     private static List<Collidable> collidables = new ArrayList<>();
     private static List<Collidable> addNextPass = new ArrayList<>();
     private static List<Collidable> removeNextPass = new ArrayList<>();
+    private Player localPlayer;
+
+    public CollisionHandler(Player p){
+        localPlayer = p;
+    }
 
     @Override
     public void run() {
-
         while(Game.isRunning){
 
-
             for(Collidable c : collidables){
-                for(Collidable n : collidables){
-                    if(n != c && c.isInBounds(n.getPosition())) {
-                        c.onCollision(n);
-                        n.onCollision(c);
+                for(Point2D p : c.getVertexes()) {
+
+                    for (Point2D playerVert : localPlayer.getVertexes()) {
+
+                        Point2D vecToFrom = playerVert.subtract(p);
+                        if (vecToFrom.magnitude() <= collisionPadding) {
+                            System.out.println("Collision! " + c + " | " + localPlayer);
+                            c.onCollision(localPlayer);
+                            localPlayer.onCollision(c);
+                            break;
+                        }
                     }
                 }
             }
-
             updateCollidables();
         }
     }

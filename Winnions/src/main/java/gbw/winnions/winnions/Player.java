@@ -21,6 +21,7 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
 
     private Point2D position;
     private Point2D velocity;
+    private Point2D[] vertexes;
     private int id;
     private List<KeyEvent> currentInputs;
 
@@ -30,6 +31,7 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
         this.id = id;
         velocity = new Point2D(0,0);
         currentInputs = new ArrayList<>();
+        vertexes = calcVertexes();
     }
 
 
@@ -68,7 +70,11 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
 
         Point2D relativeMousePosition = mousePos.subtract(WorldSpace.currentWorldSpaceOffset);
         Point2D velocityVector = relativeMousePosition.subtract(origin);
-        DummyProjectile dp = new DummyProjectile(origin.add(velocityVector.normalize().multiply(10)), velocityVector ,this);
+        Point2D spawnOffset = velocityVector.normalize();
+        spawnOffset = velocityVector.multiply(1);
+
+        Point2D spawnPosition = origin.add(spawnOffset);
+        DummyProjectile dp = new DummyProjectile(spawnPosition, velocityVector ,this);
 
         TickHandler.addTickable(dp);
         WorldSpace.addRenderable(dp, LayerType.Middleground1);
@@ -84,7 +90,6 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
         velocity = velocity.add(vector);
     }
 
-    @Override
     public boolean isInBounds(Point2D posOCol) {
         return (posOCol.getX() < position.getX() + size && posOCol.getX() > position.getX()) && (posOCol.getY() < position.getY() + size && posOCol.getY() > position.getY());
     }
@@ -96,7 +101,6 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
         velocity = velocity.add(vectorToC);
     }
 
-    @Override
     public double getKnockbackForce() {
         return 0;
     }
@@ -135,5 +139,24 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
         }
     }
 
+    private Point2D[] calcVertexes(){
+        return new Point2D[]{
+                new Point2D(0,0),
+                new Point2D(size, 0),
+                new Point2D(0,size),
+                new Point2D(size, size)
+        };
+    }
+
+    public Point2D[] getVertexes(){
+        Point2D[] updatedVerts = vertexes.clone();
+        for(Point2D p : updatedVerts){
+            p.add(position);
+        }
+        return updatedVerts;
+    }
+
+    @Override
+    public String toString(){return "Player " + id + " | " + position.getX() + " | " + position.getY();}
 
 }

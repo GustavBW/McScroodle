@@ -49,7 +49,6 @@ public class Game extends Application {
 
         worldSpace = new WorldSpace();
         tickHandler = new TickHandler();
-        colHandler = new CollisionHandler();
 
         localPlayer = new Player(new Point2D(500,500),1);
         localPlayerCamera = new PlayerCamera(localPlayer);
@@ -57,10 +56,11 @@ public class Game extends Application {
         keyReleaseHandler = new KeyReleaseHandler(localPlayer, localPlayerCamera);
         mouseHandler = new MouseHandler(localPlayer, localPlayerCamera);
 
+        colHandler = new CollisionHandler(localPlayer);
+
         WorldSpace.addRenderable(localPlayer, LayerType.Middleground0);
         TickHandler.addTickable(localPlayer);
         TickHandler.addTickable(localPlayerCamera);
-        CollisionHandler.addCollidable(localPlayer);
 
         canvas = new Canvas((int) gameDimensions.getX(), (int) gameDimensions.getY());
         gc = canvas.getGraphicsContext2D();
