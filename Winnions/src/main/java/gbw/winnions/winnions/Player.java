@@ -47,10 +47,10 @@ public class Player implements Renderable, Tickable {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
+    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
 
         gc.setFill(Color.BLUE);
-        gc.fillRect(position.getX(),position.getY(),30,30);
+        gc.fillRect(worldSpaceOffset.getX() + position.getX(),worldSpaceOffset.getY() + position.getY(),30,30);
 
     }
 
@@ -58,7 +58,7 @@ public class Player implements Renderable, Tickable {
 
         DummyProjectile dp = new DummyProjectile(position, mousePos.subtract(position),this);
         TickHandler.addTickable(dp);
-        Game.addRenderable(dp);
+        WorldSpace.addRenderable(dp, LayerType.Middleground1);
 
         return dp;
     }

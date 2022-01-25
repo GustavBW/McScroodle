@@ -21,9 +21,8 @@ public class Game extends Application {
 
     public static final Point2D gameDimensions = new Point2D(1500,1000);
     public static boolean isRunning = false;
-    public static List<Renderable> junk = new ArrayList<>();
-    private static List<Renderable> removeNextPass = new ArrayList<>();
-    private static List<Renderable> addNextPass = new ArrayList<>();
+    public static Player localPlayer;
+    public static PlayerCamera localPlayerCamera;
 
     private Stage mainStage;
     private GraphicsContext gc;
@@ -33,8 +32,6 @@ public class Game extends Application {
 
     private Thread tickThread;
 
-    private Player player1;
-    private PlayerCamera p1Camera;
     private KeyPressHandler keyPressHandler;
     private KeyReleaseHandler keyReleaseHandler;
     private MouseHandler mouseHandler;
@@ -51,13 +48,14 @@ public class Game extends Application {
         worldSpace = new WorldSpace();
         tickHandler = new TickHandler();
 
-        player1 = new Player(new Point2D(500,500),1);
-        p1Camera = new PlayerCamera(player1, new Point2D(0,0));
-        keyPressHandler = new KeyPressHandler(player1, p1Camera);
-        keyReleaseHandler = new KeyReleaseHandler(player1, p1Camera);
-        mouseHandler = new MouseHandler(player1, p1Camera);
+        localPlayer = new Player(new Point2D(500,500),1);
+        localPlayerCamera = new PlayerCamera(localPlayer, new Point2D(0,0));
+        keyPressHandler = new KeyPressHandler(localPlayer, localPlayerCamera);
+        keyReleaseHandler = new KeyReleaseHandler(localPlayer, localPlayerCamera);
+        mouseHandler = new MouseHandler(localPlayer, localPlayerCamera);
 
-        TickHandler.addTickable(player1);
+        WorldSpace.addRenderable(localPlayer, LayerType.Middleground0);
+        TickHandler.addTickable(localPlayer);
 
         canvas = new Canvas((int) gameDimensions.getX(), (int) gameDimensions.getY());
         gc = canvas.getGraphicsContext2D();
@@ -93,40 +91,7 @@ public class Game extends Application {
         gc.setFill(Color.WHITE);
         gc.fillRect(0,0,gameDimensions.getX(),gameDimensions.getY());
 
-        worldSpace.render(gc);
-        player1.render(gc);
-
-        for(Renderable r : junk){
-            r.render(gc);
-        }
-
-        updateJunkList();
-    }
-
-    private void updateJunkList(){
-        junk.addAll(addNextPass);
-        junk.removeAll(removeNextPass);
-
-        for(int i = 0; i < 3; i++){
-            try {
-                removeNextPass.clear();
-                addNextPass.clear();
-                break;
-            } catch (ConcurrentModificationException e) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public static void addRenderable(Renderable r){
-        addNextPass.add(r);
-    }
-    public static void removeRenderable(Renderable r){
-        removeNextPass.add(r);
+        worldSpace.render(gc, null);
     }
 
 

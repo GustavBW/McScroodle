@@ -20,16 +20,13 @@ public class KeyPressHandler implements EventHandler<KeyEvent> {
     @Override
     public void handle(KeyEvent keyEvent) {
 
+        localPlayer.addInput(keyEvent);
+
         switch (keyEvent.getCode()) {
 
             case Y -> localPlayerCamera.toggleLock();
 
-
-
-            default -> {
-                localPlayer.addInput(keyEvent);
-                System.out.println("Pressed: " + keyEvent.getCode());
-            }
+            case ESCAPE -> {}
         }
 
 

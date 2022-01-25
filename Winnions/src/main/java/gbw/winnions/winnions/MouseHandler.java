@@ -17,11 +17,8 @@ public class MouseHandler implements EventHandler<MouseEvent> {
 
     @Override
     public void handle(MouseEvent mouseEvent) {
-
-
         if(mouseEvent.getButton() == MouseButton.PRIMARY){
             localPlayer.abilityShoot(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
-            System.out.println("YOU JUST CLICKED! " + mouseEvent.getX() + " | " + mouseEvent.getY());
         }
     }
 }

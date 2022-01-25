@@ -21,9 +21,9 @@ public class DummyProjectile implements Renderable, Tickable{
     }
 
     @Override
-    public void render(GraphicsContext gc) {
+    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
         gc.setFill(Color.RED);
-        gc.fillRoundRect(position.getX(),position.getY(),15,15,15,15);
+        gc.fillRoundRect(worldSpaceOffset.getX() + position.getX(),worldSpaceOffset.getY() + position.getY(),15,15,15,15);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class DummyProjectile implements Renderable, Tickable{
 
         if(System.currentTimeMillis() >= startTime + lifetime){
             TickHandler.removeTickable(this);
-            Game.removeRenderable(this);
+            WorldSpace.removeRenderable(this,LayerType.Middleground1);
         }
     }
 

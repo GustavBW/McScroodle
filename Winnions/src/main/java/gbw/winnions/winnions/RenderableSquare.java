@@ -16,10 +16,10 @@ public class RenderableSquare implements Renderable{
 
 
     @Override
-    public void render(GraphicsContext gc) {
+    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
 
         gc.setFill(Color.BLACK);
-        gc.fillRect(position.getX() - size / 2, position.getY() - size / 2, size,size);
+        gc.fillRect(worldSpaceOffset.getX() + position.getX() - size / 2, worldSpaceOffset.getY() + position.getY() - size / 2, size,size);
 
     }
 }
