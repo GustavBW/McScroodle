@@ -29,8 +29,10 @@ public class Game extends Application {
     private Canvas canvas;
     private WorldSpace worldSpace;
     private TickHandler tickHandler;
+    private CollisionHandler colHandler;
 
     private Thread tickThread;
+    private Thread colThread;
 
     private KeyPressHandler keyPressHandler;
     private KeyReleaseHandler keyReleaseHandler;
@@ -47,15 +49,18 @@ public class Game extends Application {
 
         worldSpace = new WorldSpace();
         tickHandler = new TickHandler();
+        colHandler = new CollisionHandler();
 
         localPlayer = new Player(new Point2D(500,500),1);
-        localPlayerCamera = new PlayerCamera(localPlayer, new Point2D(0,0));
+        localPlayerCamera = new PlayerCamera(localPlayer);
         keyPressHandler = new KeyPressHandler(localPlayer, localPlayerCamera);
         keyReleaseHandler = new KeyReleaseHandler(localPlayer, localPlayerCamera);
         mouseHandler = new MouseHandler(localPlayer, localPlayerCamera);
 
         WorldSpace.addRenderable(localPlayer, LayerType.Middleground0);
         TickHandler.addTickable(localPlayer);
+        TickHandler.addTickable(localPlayerCamera);
+        CollisionHandler.addCollidable(localPlayer);
 
         canvas = new Canvas((int) gameDimensions.getX(), (int) gameDimensions.getY());
         gc = canvas.getGraphicsContext2D();
@@ -97,13 +102,17 @@ public class Game extends Application {
 
     public synchronized void startThreads(){
         tickThread = new Thread(tickHandler);
+        colThread = new Thread(colHandler);
+
         tickThread.start();
+        colThread.start();
     }
     public synchronized void stop(WindowEvent we){
         isRunning = false;
 
         try{
             tickThread.join();
+            colThread.join();
         }catch(Exception e){
             e.printStackTrace();
         }

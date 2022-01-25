@@ -18,6 +18,7 @@ public class KeyReleaseHandler implements EventHandler<KeyEvent> {
     @Override
     public void handle(KeyEvent keyEvent) {
 
+        localPlayer.removeInput(keyEvent);
 
         switch (keyEvent.getCode()){
 
@@ -25,8 +26,7 @@ public class KeyReleaseHandler implements EventHandler<KeyEvent> {
 
 
             default -> {
-                localPlayer.removeInput(keyEvent);
-                System.out.println("Released: " + keyEvent.getCode());
+
             }
 
 

@@ -10,6 +10,7 @@ import java.util.List;
 public class WorldSpace implements Renderable{
 
     public static final Point2D worldDimensions = new Point2D(4000,4000);
+    public static Point2D currentWorldSpaceOffset = new Point2D(0,0);
     private static List<RenderableLayerTypeCombo> addNextPass = new ArrayList<>();
     private static List<RenderableLayerTypeCombo> removeNextPass = new ArrayList<>();
 
@@ -25,10 +26,11 @@ public class WorldSpace implements Renderable{
             layers.add(r);
         }
 
-        for(int i = 0; i * 100 < worldDimensions.getX(); i++){
-            for(int j = 0; j * 100 < worldDimensions.getY(); j++) {
-                RenderableSquare square = new RenderableSquare(new Point2D(j * 100, i * 100), 10);
+        for(int i = 0; i * 200 < worldDimensions.getX(); i++){
+            for(int j = 0; j * 200 < worldDimensions.getY(); j++) {
+                RenderableSquare square = new RenderableSquare(new Point2D(j * 200, i * 200), 20);
                 squares.add(square);
+                CollisionHandler.addCollidable(square);
             }
         }
 
@@ -44,10 +46,10 @@ public class WorldSpace implements Renderable{
     @Override
     public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
 
-        worldSpaceOffset = new Point2D(Game.localPlayerCamera.getPosition().getX(), Game.localPlayerCamera.getPosition().getY());
+        currentWorldSpaceOffset = new Point2D( - Game.localPlayerCamera.getPosition().getX(),  - Game.localPlayerCamera.getPosition().getY());
 
         for(RenderLayer l : layers){
-            l.render(gc, worldSpaceOffset);
+            l.render(gc, currentWorldSpaceOffset);
         }
 
         updateLayers();
@@ -80,8 +82,18 @@ public class WorldSpace implements Renderable{
     public static void addRenderable(Renderable r, LayerType t){
         addNextPass.add(new RenderableLayerTypeCombo(r,t));
     }
+    public static void addAllRenderable(List<Renderable> list, LayerType t){
+        for(Renderable r : list){
+            addRenderable(r,t);
+        }
+    }
     public static void removeRenderable(Renderable r, LayerType t){
         removeNextPass.add(new RenderableLayerTypeCombo(r,t));
+    }
+    public static void removeAllRenderable(List<Renderable> list, LayerType t){
+        for(Renderable r : list) {
+            removeRenderable(r,t);
+        }
     }
 
 }

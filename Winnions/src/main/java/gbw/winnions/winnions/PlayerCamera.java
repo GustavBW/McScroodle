@@ -8,9 +8,9 @@ public class PlayerCamera implements Tickable{
     private Player localPlayer;
     private boolean lockedOnPlayer = true;
 
-    public PlayerCamera(Player p, Point2D pos){
+    public PlayerCamera(Player p){
 
-        this.position = pos;
+        this.position = p.getPosition();
         this.localPlayer = p;
 
     }
@@ -22,7 +22,7 @@ public class PlayerCamera implements Tickable{
         if(!lockedOnPlayer){
 
         }else{
-            position = localPlayer.getPosition();
+            position = new Point2D(localPlayer.getPosition().getX() - Game.gameDimensions.getX() / 2, localPlayer.getPosition().getY() - Game.gameDimensions.getY() / 2 );
         }
     }
 
