@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CollisionHandler implements Runnable{
 
-    private static double collisionPadding = 10;
+    private static double collisionPadding = 0;
     private static List<Collidable> collidables = new ArrayList<>();
     private static List<Collidable> addNextPass = new ArrayList<>();
     private static List<Collidable> removeNextPass = new ArrayList<>();

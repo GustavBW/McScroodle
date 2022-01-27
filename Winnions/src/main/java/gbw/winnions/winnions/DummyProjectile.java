@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 public class DummyProjectile extends GameObject implements Renderable, Tickable, Collidable {
 
-    private final double bulletspeed = 0, lifetime = 2000, size = 15, knockbackForce = 10;
+    private final double bulletspeed = 10, lifetime = 2000, size = 15, knockbackForce = 10;
     private long startTime = System.currentTimeMillis();
     private Point2D position, velocity;
     private Player owner;
@@ -32,7 +32,7 @@ public class DummyProjectile extends GameObject implements Renderable, Tickable,
     public void tick() {
         position = position.add(velocity);
 
-        if (System.currentTimeMillis() >= startTime + lifetime) {
+        if (System.currentTimeMillis() >= startTime + lifetime || position.getX() > WorldSpace.worldDimensions.getX() || position.getX() < 0 || position.getY() > WorldSpace.worldDimensions.getY() || position.getY() < 0) {
             destroy();
         }
     }
@@ -88,5 +88,5 @@ public class DummyProjectile extends GameObject implements Renderable, Tickable,
         return knockbackForce;
     }
     @Override
-    public String toString(){return "DummyProjectile";}
+    public String toString(){return "DummyProjectile " + position.getX() + " | " + position.getY();}
 }

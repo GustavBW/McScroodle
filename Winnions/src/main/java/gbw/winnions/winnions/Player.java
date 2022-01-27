@@ -6,8 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static javafx.scene.input.KeyCode.W;
 
@@ -66,12 +65,13 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
 
     public DummyProjectile abilityShoot(Point2D mousePos){
 
-        Point2D origin = new Point2D(position.getX() + size/2, position.getY() + size/2);
+        Point2D origin = new Point2D(position.getX() + size / 3, position.getY() + size / 3);
 
         Point2D relativeMousePosition = mousePos.subtract(WorldSpace.currentWorldSpaceOffset);
         Point2D velocityVector = relativeMousePosition.subtract(origin);
-        Point2D spawnOffset = velocityVector.normalize();
-        spawnOffset = velocityVector.multiply(1);
+        Point2D spawnOffset = new Point2D(velocityVector.getX(),velocityVector.getY());
+        spawnOffset = spawnOffset.normalize();
+        spawnOffset = spawnOffset.multiply(size);
 
         Point2D spawnPosition = origin.add(spawnOffset);
         DummyProjectile dp = new DummyProjectile(spawnPosition, velocityVector ,this);
@@ -95,14 +95,45 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
     }
 
     public void onCollision(Collidable c){
-        Point2D vectorToC = position.subtract(c.getPosition());
-        vectorToC = vectorToC.normalize();
-        vectorToC = vectorToC.multiply(c.getKnockbackForce());
-        velocity = velocity.add(vectorToC);
+        Point2D[] objVertArray = c.getVertexes();
+        double[][] XYMagArray = new double[objVertArray.length][4];
+
+        for(int i = 0; i < objVertArray.length; i++){
+            Point2D currentVec = objVertArray[i].subtract(position);
+            XYMagArray[i][0] = objVertArray[i].getX();
+            XYMagArray[i][1] = objVertArray[i].getY();
+            XYMagArray[i][2] = currentVec.magnitude();
+            XYMagArray[i][3] = i;
+        }
+
+        double[] closestXYMag = XYMagArray[0];
+        double[] secondClosest = XYMagArray[1];
+
+        for(int i = 0; i < XYMagArray.length; i++){
+            if(XYMagArray[i][2] < closestXYMag[2]){
+                closestXYMag = XYMagArray[i].clone();
+            }
+        }
+        XYMagArray[(int) closestXYMag[3]][2] = 1000.00;
+
+        for(int i = 0; i < XYMagArray.length; i++){
+            if(XYMagArray[i][2] < secondClosest[2]){
+                secondClosest = XYMagArray[i].clone();
+            }
+        }
+
+        Point2D vert1 = new Point2D(closestXYMag[0],closestXYMag[1]);
+        Point2D vert2 = new Point2D(secondClosest[0],secondClosest[1]);
+        Point2D colEdge = vert2.subtract(vert1);
+        Point2D pushDirection = new Point2D(-1 * colEdge.getY(), colEdge.getX());
+        pushDirection = pushDirection.normalize();
+        pushDirection = pushDirection.multiply(10);
+
+        position = position.add(pushDirection);
     }
 
     public double getKnockbackForce() {
-        return 0;
+        return 10;
     }
 
     public void changeHealth(double amount){
