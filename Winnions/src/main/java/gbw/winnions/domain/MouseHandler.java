@@ -1,5 +1,6 @@
-package gbw.winnions.winnions;
+package gbw.winnions.domain;
 
+import gbw.winnions.presentation.PlayerCamera;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;

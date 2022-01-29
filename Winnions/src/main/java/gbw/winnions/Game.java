@@ -1,5 +1,8 @@
-package gbw.winnions.winnions;
+package gbw.winnions;
 
+import gbw.winnions.domain.*;
+import gbw.winnions.presentation.PlayerCamera;
+import gbw.winnions.presentation.WorldSpace;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;

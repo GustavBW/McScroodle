@@ -1,5 +1,6 @@
-package gbw.winnions.winnions;
+package gbw.winnions.domain;
 
+import gbw.winnions.Game;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;

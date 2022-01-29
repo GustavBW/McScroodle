@@ -1,13 +1,14 @@
-package gbw.winnions.winnions;
+package gbw.winnions.presentation;
 
+import gbw.winnions.Game;
+import gbw.winnions.domain.*;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
-public class WorldSpace implements Renderable, Tickable{
+public class WorldSpace implements Renderable, Tickable {
 
     public static final Point2D worldDimensions = new Point2D(4000,4000);
     public static Point2D currentWorldSpaceOffset = new Point2D(0,0);

@@ -1,4 +1,4 @@
-package gbw.winnions.winnions;
+package gbw.winnions.presentation;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;

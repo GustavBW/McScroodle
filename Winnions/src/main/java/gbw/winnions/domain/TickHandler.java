@@ -1,4 +1,6 @@
-package gbw.winnions.winnions;
+package gbw.winnions.domain;
+
+import gbw.winnions.Game;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;

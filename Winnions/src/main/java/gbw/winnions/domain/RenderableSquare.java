@@ -1,5 +1,8 @@
-package gbw.winnions.winnions;
+package gbw.winnions.domain;
 
+import gbw.winnions.Game;
+import gbw.winnions.presentation.Renderable;
+import gbw.winnions.presentation.WorldSpace;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

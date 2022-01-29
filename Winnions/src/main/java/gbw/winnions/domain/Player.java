@@ -1,14 +1,15 @@
-package gbw.winnions.winnions;
+package gbw.winnions.domain;
 
+import gbw.winnions.backend.ContentEngine;
+import gbw.winnions.presentation.Renderable;
+import gbw.winnions.presentation.WorldSpace;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 import java.util.*;
-
-import static javafx.scene.input.KeyCode.W;
 
 public class Player extends GameObject implements Renderable, Tickable, Collidable {
 
@@ -23,6 +24,7 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
     private Point2D[] vertexes;
     private int id;
     private List<KeyEvent> currentInputs;
+    private Image image;
 
 
 
@@ -32,6 +34,7 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
         velocity = new Point2D(0,0);
         currentInputs = new ArrayList<>();
         vertexes = calcVertexes();
+        image = ContentEngine.getDefaultGraphics();
     }
 
 
@@ -55,8 +58,9 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.BLUE);
-        gc.fillRect(WorldSpace.currentWorldSpaceOffset.getX() + position.getX(),WorldSpace.currentWorldSpaceOffset.getY() + position.getY(),size,size);
+        gc.drawImage(image, WorldSpace.currentWorldSpaceOffset.getX() + position.getX(), WorldSpace.currentWorldSpaceOffset.getY() + position.getY(), size, size);
+        //gc.setFill(Color.BLUE);
+        //gc.fillRect(WorldSpace.currentWorldSpaceOffset.getX() + position.getX(),WorldSpace.currentWorldSpaceOffset.getY() + position.getY(),size,size);
 
     }
 

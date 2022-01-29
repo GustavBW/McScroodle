@@ -1,4 +1,4 @@
-package gbw.winnions.winnions;
+package gbw.winnions.domain;
 
 public enum LayerType {
 

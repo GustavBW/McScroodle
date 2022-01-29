@@ -1,4 +1,4 @@
-package gbw.winnions.winnions;
+package gbw.winnions.domain;
 
 import javafx.geometry.Point2D;
 

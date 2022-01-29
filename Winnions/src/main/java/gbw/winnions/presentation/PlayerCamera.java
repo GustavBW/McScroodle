@@ -1,8 +1,11 @@
-package gbw.winnions.winnions;
+package gbw.winnions.presentation;
 
+import gbw.winnions.domain.Player;
+import gbw.winnions.Game;
+import gbw.winnions.domain.Tickable;
 import javafx.geometry.Point2D;
 
-public class PlayerCamera implements Tickable{
+public class PlayerCamera implements Tickable {
 
     private Point2D position;
     private Player localPlayer;
