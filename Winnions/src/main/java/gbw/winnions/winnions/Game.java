@@ -2,7 +2,6 @@ package gbw.winnions.winnions;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -13,13 +12,10 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.List;
 
 public class Game extends Application {
 
-    public static final Point2D gameDimensions = new Point2D(1500,1000);
+    public static final Point2D screenDimensions = new Point2D(1500,1000);
     public static boolean isRunning = false;
     public static Player localPlayer;
     public static PlayerCamera localPlayerCamera;
@@ -50,7 +46,7 @@ public class Game extends Application {
         worldSpace = new WorldSpace();
         tickHandler = new TickHandler();
 
-        localPlayer = new Player(new Point2D(500,500),1);
+        localPlayer = new Player(new Point2D(Game.screenDimensions.getX() / 2,Game.screenDimensions.getY() / 2),1);
         localPlayerCamera = new PlayerCamera(localPlayer);
         keyPressHandler = new KeyPressHandler(localPlayer, localPlayerCamera);
         keyReleaseHandler = new KeyReleaseHandler(localPlayer, localPlayerCamera);
@@ -61,8 +57,9 @@ public class Game extends Application {
         WorldSpace.addRenderable(localPlayer, LayerType.Middleground0);
         TickHandler.addTickable(localPlayer);
         TickHandler.addTickable(localPlayerCamera);
+        TickHandler.addTickable(worldSpace);
 
-        canvas = new Canvas((int) gameDimensions.getX(), (int) gameDimensions.getY());
+        canvas = new Canvas((int) screenDimensions.getX(), (int) screenDimensions.getY());
         gc = canvas.getGraphicsContext2D();
 
         BorderPane bp = new BorderPane();
@@ -76,7 +73,7 @@ public class Game extends Application {
         };
         timer.start();
 
-        Scene scene = new Scene(bp, gameDimensions.getX(),gameDimensions.getY());
+        Scene scene = new Scene(bp, screenDimensions.getX(), screenDimensions.getY());
 
         scene.setOnKeyPressed(e -> keyPressHandler.handle(e));
         scene.setOnKeyReleased(e -> keyReleaseHandler.handle(e));
@@ -94,9 +91,9 @@ public class Game extends Application {
         gc = canvas.getGraphicsContext2D();
 
         gc.setFill(Color.WHITE);
-        gc.fillRect(0,0,gameDimensions.getX(),gameDimensions.getY());
+        gc.fillRect(0,0, screenDimensions.getX(), screenDimensions.getY());
 
-        worldSpace.render(gc, null);
+        worldSpace.render(gc);
     }
 
 

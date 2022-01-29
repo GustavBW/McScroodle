@@ -19,10 +19,10 @@ public class RenderableSquare extends GameObject implements Renderable, Collidab
 
 
     @Override
-    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
+    public void render(GraphicsContext gc) {
 
         gc.setFill(Color.BLACK);
-        gc.fillRect(worldSpaceOffset.getX() + position.getX() - size / 2, worldSpaceOffset.getY() + position.getY() - size / 2, size,size);
+        gc.fillRect(WorldSpace.currentWorldSpaceOffset.getX() + position.getX() - size / 2, WorldSpace.currentWorldSpaceOffset.getY() + position.getY() - size / 2, size,size);
 
     }
 
@@ -57,7 +57,13 @@ public class RenderableSquare extends GameObject implements Renderable, Collidab
     }
     @Override
     public Point2D[] getVertexes(){
-        return vertexes;
+        Point2D[] updatedVerts = new Point2D[vertexes.length];
+
+        for(int i = 0; i < updatedVerts.length; i++){
+           updatedVerts[i] = new Point2D(vertexes[i].getX() + WorldSpace.currentWorldSpaceOffset.getX(), vertexes[i].getY() + WorldSpace.currentWorldSpaceOffset.getY());
+        }
+
+        return updatedVerts;
     }
 
     public void destroy(){

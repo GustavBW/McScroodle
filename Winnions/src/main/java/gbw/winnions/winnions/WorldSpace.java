@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
-public class WorldSpace implements Renderable{
+public class WorldSpace implements Renderable, Tickable{
 
     public static final Point2D worldDimensions = new Point2D(4000,4000);
     public static Point2D currentWorldSpaceOffset = new Point2D(0,0);
@@ -19,6 +19,7 @@ public class WorldSpace implements Renderable{
     public WorldSpace(){
 
         List<RenderableSquare> squares = new ArrayList<>();
+        List<Collidable> colSquares = new ArrayList<>();
         layers = new ArrayList<>();
 
         for(LayerType t : LayerType.values()){
@@ -30,9 +31,11 @@ public class WorldSpace implements Renderable{
             for(int j = 0; j * 200 < worldDimensions.getY(); j++) {
                 RenderableSquare square = new RenderableSquare(new Point2D(j * 200, i * 200), 20);
                 squares.add(square);
-                CollisionHandler.addCollidable(square);
+                colSquares.add(square);
             }
         }
+
+        CollisionHandler.addAllCollidable(colSquares);
 
         for(RenderLayer r : layers){
             if(r.getType() == LayerType.Background0){
@@ -44,12 +47,15 @@ public class WorldSpace implements Renderable{
     }
 
     @Override
-    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
-
+    public void tick(){
         currentWorldSpaceOffset = new Point2D( - Game.localPlayerCamera.getPosition().getX(),  - Game.localPlayerCamera.getPosition().getY());
+    }
+
+    @Override
+    public void render(GraphicsContext gc) {
 
         for(RenderLayer l : layers){
-            l.render(gc, currentWorldSpaceOffset);
+            l.render(gc);
         }
 
         updateLayers();

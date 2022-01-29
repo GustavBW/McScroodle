@@ -17,9 +17,9 @@ public class RenderLayer implements Renderable{
     }
 
     @Override
-    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
+    public void render(GraphicsContext gc) {
         for(Renderable r : renderables){
-            r.render(gc, worldSpaceOffset);
+            r.render(gc);
         }
     }
 

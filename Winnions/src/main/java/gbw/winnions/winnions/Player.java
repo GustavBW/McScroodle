@@ -25,6 +25,7 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
     private List<KeyEvent> currentInputs;
 
 
+
     public Player(Point2D pos, int id){
         position = pos;
         this.id = id;
@@ -53,9 +54,9 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
     }
 
     @Override
-    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
+    public void render(GraphicsContext gc) {
         gc.setFill(Color.BLUE);
-        gc.fillRect(worldSpaceOffset.getX() + position.getX(),worldSpaceOffset.getY() + position.getY(),size,size);
+        gc.fillRect(WorldSpace.currentWorldSpaceOffset.getX() + position.getX(),WorldSpace.currentWorldSpaceOffset.getY() + position.getY(),size,size);
 
     }
 

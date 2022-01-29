@@ -22,7 +22,7 @@ public class PlayerCamera implements Tickable{
         if(!lockedOnPlayer){
 
         }else{
-            position = new Point2D(localPlayer.getPosition().getX() - Game.gameDimensions.getX() / 2, localPlayer.getPosition().getY() - Game.gameDimensions.getY() / 2 );
+            position = new Point2D(localPlayer.getPosition().getX() - Game.screenDimensions.getX() / 2, localPlayer.getPosition().getY() - Game.screenDimensions.getY() / 2 );
         }
     }
 
@@ -32,6 +32,7 @@ public class PlayerCamera implements Tickable{
     public Point2D getPosition(){return position;}
     public boolean toggleLock(){
         lockedOnPlayer = !lockedOnPlayer;
+        System.out.println("Locked on player: " + lockedOnPlayer);
         return lockedOnPlayer;
     }
 

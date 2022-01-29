@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
@@ -30,7 +31,7 @@ public class MainApp extends javafx.application.Application {
     private HashMap<Button, Scene> sceneMap = new HashMap<>();
     private HashMap<Button, Contact> contactMap = new HashMap<>();
 
-    private final int buttonSpacing = 5;
+    private final int buttonSpacing = 7;
     private final int buttonWidth = (int) (buttonSpacing * 30);
     private final int buttonHeight = (int) (buttonWidth * 0.3);
     private final int WIDTH = 340, HEIGHT = 520;
@@ -46,12 +47,13 @@ public class MainApp extends javafx.application.Application {
         mainLayout.setAlignment(Pos.CENTER);
 
         createButtons(mainLayout, true);
-
+        
         primaryScene = new Scene(mainLayout, WIDTH, HEIGHT);
 
         primaryStage.setTitle("Contacts");
         primaryStage.setResizable(false);
         primaryStage.setScene(primaryScene);
+
         primaryStage.show();
     }
     private void createButtons(VBox layout, boolean makeNewContactButton) {
@@ -163,6 +165,7 @@ public class MainApp extends javafx.application.Application {
         newButton.setPadding(new Insets(buttonSpacing));
         newButton.setAlignment(Pos.CENTER_LEFT);
         newButton.setOnAction(e -> primaryStage.setScene(sceneMap.get(newButton)));
+        //newButton.relocate(100,100);
     }
     private void createContactScene(Button button, Contact c){
         VBox newLayout = new VBox(buttonSpacing);

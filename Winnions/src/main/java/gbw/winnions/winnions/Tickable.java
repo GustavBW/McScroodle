@@ -1,7 +1,8 @@
 package gbw.winnions.winnions;
 
-public interface Tickable {
+import javafx.geometry.Point2D;
 
+public interface Tickable {
 
     void tick();
 }
