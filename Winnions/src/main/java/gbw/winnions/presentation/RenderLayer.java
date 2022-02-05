@@ -1,12 +1,12 @@
-package gbw.winnions.winnions;
+package gbw.winnions.presentation;
 
-import javafx.geometry.Point2D;
+import gbw.winnions.domain.LayerType;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RenderLayer implements Renderable{
+public class RenderLayer implements Renderable {
 
     private final LayerType layerType;
     private List<Renderable> renderables;
@@ -17,9 +17,9 @@ public class RenderLayer implements Renderable{
     }
 
     @Override
-    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
+    public void render(GraphicsContext gc) {
         for(Renderable r : renderables){
-            r.render(gc, worldSpaceOffset);
+            r.render(gc);
         }
     }
 

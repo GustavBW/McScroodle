@@ -1,5 +1,8 @@
-package gbw.winnions.winnions;
+package gbw.winnions.domain;
 
+import gbw.winnions.Game;
+import gbw.winnions.presentation.Renderable;
+import gbw.winnions.presentation.WorldSpace;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -23,9 +26,9 @@ public class DummyProjectile extends GameObject implements Renderable, Tickable,
     }
 
     @Override
-    public void render(GraphicsContext gc, Point2D worldSpaceOffset) {
+    public void render(GraphicsContext gc) {
         gc.setFill(Color.RED);
-        gc.fillRoundRect(worldSpaceOffset.getX() + position.getX(), worldSpaceOffset.getY() + position.getY(), size, size, size, size);
+        gc.fillRoundRect(WorldSpace.currentWorldSpaceOffset.getX() + position.getX(), WorldSpace.currentWorldSpaceOffset.getY() + position.getY(), size, size, size, size);
     }
 
     @Override
@@ -76,10 +79,13 @@ public class DummyProjectile extends GameObject implements Renderable, Tickable,
     }
     @Override
     public Point2D[] getVertexes(){
-        Point2D[] updatedVerts = vertexes.clone();
-        for(Point2D p : updatedVerts){
-            p.add(position);
+        Point2D[] updatedVerts = new Point2D[vertexes.length];
+
+        for(int i = 0; i < updatedVerts.length; i++){
+            updatedVerts[i] = new Point2D(vertexes[i].getX() + WorldSpace.currentWorldSpaceOffset.getX() + position.getX(), vertexes[i].getY() + WorldSpace.currentWorldSpaceOffset.getY() + position.getX());
+            System.out.println("Vert " + updatedVerts[i].getX() + " | " + updatedVerts[i].getY());
         }
+
         return updatedVerts;
     }
 
