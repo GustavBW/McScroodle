@@ -28,7 +28,7 @@ public class WorldSpace implements Renderable{
 
         for(int i = 0; i * 200 < worldDimensions.getX(); i++){
             for(int j = 0; j * 200 < worldDimensions.getY(); j++) {
-                RenderableSquare square = new RenderableSquare(new Point2D(j * 200, i * 200), 20);
+                RenderableSquare square = new RenderableSquare(new Point2D(j * 200, i * 200), 40);
                 squares.add(square);
                 CollisionHandler.addCollidable(square);
             }

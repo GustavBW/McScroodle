@@ -181,8 +181,9 @@ public class Player extends GameObject implements Renderable, Tickable, Collidab
 
     public Point2D[] getVertexes(){
         Point2D[] updatedVerts = vertexes.clone();
+
         for(Point2D p : updatedVerts){
-            p.add(position);
+            p = p.add(position);
         }
         return updatedVerts;
     }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CollisionHandler implements Runnable{
 
-    private static double collisionPadding = 0;
+    private static double collisionPadding = 10;
     private static List<Collidable> collidables = new ArrayList<>();
     private static List<Collidable> addNextPass = new ArrayList<>();
     private static List<Collidable> removeNextPass = new ArrayList<>();
@@ -27,8 +27,8 @@ public class CollisionHandler implements Runnable{
                     for (Point2D playerVert : localPlayer.getVertexes()) {
 
                         Point2D vecToFrom = playerVert.subtract(p);
-                        if (vecToFrom.magnitude() <= collisionPadding) {
-                            System.out.println("Collision! " + c + " | " + localPlayer);
+                        if (vecToFrom.magnitude() <= collisionPadding || c.isInBounds(playerVert)) {
+                            Logger.log("Collision! " + c + " | " + localPlayer);
                             c.onCollision(localPlayer);
                             localPlayer.onCollision(c);
                             break;
