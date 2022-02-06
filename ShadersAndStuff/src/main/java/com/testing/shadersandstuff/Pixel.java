@@ -28,12 +28,13 @@ public class Pixel implements Renderable{
         gc.fillRect(x,y,1,1);
     }
 
+    public void setBW(double i){setColor(i,i,i,1);}
     public void setColor(double r, double g, double b){
         setColor(r,g,b,1);
     }
     public void setColor(double r, double g, double b, double a){
         checkValue("opacity",a);
-        color = new Color((Math.abs(r) % 255) / 255d,(Math.abs(g) % 255) / 255d,(Math.abs(b) % 255) / 255d, a);
+        color = new Color((Math.abs(r)) / 255d,(Math.abs(g)) / 255d,(Math.abs(b)) / 255d, a);
     }
 
 
