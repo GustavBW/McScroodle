@@ -29,7 +29,7 @@ public class CollisionHandler implements Runnable{
 
                         Point2D vecToFrom = playerVert.subtract(p);
                         if (vecToFrom.magnitude() <= collisionPadding || c.isInBounds(playerVert)) {
-                            Logger.log("Collision! " + c + " | " + localPlayer);
+                            //Logger.log("Collision! " + c + " | " + localPlayer);
                             c.onCollision(localPlayer);
                             localPlayer.onCollision(c);
                             break;

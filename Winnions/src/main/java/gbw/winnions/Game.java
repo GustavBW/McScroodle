@@ -109,7 +109,7 @@ public class Game extends Application {
     }
     public synchronized void stop(WindowEvent we){
         isRunning = false;
-        Logger.onClose();
+        //Logger.onClose();
 
         try{
             tickThread.join();
@@ -121,8 +121,8 @@ public class Game extends Application {
         System.exit(69);
     }
     public static void main(String[] args) {
-        Logger.onProgramStart();
-        Logger.log("S");
+        //Logger.onProgramStart();
+        //Logger.log("S");
         launch();
     }
 }
