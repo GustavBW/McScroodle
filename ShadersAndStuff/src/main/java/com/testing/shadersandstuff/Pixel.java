@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 public class Pixel implements Renderable{
 
     private double r,b,g;
-    private final int x,y;
+    public final int x,y;
     private Color color;
 
     public Pixel (int r, int g, int b,int x, int y){
@@ -42,6 +42,9 @@ public class Pixel implements Renderable{
     public void setAlpha(double a){
         checkValue("opacity",a);
         color = new Color(color.getRed(), color.getGreen(),color.getBlue(), a);
+    }
+    public void invertColor(){
+        color = new Color(1 - color.getRed(), 1- color.getGreen(),1- color.getBlue(), 1);
     }
     private void checkValue(String s, double a){
         if(a < 0 || a > 1){

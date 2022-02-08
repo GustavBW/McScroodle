@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Main extends Application {
@@ -19,15 +20,16 @@ public class Main extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
     private Pixel[][] pixelArray;
-    private int frames = 0;
+    public static int frames = 0;
     private int frametime = 0;
     private RenderableText frameText;
     private Random random;
     private Point[] voronoiPoints;
     private KeyHandler keyHandler;
+    private ArrayList<Texture> textureArray;
 
     public static Point2D canvasDim = new Point2D(500,500);
-    public static Point2D sceneDim = new Point2D(2000,1500);
+    public static Point2D sceneDim = new Point2D(1000,750);
     public static boolean pause = false;
 
     @Override
@@ -44,7 +46,7 @@ public class Main extends Application {
 
         random = new Random();
         pixelArray = fillPixels();
-        voronoiPoints = calculateVoronoiPoints(20);
+        textureArray = evaluateTextureArray();
         frameText = new RenderableText(new Point2D(5,15),"0");
         gc = canvas.getGraphicsContext2D();
 
@@ -79,32 +81,23 @@ public class Main extends Application {
         }
     }
 
+    private ArrayList<Texture> evaluateTextureArray(){
+        ArrayList<Texture> array = new ArrayList<>();
+
+        array.add(new Noise(NoiseType.White, 1));
+
+        return array;
+    }
+
     private void evaluatePixels(){
 
         for(int y = 0; y < canvasDim.getY(); y++){
 
             for(int x = 0; x < canvasDim.getX(); x++){
 
-                double closestPxDist = 10000;
-                double closestPyDist = 10000;
-                double finalVal = 0;
-
-                for(Point p : voronoiPoints){
-                    double xdist = (x - p.x) * (x - p.x);
-                    double ydist = (y - p.y) * (y - p.y);
-
-                    finalVal = (closestPxDist + closestPyDist);
-
-                    if((xdist + ydist) < finalVal) {
-                        closestPxDist = xdist;
-                        closestPyDist = ydist;
-                    }
+                for(Texture t : textureArray) {
+                    t.computePixel(pixelArray[x][y]);
                 }
-
-                pixelArray[x][y].setBW((Math.sqrt(finalVal) * 1.7 - frames) % 255);
-
-                //pixelArray[x][y].setColor(x,y,frames);
-
             }
         }
     }
