@@ -6,10 +6,12 @@ import javafx.scene.paint.Color;
 public class WayPoint {
 
     public double x,y;
+    private int id;
 
-    public WayPoint(double x, double y){
+    public WayPoint(double x, double y, int id){
         this.x = x;
         this.y = y;
+        this.id = id;
     }
 
 
@@ -18,4 +20,12 @@ public class WayPoint {
         gc.fillRoundRect(x - 5,y - 5,10,10,10,10);
     }
 
+    @Override
+    public String toString(){
+        return "WayPoint " + id + " | " + x + " " + y;
+    }
+
+
+
+    public int getId(){return id;}
 }

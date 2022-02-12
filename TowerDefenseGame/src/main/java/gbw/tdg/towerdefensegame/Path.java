@@ -4,7 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Path {
 
@@ -12,24 +14,26 @@ public class Path {
     private final WayPoint start;
     private final WayPoint end;
 
-    public Path (ArrayList<WayPoint> points, WayPoint start, WayPoint end){
-        this.points = points;
-        this.start = start;
-        this.end = end;
+    public Path (ArrayList<WayPoint> points){
+        this.points = sortById(points);
+        this.start = points.get(0);
+        this.end = points.get(points.size() -1);
+
+        for(WayPoint p : points){
+            System.out.println(p);
+        }
     }
 
     public void render(GraphicsContext gc){
 
         gc.setFill(Color.GRAY);
 
-
-        gc.strokeLine(start.x, start.y, points.get(0).x,points.get(0).y);
-
-        for(int i = 0; i < points.size() - 1; i++){
+        for(int i = 0; i < points.size() - 2; i++){
             gc.strokeLine(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y);
         }
 
-        gc.strokeLine(points.get(points.size() -1 ).x, points.get(points.size() -1 ).y,end.x, end.y);
+        gc.strokeLine(points.get(points.size() -2 ).x, points.get(points.size() -2 ).y,
+                end.x, end.y);
 
     }
 
@@ -38,16 +42,20 @@ public class Path {
 
     public WayPoint getNext(WayPoint current){
 
-        WayPoint nextWayPoint = points.get(0);
+        return current.getId() + 1 == end.getId() ? end : points.get(current.getId());
+    }
 
-        for(int i = 0; i < points.size(); i++){
-            if(current.x == points.get(i).x && current.y == points.get(i).y){
-                nextWayPoint = i < points.size() - 1 ? points.get(i + 1) : end;
-                break;
-            }
+    private ArrayList<WayPoint> sortById(ArrayList<WayPoint> list){
+        WayPoint[] tempArray = new WayPoint[list.size()];
+        ArrayList<WayPoint> output = new ArrayList<>();
+
+        for(WayPoint p : list){
+            tempArray[p.getId() - 1] = p;
         }
 
-        return nextWayPoint;
+        Collections.addAll(output, tempArray);
+
+        return output;
     }
 
 }

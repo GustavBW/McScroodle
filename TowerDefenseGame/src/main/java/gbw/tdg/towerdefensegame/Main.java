@@ -2,13 +2,16 @@ package gbw.tdg.towerdefensegame;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -25,13 +28,22 @@ public class Main extends Application {
     private Point2D canvasSize;
     private Random random;
     private GraphicsContext gc;
+    private MouseHandler mouseHandler;
 
     private Path path;
     private ArrayList<WayPoint> wayPoints;
-    private ArrayList<Enemy> enemies;
+
 
     private double lastCall = 0, lastCall2 = 0;
     private final double fpsWanted = 60;
+    private final int numOfWayPoints = 11;
+    public static int HP = 10;
+
+    private ArrayList<Enemy> enemies;
+    public static ArrayList<Enemy> removeEnemy = new ArrayList<>();
+    private ArrayList<Clickable> clickables;
+    public static ArrayList<Clickable> removeClickable = new ArrayList<>();
+    public static ArrayList<Clickable> addClickable = new ArrayList<>();
 
 
 
@@ -42,6 +54,7 @@ public class Main extends Application {
 
         mainStage = stage;
         BorderPane bp = new BorderPane();
+
 
         canvasSize = new Point2D(1000,1000);
         canvas = new Canvas(canvasSize.getX(),canvasSize.getY());
@@ -58,26 +71,29 @@ public class Main extends Application {
         timer.start();
 
         Scene scene = new Scene(bp, 1000,1000);
+
         stage.setTitle("Tower Defense Game");
         stage.setScene(scene);
         stage.show();
 
         random = new Random();
-        ArrayList<WayPoint> list = new ArrayList<>();
-        for(int i = 0; i < 10; i++){
-            list.add(new WayPoint(random.nextInt((int) canvasSize.getX()), random.nextInt((int) canvasSize.getY())));
-        }
 
-        wayPoints = new ArrayList<>();
-        wayPoints.addAll(list);
-        wayPoints.add(new WayPoint(0,0));
-        wayPoints.add(new WayPoint(canvasSize.getX()* 0.9,  canvasSize.getY() * 0.9));
-        path = new Path(list, new WayPoint(0,0), new WayPoint(canvasSize.getX()* 0.9,  canvasSize.getY() * 0.9));
+        path = new Path(createWayPoints());
+
+        clickables = new ArrayList<>();
+        mouseHandler = new MouseHandler(clickables);
 
         enemies = new ArrayList<>();
+        enemies.add(new Enemy(path.getStart().x,path.getStart().y,path));
+
+        scene.setOnMouseClicked(e -> mouseHandler.handle(e));
     }
 
     private void update(){
+
+        if(HP <= 0){
+            System.out.println("You lost");
+        }
 
         render();
 
@@ -86,10 +102,10 @@ public class Main extends Application {
             tick();
         }
 
+        cleanUp();
     }
 
     private void tick(){
-        System.out.println("tick");
         if(lastCall2 + 2_000_000_000 < System.nanoTime()){
             enemies.add(new Enemy(path.getStart().x,path.getStart().y,path));
             System.out.println("Enemy spawned");
@@ -106,6 +122,9 @@ public class Main extends Application {
 
         gc = canvas.getGraphicsContext2D();
 
+        gc.setFill(Color.WHITE);
+        gc.fillRect(0,0,canvasSize.getX(),canvasSize.getY());
+
         path.render(gc);
 
         for(WayPoint p : wayPoints){
@@ -115,6 +134,31 @@ public class Main extends Application {
         for(Enemy e: enemies){
             e.render(gc);
         }
+    }
+
+    private void cleanUp(){
+        enemies.removeAll(removeEnemy);
+        removeEnemy.clear();
+
+        clickables.removeAll(removeClickable);
+        removeClickable.clear();
+        clickables.addAll(addClickable);
+        addClickable.clear();
+    }
+
+    private ArrayList<WayPoint> createWayPoints(){
+        wayPoints = new ArrayList<>();
+        wayPoints.add(new WayPoint(0,0,1));
+
+        ArrayList<WayPoint> list = new ArrayList<>();
+        for(int i = 2; i < numOfWayPoints + 1; i++){
+            list.add(new WayPoint(random.nextInt((int) canvasSize.getX()), random.nextInt((int) canvasSize.getY()), i));
+        }
+
+        wayPoints.addAll(list);
+        wayPoints.add(new WayPoint(canvasSize.getX()* 0.9,  canvasSize.getY() * 0.9,numOfWayPoints));
+
+        return wayPoints;
     }
 
     public static void main(String[] args) {
