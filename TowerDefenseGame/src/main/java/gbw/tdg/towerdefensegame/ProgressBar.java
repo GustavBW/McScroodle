@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 
 public class ProgressBar {
 
-    private final double min, max, size;
-    private double current;
+    protected final double min, max, size;
+    protected double current;
     private final boolean backdrop;
     private Point2D position;
 
@@ -36,6 +36,7 @@ public class ProgressBar {
         gc.fillRect(position.getX() - size / 2, position.getY(), size * (current / max), size * 0.1);
 
     }
+
 
     public void setVal(double i){this.current = i;}
     public double getVal(){return current;}

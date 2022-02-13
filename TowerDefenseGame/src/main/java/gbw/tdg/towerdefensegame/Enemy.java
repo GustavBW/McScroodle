@@ -4,15 +4,20 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Enemy implements Clickable{
+import java.util.ArrayList;
+
+public class Enemy implements Clickable, Tickable{
 
     private WayPoint latest;
     private WayPoint next;
     private double x,y;
-    private final double mvspeed = 10, minDistToPoint = 5, size = 20;
+    private final double mvspeed = 10, minDistToPoint = 5, size = 40;
     private final Path path;
     private final ProgressBar hpBar;
-    private int hp;
+    private int hp = 10, id, maxHP = 10;
+    private double lengthTraveled = 0;
+    private static int enemyCount = 0;
+    private boolean alive = true;
 
     public Enemy(double x, double y, Path path){
         this.x = x;
@@ -20,27 +25,37 @@ public class Enemy implements Clickable{
         this.path = path;
         latest = path.getStart();
         next = path.getNext(latest);
-        hpBar = new ProgressBar(0,10,30, true, new Point2D(x,y - 10));
+        hpBar = new FancyProgressBar(100, 15,new Point2D(x,y - 10),new Color(211 / 255.0,0,0,1), new Color(211 / 255.0,88/255.0,0,0.8));
+        Main.addClickable.add(this);
+        Main.addTickable.add(this);
 
+        enemyCount++;
+        this.id = enemyCount;
     }
 
     public void tick(){
 
-        if(hp <= 0){destroy();}
-
-        Point2D dir = checkDistanceToNext();
-
-        if(dir != null) {
-            dir = dir.normalize();
-
-            dir = dir.multiply(mvspeed);
-
-            x += dir.getX();
-            y += dir.getY();
+        if(hp <= 0 || next == null){
+            alive = false;
+            destroy();
         }
 
-        hpBar.setVal(hp);
-        hpBar.setPosition(new Point2D(x,y - 10));
+        if(alive) {
+            Point2D dir = checkDistanceToNext();
+
+            if (dir != null) {
+                dir = dir.normalize();
+
+                dir = dir.multiply(mvspeed);
+
+                x += dir.getX();
+                y += dir.getY();
+                lengthTraveled += new Point2D(dir.getX(), dir.getY()).magnitude();
+            }
+
+            hpBar.setVal((double) hp / maxHP);
+            hpBar.setPosition(new Point2D(x, y - 10));
+        }
     }
 
     public void render(GraphicsContext gc){
@@ -88,4 +103,21 @@ public class Enemy implements Clickable{
     public void onInteraction() {
         hp--;
     }
+
+    public Point2D getPosition(){return new Point2D(x,y);}
+
+    public double getProgress(){
+        return lengthTraveled / path.getPathLength();
+    }
+
+    public int getHp(){return hp;}
+    public void changeHp(double amount){hp += amount;}
+    public double getMvspeed(){
+        return mvspeed;
+    }
+    public double getSize(){return size;}
+
+
+    @Override
+    public String toString(){return "Enemy " + id;}
 }

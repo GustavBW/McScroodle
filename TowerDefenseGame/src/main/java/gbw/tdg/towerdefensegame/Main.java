@@ -22,29 +22,38 @@ import java.util.Random;
 
 public class Main extends Application {
 
+    public static Point2D canvasSize = new Point2D(2000,1500);
     private Canvas canvas;
     private Stage mainStage;
     private Rectangle2D screenDim;
-    private Point2D canvasSize;
     private Random random;
     private GraphicsContext gc;
     private MouseHandler mouseHandler;
+    private UIController uiController;
 
     private Path path;
     private ArrayList<WayPoint> wayPoints;
 
-
-    private double lastCall = 0, lastCall2 = 0;
+    private long lastCall = 0, lastCall2 = 0;
     private final double fpsWanted = 60;
     private final int numOfWayPoints = 11;
-    public static int HP = 10;
+    public static int HP = -1, MAXHP = 10;
+    public static boolean isRunning, onPause;
 
     private ArrayList<Enemy> enemies;
     public static ArrayList<Enemy> removeEnemy = new ArrayList<>();
     private ArrayList<Clickable> clickables;
     public static ArrayList<Clickable> removeClickable = new ArrayList<>();
     public static ArrayList<Clickable> addClickable = new ArrayList<>();
-
+    private ArrayList<Tower> towers;
+    public static ArrayList<Tower> removeTower = new ArrayList<>();
+    public static ArrayList<Tower> addTower = new ArrayList<>();
+    private ArrayList<DummyBullet> projectiles;
+    public static ArrayList<DummyBullet> addProjectile = new ArrayList<>();
+    public static ArrayList<DummyBullet> removeProjectile = new ArrayList<>();
+    private ArrayList<Tickable> tickables;
+    public static ArrayList<Tickable> addTickable = new ArrayList<>();
+    public static ArrayList<Tickable> removeTickable = new ArrayList<>();
 
 
     @Override
@@ -55,8 +64,6 @@ public class Main extends Application {
         mainStage = stage;
         BorderPane bp = new BorderPane();
 
-
-        canvasSize = new Point2D(1000,1000);
         canvas = new Canvas(canvasSize.getX(),canvasSize.getY());
         canvas.setScaleX(1);
         canvas.setScaleY(1);
@@ -70,7 +77,7 @@ public class Main extends Application {
         };
         timer.start();
 
-        Scene scene = new Scene(bp, 1000,1000);
+        Scene scene = new Scene(bp, canvasSize.getX(),canvasSize.getY());
 
         stage.setTitle("Tower Defense Game");
         stage.setScene(scene);
@@ -82,38 +89,47 @@ public class Main extends Application {
 
         clickables = new ArrayList<>();
         mouseHandler = new MouseHandler(clickables);
+        uiController = new UIController(this);
 
         enemies = new ArrayList<>();
-        enemies.add(new Enemy(path.getStart().x,path.getStart().y,path));
+        towers = new ArrayList<>();
+        projectiles = new ArrayList<>();
+        tickables = new ArrayList<>();
+        towers.add(new Tower(new Point2D(500,500), 40, 300, 1.00, this));
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
+        isRunning = true;
     }
 
     private void update(){
 
-        if(HP <= 0){
-            System.out.println("You lost");
+        if(HP <= -1){
+            uiController.showGameOver();
+            isRunning = false;
         }
 
         render();
 
-        if((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()){
-            lastCall = System.nanoTime();
-            tick();
-        }
+        if(isRunning) {
+            if (!onPause) {
+                if ((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()) {
+                    lastCall = System.nanoTime();
+                    tick();
+                }
 
-        cleanUp();
+                cleanUp();
+            }
+        }
     }
 
     private void tick(){
-        if(lastCall2 + 2_000_000_000 < System.nanoTime()){
+        if(lastCall2 + 2_000 < System.currentTimeMillis()){
             enemies.add(new Enemy(path.getStart().x,path.getStart().y,path));
-            System.out.println("Enemy spawned");
-            lastCall2 = System.nanoTime();
+            lastCall2 = System.currentTimeMillis();
         }
 
-        for(Enemy e : enemies){
-            e.tick();
+        for(Tickable t : tickables){
+            t.tick();
         }
 
     }
@@ -131,9 +147,19 @@ public class Main extends Application {
             p.render(gc);
         }
 
-        for(Enemy e: enemies){
+        for(Enemy e : enemies){
             e.render(gc);
         }
+
+        for(Tower t : towers){
+            t.render(gc);
+        }
+
+        for(DummyBullet d : projectiles){
+            d.render(gc);
+        }
+
+        uiController.render(gc);
     }
 
     private void cleanUp(){
@@ -144,6 +170,21 @@ public class Main extends Application {
         removeClickable.clear();
         clickables.addAll(addClickable);
         addClickable.clear();
+
+        towers.removeAll(removeTower);
+        removeTower.clear();
+        towers.addAll(addTower);
+        addTower.clear();
+
+        projectiles.removeAll(removeProjectile);
+        removeProjectile.clear();
+        projectiles.addAll(addProjectile);
+        addProjectile.clear();
+
+        tickables.removeAll(removeTickable);
+        removeTickable.clear();
+        tickables.addAll(addTickable);
+        addTickable.clear();
     }
 
     private ArrayList<WayPoint> createWayPoints(){
@@ -163,5 +204,9 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    public ArrayList<Enemy> getEnemies(){
+        return enemies;
     }
 }
