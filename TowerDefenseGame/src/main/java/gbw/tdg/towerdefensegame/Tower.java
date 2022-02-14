@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.UI.Clickable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

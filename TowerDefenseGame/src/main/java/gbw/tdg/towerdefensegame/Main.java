@@ -1,22 +1,20 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.UI.Clickable;
+import gbw.tdg.towerdefensegame.UI.UIController;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -29,6 +27,7 @@ public class Main extends Application {
     private Random random;
     private GraphicsContext gc;
     private MouseHandler mouseHandler;
+    private KeyPressHandler keyPressHandler;
     private UIController uiController;
 
     private Path path;
@@ -37,8 +36,9 @@ public class Main extends Application {
     private long lastCall = 0, lastCall2 = 0;
     private final double fpsWanted = 60;
     private final int numOfWayPoints = 11;
-    public static int HP = -1, MAXHP = 10;
+    public static int HP = 1, MAXHP = 10;
     public static boolean isRunning, onPause;
+    public static GameState state = GameState.START_MENU;
 
     private ArrayList<Enemy> enemies;
     public static ArrayList<Enemy> removeEnemy = new ArrayList<>();
@@ -89,6 +89,7 @@ public class Main extends Application {
 
         clickables = new ArrayList<>();
         mouseHandler = new MouseHandler(clickables);
+        keyPressHandler = new KeyPressHandler();
         uiController = new UIController(this);
 
         enemies = new ArrayList<>();
@@ -98,23 +99,42 @@ public class Main extends Application {
         towers.add(new Tower(new Point2D(500,500), 40, 300, 1.00, this));
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
+        scene.setOnKeyPressed(e -> keyPressHandler.handle(e));
         isRunning = true;
     }
 
     private void update(){
 
-        if(HP <= -1){
-            uiController.showGameOver();
-            isRunning = false;
-        }
+        switch (state) {
 
-        render();
+            case START_MENU -> {
+                uiController.showStartMenu();
+                render();
+                cleanUp();
+            }
 
-        if(isRunning) {
-            if (!onPause) {
-                if ((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()) {
-                    lastCall = System.nanoTime();
-                    tick();
+            case GAME_OVER -> {
+                uiController.showGameOver();
+                render();
+                cleanUp();
+            }
+
+            case IN_GAME -> {
+                uiController.showInGame();
+
+                if (HP <= -1) {
+                    state = GameState.GAME_OVER;
+                    resetGameParams();
+                    isRunning = false;
+                }
+
+                render();
+
+                if (!onPause) {
+                    if ((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()) {
+                        lastCall = System.nanoTime();
+                        tick();
+                    }
                 }
 
                 cleanUp();
@@ -202,11 +222,19 @@ public class Main extends Application {
         return wayPoints;
     }
 
+    private void resetGameParams(){
+        HP = 10;
+    }
+
     public static void main(String[] args) {
         launch();
     }
 
     public ArrayList<Enemy> getEnemies(){
         return enemies;
+    }
+    public static void setState(GameState state){
+        System.out.println("Main.state changed to: " + state);
+        Main.state = state;
     }
 }

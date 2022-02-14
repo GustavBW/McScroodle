@@ -1,4 +1,4 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.UI;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;

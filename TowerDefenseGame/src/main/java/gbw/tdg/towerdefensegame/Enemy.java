@@ -1,17 +1,18 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.UI.Clickable;
+import gbw.tdg.towerdefensegame.UI.FancyProgressBar;
+import gbw.tdg.towerdefensegame.UI.ProgressBar;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-
-public class Enemy implements Clickable, Tickable{
+public class Enemy implements Clickable, Tickable, Destroyable{
 
     private WayPoint latest;
     private WayPoint next;
     private double x,y;
-    private final double mvspeed = 10, minDistToPoint = 5, size = 40;
+    private final double mvspeed = 15, minDistToPoint = 10, size = 40;
     private final Path path;
     private final ProgressBar hpBar;
     private int hp = 10, id, maxHP = 10;
@@ -89,7 +90,7 @@ public class Enemy implements Clickable, Tickable{
         destroy();
     }
 
-    private void destroy(){
+    public void destroy(){
         Main.removeEnemy.add(this);
         Main.removeClickable.remove(this);
     }

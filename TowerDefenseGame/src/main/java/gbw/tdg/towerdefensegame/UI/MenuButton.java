@@ -1,5 +1,7 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.UI;
 
+import gbw.tdg.towerdefensegame.GameState;
+import gbw.tdg.towerdefensegame.Main;
 import javafx.geometry.Point2D;
 
 public class MenuButton extends Button{
@@ -11,6 +13,6 @@ public class MenuButton extends Button{
 
     @Override
     public void onInteraction(){
-        System.out.println("You clicked the MenuButton");
+        Main.setState(GameState.START_MENU);
     }
 }

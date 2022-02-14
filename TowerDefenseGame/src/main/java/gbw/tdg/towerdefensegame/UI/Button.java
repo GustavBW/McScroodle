@@ -1,13 +1,15 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.UI;
 
+import gbw.tdg.towerdefensegame.Destroyable;
+import gbw.tdg.towerdefensegame.Main;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class Button implements Clickable{
+public class Button implements Clickable, Destroyable {
 
-    private final Point2D position;
+    private final Point2D position,origin;
     private final double sizeX, sizeY;
     private final RText text;
     private Color backGroundColor, rimColor;
@@ -17,6 +19,7 @@ public class Button implements Clickable{
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.text = textUnit;
+        this.origin = position.subtract(sizeX / 2, sizeY / 2);
         rimColor = new Color(1,1,1,1);
         backGroundColor = new Color(0,0,0,0.5);
         Main.addClickable.add(this);
@@ -42,11 +45,17 @@ public class Button implements Clickable{
 
     @Override
     public boolean isInBounds(Point2D pos) {
-        return (pos.getX() < position.getX() + sizeX && pos.getX() > position.getX()) && (pos.getY() < position.getY() + sizeY && pos.getY() > position.getY());
+        //System.out.println("Checking isInBounds() with pos " + pos.getX() + " " +pos.getY());
+        return (pos.getX() < origin.getX() + sizeX && pos.getX() > origin.getX()) && (pos.getY() < origin.getY() + sizeY && pos.getY() > origin.getY());
     }
 
     @Override
     public void onInteraction() {
-        System.out.println("You clicked a Button");
+
+    }
+
+    @Override
+    public void destroy() {
+        Main.removeClickable.remove(this);
     }
 }

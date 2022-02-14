@@ -1,18 +1,20 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.UI;
 
+import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.Renderable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class GameOverScreen implements Renderable{
+public class GameOverScreen implements Renderable {
 
     private MenuButton menuButton;
     private RText youDiedText;
     private Color backgroundColor;
 
     public GameOverScreen(){
-        backgroundColor = new Color(0,0,0,0.01);
+        backgroundColor = new Color(0,0,0,0.5);
         Point2D buttonPos = new Point2D(Main.canvasSize.getX() * 0.5,Main.canvasSize.getY() * 0.63);
 
         RText textUnit = new RText("MENU", buttonPos,3,new Color(1,1,1,1), Font.font("Impact", 86.00));
@@ -28,5 +30,10 @@ public class GameOverScreen implements Renderable{
 
         menuButton.render(gc);
         youDiedText.render(gc);
+    }
+
+    @Override
+    public void destroy() {
+        menuButton.destroy();
     }
 }

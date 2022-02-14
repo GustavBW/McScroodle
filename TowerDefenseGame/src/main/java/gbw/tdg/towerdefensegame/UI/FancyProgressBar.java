@@ -1,10 +1,12 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.UI;
 
+import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.Tickable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class FancyProgressBar extends ProgressBar implements Tickable{
+public class FancyProgressBar extends ProgressBar implements Tickable {
 
     private final double sizeX, sizeY;
     private Point2D position;
