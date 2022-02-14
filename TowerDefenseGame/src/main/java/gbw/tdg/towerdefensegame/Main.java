@@ -36,7 +36,7 @@ public class Main extends Application {
     private long lastCall = 0, lastCall2 = 0;
     private final double fpsWanted = 60;
     private final int numOfWayPoints = 11;
-    public static int HP = 1, MAXHP = 10;
+    public static int HP = -1, MAXHP = 10;
     public static boolean isRunning, onPause;
     public static GameState state = GameState.START_MENU;
 
@@ -96,7 +96,7 @@ public class Main extends Application {
         towers = new ArrayList<>();
         projectiles = new ArrayList<>();
         tickables = new ArrayList<>();
-        towers.add(new Tower(new Point2D(500,500), 40, 300, 1.00, this));
+        towers.add(new Tower(new Point2D(500,500), 40, 500, 1.00, this));
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
         scene.setOnKeyPressed(e -> keyPressHandler.handle(e));
@@ -110,13 +110,13 @@ public class Main extends Application {
             case START_MENU -> {
                 uiController.showStartMenu();
                 render();
-                cleanUp();
+
             }
 
             case GAME_OVER -> {
                 uiController.showGameOver();
                 render();
-                cleanUp();
+
             }
 
             case IN_GAME -> {
@@ -124,7 +124,7 @@ public class Main extends Application {
 
                 if (HP <= -1) {
                     state = GameState.GAME_OVER;
-                    resetGameParams();
+                    //resetGameParams();
                     isRunning = false;
                 }
 
@@ -136,14 +136,13 @@ public class Main extends Application {
                         tick();
                     }
                 }
-
-                cleanUp();
             }
         }
+        cleanUp();
     }
 
     private void tick(){
-        if(lastCall2 + 2_000 < System.currentTimeMillis()){
+        if(lastCall2 + 500 < System.currentTimeMillis()){
             enemies.add(new Enemy(path.getStart().x,path.getStart().y,path));
             lastCall2 = System.currentTimeMillis();
         }
@@ -183,10 +182,14 @@ public class Main extends Application {
     }
 
     private void cleanUp(){
+
         enemies.removeAll(removeEnemy);
         removeEnemy.clear();
 
-        clickables.removeAll(removeClickable);
+
+        while(clickables.removeAll(removeClickable)){
+            System.out.println("Checking stuff");
+        }
         removeClickable.clear();
         clickables.addAll(addClickable);
         addClickable.clear();

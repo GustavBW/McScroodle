@@ -15,7 +15,7 @@ public class Enemy implements Clickable, Tickable, Destroyable{
     private final double mvspeed = 15, minDistToPoint = 10, size = 40;
     private final Path path;
     private final ProgressBar hpBar;
-    private int hp = 10, id, maxHP = 10;
+    private int hp = 20, id, maxHP = 20;
     private double lengthTraveled = 0;
     private static int enemyCount = 0;
     private boolean alive = true;
@@ -93,6 +93,11 @@ public class Enemy implements Clickable, Tickable, Destroyable{
     public void destroy(){
         Main.removeEnemy.add(this);
         Main.removeClickable.remove(this);
+    }
+
+    @Override
+    public void reInstantiate() {
+        Main.addClickable.add(this);
     }
 
     @Override

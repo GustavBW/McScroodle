@@ -8,11 +8,11 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Tower implements Clickable, Tickable{
+public class Tower implements Clickable, Tickable, Renderable{
 
-    private double size, range, damage, atkSpeed = 2, attackDelay;
+    private double size, range, damage, atkSpeed = 40, attackDelay;
     private Main game;
-    private boolean isSelected = false, isActive = true;
+    private boolean isSelected = true, isActive = true;
     private Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
     private long lastCall = 0;
@@ -29,6 +29,7 @@ public class Tower implements Clickable, Tickable{
         random = new Random();
         attackDelay = 1_000_000_000 / atkSpeed;
         Main.addTickable.add(this);
+        Main.addClickable.add(this);
     }
 
     public void tick(){
@@ -167,9 +168,14 @@ public class Tower implements Clickable, Tickable{
         Main.addProjectile.add(d);
     }
 
-    private void destroy(){
+    public void destroy(){
         Main.removeTower.add(this);
         Main.removeTickable.add(this);
+    }
+
+    @Override
+    public void reInstantiate() {
+        Main.addClickable.add(this);
     }
 
 
@@ -180,6 +186,6 @@ public class Tower implements Clickable, Tickable{
 
     @Override
     public void onInteraction() {
-
+        isSelected = !isSelected;
     }
 }

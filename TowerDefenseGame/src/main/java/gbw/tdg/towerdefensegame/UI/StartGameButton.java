@@ -8,7 +8,6 @@ public class StartGameButton extends Button{
 
     public StartGameButton(Point2D position, double sizeX, double sizeY, RText textUnit) {
         super(position, sizeX, sizeY, textUnit);
-
     }
 
 

@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class StartMenuScreen implements Renderable {
+public class StartMenuScreen implements Renderable, Clickable {
 
     private final StartGameButton startGameButton;
     private final RText titleText;
@@ -33,8 +33,23 @@ public class StartMenuScreen implements Renderable {
     }
 
     @Override
+    public boolean isInBounds(Point2D pos) {
+        return false;
+    }
+
+    @Override
+    public void onInteraction() {
+
+    }
+
+    @Override
     public void destroy() {
         startGameButton.destroy();
+    }
+
+    @Override
+    public void reInstantiate() {
+        startGameButton.reInstantiate();
     }
 
 }

@@ -6,4 +6,6 @@ public interface Clickable {
 
     boolean isInBounds(Point2D pos);
     void onInteraction();
+    void destroy();
+    void reInstantiate();
 }

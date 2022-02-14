@@ -26,6 +26,5 @@ public class MouseHandler implements EventHandler<MouseEvent> {
             }
         }
 
-        System.out.println("Sike you clicked");
     }
 }

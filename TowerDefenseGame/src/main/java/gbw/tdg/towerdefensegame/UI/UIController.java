@@ -65,5 +65,9 @@ public class UIController implements Tickable {
             r.destroy();
         }
         effects.clear();
+
+        if(screenToShow != null) {
+            screenToShow.destroy();
+        }
     }
 }

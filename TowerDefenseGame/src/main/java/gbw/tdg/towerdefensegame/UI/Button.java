@@ -58,4 +58,9 @@ public class Button implements Clickable, Destroyable {
     public void destroy() {
         Main.removeClickable.remove(this);
     }
+
+    @Override
+    public void reInstantiate() {
+        Main.addClickable.add(this);
+    }
 }
