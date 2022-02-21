@@ -32,7 +32,7 @@ public class Room implements Renderable {
     }
 
     private int[][] calcVisualBoundaries(){
-        Image bI1 = baseImages[1];
+        Image bI1 = baseImages[0];
         return new int[][]{
                 {(int) position.getX(),(int) position.getY()},
                 {(int) (position.getX() + bI1.getWidth()),(int) position.getY()},

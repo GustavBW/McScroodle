@@ -7,8 +7,10 @@ import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -47,7 +49,7 @@ public class Main extends Application {
     }
 
     private void update(){
-        System.out.println("YOOO WE RUNNING BOIS");
+        //System.out.println("YOOO WE RUNNING BOIS");
         tick();
         worldSpace.render(canvas.getGraphicsContext2D());
     }

@@ -84,7 +84,7 @@ public class Main extends Application {
     private ArrayList<Texture> evaluateTextureArray(){
         ArrayList<Texture> array = new ArrayList<>();
 
-        array.add(new Noise(NoiseType.White, 1));
+        array.add(new Voronoi(1005,5));
 
         return array;
     }
