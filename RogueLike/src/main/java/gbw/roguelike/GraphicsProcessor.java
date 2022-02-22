@@ -1,42 +1,30 @@
 package gbw.roguelike;
 
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
-import javafx.stage.FileChooser;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Objects;
+
 
 public class GraphicsProcessor {
 
     private final String graphicsDir = "/graphics";
+    private final String projRootToGraphicsDir = "src/main/resources" + graphicsDir;
     private final String roomDir = "/rooms";
     private final String MISCDir = "/MISC";
 
     public Image[] getRoomGraphics(int id){
-        String dirPath = graphicsDir + roomDir + "/" + id;
+        String dirPath = projRootToGraphicsDir + roomDir + "/" + id;
 
-        System.out.println(dirPath);
         ArrayList<Image> imagesFound = new ArrayList<>();
-
         File dir = new File(dirPath);
-        try {
-            System.out.println("Canonical path " + dir.getCanonicalPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         File[] filesInDir = dir.listFiles();
-        System.out.println("FilesInDir is : " + filesInDir);
 
-        if(filesInDir.length < 0) {
+        assert filesInDir != null;
+        if(filesInDir.length > 0) {
 
             for (File f : filesInDir) {
-                imagesFound.add(new Image(getClass().getResourceAsStream(f.getAbsolutePath())));
+                imagesFound.add(new Image(f.toURI().toString()));
             }
 
         }else{
@@ -53,7 +41,7 @@ public class GraphicsProcessor {
 
     public Image getGraphicsNotFound(){
         Image output;
-        output = new Image(getClass().getResourceAsStream(graphicsDir + MISCDir + "/QuestionMark.png"));
+        output = new Image(getClass().getResourceAsStream("/graphics" + MISCDir + "/QuestionMark.png"));
         return output;
     }
 
