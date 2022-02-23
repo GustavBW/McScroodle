@@ -1,10 +1,11 @@
 package gbw.roguelike;
 
+import gbw.roguelike.interfaces.Renderable;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
 
-public class RenderLayer implements Renderable{
+public class RenderLayer implements Renderable {
 
     private final ArrayList<Renderable> renderables;
 

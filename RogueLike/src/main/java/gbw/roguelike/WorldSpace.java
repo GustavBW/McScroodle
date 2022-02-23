@@ -1,11 +1,12 @@
 package gbw.roguelike;
 
+import gbw.roguelike.interfaces.Renderable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
 
-public class WorldSpace implements Renderable{
+public class WorldSpace implements Renderable {
 
     public static Point2D worldSpaceOffset = new Point2D(0,0);
 

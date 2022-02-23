@@ -9,7 +9,7 @@ public class GamePathGenerator {
     }
 
     public Room getStartingRoom(){
-        return new Room(1, new Point2D(0,0));
+        return new Room(1, new Point2D(Main.canvasDim.getX() * 0.3,Main.canvasDim.getY() * 0.4));
     }
 
 }
