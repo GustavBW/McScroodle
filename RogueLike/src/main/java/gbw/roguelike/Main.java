@@ -17,6 +17,9 @@ public class Main extends Application {
 
     public static Point2D canvasDim = new Point2D(1000,1000);
     public static Point2D sceneDim = new Point2D(1000,1000);
+    public static AnimationTimer inGameUpdates;
+    public static AnimationTimer uiUpdates;
+    public static boolean onPause = false;
 
     private Canvas canvas;
 
@@ -34,13 +37,20 @@ public class Main extends Application {
         canvas = new Canvas(canvasDim.getX(),canvasDim.getY());
         bp.setCenter(canvas);
 
-        AnimationTimer timer = new AnimationTimer() {
+        inGameUpdates = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                update();
+                updateInGame();
             }
         };
-        timer.start();
+
+        uiUpdates = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                updateUI();
+            }
+        };
+        uiUpdates.start();
 
         Scene scene = new Scene(bp, sceneDim.getX(), sceneDim.getY());
         stage.setTitle("Some Rogue-Like");
@@ -48,10 +58,17 @@ public class Main extends Application {
         stage.show();
     }
 
-    private void update(){
-        //System.out.println("YOOO WE RUNNING BOIS");
+    private void updateInGame(){
         tick();
         worldSpace.render(canvas.getGraphicsContext2D());
+    }
+
+    private void updateUI(){
+        //System.out.println("YOOO WE RUNNING BOIS");
+        if(!onPause) {
+            tick();
+            worldSpace.render(canvas.getGraphicsContext2D());
+        }
     }
 
     private void tick(){

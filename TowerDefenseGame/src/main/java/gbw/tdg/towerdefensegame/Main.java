@@ -36,7 +36,7 @@ public class Main extends Application {
     private long lastCall = 0, lastCall2 = 0;
     private final double fpsWanted = 60;
     private final int numOfWayPoints = 11;
-    public static int HP = -1, MAXHP = 10;
+    public static int HP = 10, MAXHP = 10;
     public static boolean isRunning, onPause;
     public static GameState state = GameState.START_MENU;
 
