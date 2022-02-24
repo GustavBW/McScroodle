@@ -55,13 +55,17 @@ public class WorldSpace implements Renderable {
         return false;
     }
 
+    public void onLevelChange(ArrayList<Room> newRooms){
+        allRooms.clear();
+        visibleRooms.clear();
+        allRooms.addAll(newRooms);
+    }
+
     @Override
     public void render(GraphicsContext gc) {
-
         for(Room r : visibleRooms){
             r.render(gc);
         }
-
     }
 
     public boolean addRoom(Room r){

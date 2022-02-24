@@ -44,7 +44,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        gpg = new GamePathGenerator();
+
         mouseClickHandler = new MouseClickHandler();
         clickableManager = new ClickableManager();
         sceneManager = new SceneManager();
@@ -56,6 +56,7 @@ public class Main extends Application {
         keyReleasedHandler = new KeyReleasedHandler();
 
         worldSpace = new WorldSpace();
+        gpg = new GamePathGenerator(worldSpace);
         worldSpace.addRoom(gpg.getStartingRoom());
 
         Pane pane = new Pane();

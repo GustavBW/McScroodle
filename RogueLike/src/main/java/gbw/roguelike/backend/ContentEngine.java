@@ -1,5 +1,6 @@
 package gbw.roguelike.backend;
 
+import gbw.roguelike.LevelInformation;
 import gbw.roguelike.RoomExit;
 import gbw.roguelike.enums.AnimationType;
 import javafx.scene.image.Image;
@@ -27,5 +28,9 @@ public class ContentEngine {
 
     public static ArrayList<RoomExit> getRoomExits(int id) {
         return tp.getRoomExits(id);
+    }
+
+    public static ArrayList<LevelInformation> getLevelInformations() {
+        return tp.getLevelInformations();
     }
 }
