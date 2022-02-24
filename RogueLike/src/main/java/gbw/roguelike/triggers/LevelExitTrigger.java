@@ -1,5 +1,6 @@
-package gbw.roguelike;
+package gbw.roguelike.triggers;
 
+import gbw.roguelike.GamePathGenerator;
 import javafx.geometry.Point2D;
 
 public class LevelExitTrigger extends Trigger{

@@ -17,4 +17,8 @@ module gbw.roguelike {
     opens gbw.roguelike.interfaces to javafx.fxml;
     exports gbw.roguelike.enums;
     opens gbw.roguelike.enums to javafx.fxml;
+    exports gbw.roguelike.animationSystem;
+    opens gbw.roguelike.animationSystem to javafx.fxml;
+    exports gbw.roguelike.triggers;
+    opens gbw.roguelike.triggers to javafx.fxml;
 }

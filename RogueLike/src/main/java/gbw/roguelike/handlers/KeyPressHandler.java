@@ -15,6 +15,9 @@ public class KeyPressHandler implements EventHandler<KeyEvent> {
             case P -> {
                 Main.onPause = !Main.onPause;
             }
+            case E ->{
+                InteractionHandler.evaluateInteractibles();
+            }
 
             //ALL KEY INPUTS THAT DOESN'T MATCH THE ABOVE, ARE SENT TO THE PLAYER
             default -> {

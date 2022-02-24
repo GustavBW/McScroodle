@@ -108,7 +108,8 @@ public class Main extends Application {
         }
 
         worldSpace.render(gc1);
-
+        localPlayer.render(gc1);
+        
         inGameFrameCounter++;
     }
 

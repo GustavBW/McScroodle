@@ -1,5 +1,6 @@
 package gbw.roguelike;
 
+import gbw.roguelike.animationSystem.SpriteAnimator;
 import gbw.roguelike.enums.AnimationType;
 import gbw.roguelike.backend.ContentEngine;
 import gbw.roguelike.damagingSystem.Damagable;
@@ -20,16 +21,15 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
     public static HashMap<AnimationType, Double> animationLengthSeconds = new HashMap<>();
 
     private final Point2D position;
-    private HashMap<AnimationType, Image[]> animations;
+
     private final HashMap<BaseStatsType, Double> baseStats;
     private final HashMap<ResistanceType, Double> resistances;  //As your resistance reaches 1, you take less and less damage of that type
-    private Image[] currentAnimation;
-    private double currentAnimationLength;
+    private final SpriteAnimator spriteAnimator;
 
     public Player(Point2D pos){
         this.position = pos;
         this.baseStats = new HashMap<>();
-        this.animations = new HashMap<>();
+
         this.resistances = new HashMap<>();
 
         for(BaseStatsType b : BaseStatsType.values()){
@@ -42,12 +42,8 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
             animationLengthSeconds.put(a,1.00D);
         }
 
-        this.animations = ContentEngine.getPlayerGraphics();
+        spriteAnimator = new SpriteAnimator(ContentEngine.getPlayerGraphics(), animationLengthSeconds);
 
-        System.out.println("Player animations added: ");
-        for(AnimationType a : animations.keySet()){
-            System.out.println(a + " of length " + animations.get(a).length);
-        }
     }
 
     @Override
@@ -62,7 +58,7 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
 
     @Override
     public void render(GraphicsContext gc) {
-
+        spriteAnimator.render(gc, position);
     }
 
     @Override
