@@ -18,7 +18,7 @@ public class SpriteAnimator{
     private AnimationType currentAnimationType = AnimationType.UNKNOWN;
     private AnimationType previousAnimationType = AnimationType.UNKNOWN;
     private Image[] currentAnimation;
-    private int currentAnimationLength = 1;
+    private double currentAnimationLength = 1;
     private long nsPrFrameOfCurrent = 1;
     private long timestampLastFrame = 0;
     private boolean looping = false;
@@ -36,9 +36,11 @@ public class SpriteAnimator{
     }
 
     public void render(GraphicsContext gc, Point2D pos) {
+
         if(looping && System.nanoTime() > timestampLastFrame + nsPrFrameOfCurrent){
 
-            gc.drawImage(currentAnimation[currentFrame % currentAnimationLength], pos.getX(), pos.getY());
+            System.out.println("Looping");
+            gc.drawImage(currentAnimation[(int) (currentFrame % currentAnimationLength)], pos.getX(), pos.getY());
             currentHasFinished = currentFrame == currentAnimationLength;
             currentFrame++;
 
@@ -46,8 +48,9 @@ public class SpriteAnimator{
                 queueGoNext();
             }
 
-        }else{
+        }else if (!looping){
 
+            System.out.println("Not looping");
             gc.drawImage(currentAnimation[0], pos.getX(), pos.getY());
 
         }
@@ -74,11 +77,11 @@ public class SpriteAnimator{
 
             currentAnimationType = a;
             currentAnimation = newAnim;
-            currentAnimationLength = newAnim.length;
+            currentAnimationLength = animationLengths.get(a);
             double newLength = animationLengths.get(a);
             looping = newAnim.length > 1;
 
-            nsPrFrameOfCurrent = (long) (1_000_000_000 * newLength);
+            nsPrFrameOfCurrent = (long) ((1_000_000_000 * newLength) / newAnim.length);
             return true;
         }
         return false;
@@ -105,6 +108,8 @@ public class SpriteAnimator{
         for(AnimationType a : AnimationType.values()){
             if(animations.get(a) != null){
                 toReturn[0] = animations.get(a)[0];
+                currentAnimationType = a;
+                looping = false;
                 break;
             }
         }

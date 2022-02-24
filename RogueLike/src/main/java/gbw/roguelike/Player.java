@@ -43,7 +43,8 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
         }
 
         spriteAnimator = new SpriteAnimator(ContentEngine.getPlayerGraphics(), animationLengthSeconds);
-
+        //spriteAnimator.setAnimation(AnimationType.WALKING_NORTH);
+        System.out.println("Player exists - Player.46");
     }
 
     @Override
