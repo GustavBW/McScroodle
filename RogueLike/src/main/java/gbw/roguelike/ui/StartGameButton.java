@@ -1,5 +1,6 @@
 package gbw.roguelike.ui;
 
+import gbw.roguelike.GamePathGenerator;
 import gbw.roguelike.Main;
 import gbw.roguelike.handlers.SceneManager;
 import gbw.roguelike.interfaces.Clickable;
@@ -26,7 +27,8 @@ public class StartGameButton extends Button implements Renderable {
     @Override
     public void onInteraction(){
         SceneManager.changeScene(new InGameScene());
-        Main.inGameUpdates.start();
+        Main.startInGameUpdates();
+        GamePathGenerator.setlevel(1);
     }
 
     @Override

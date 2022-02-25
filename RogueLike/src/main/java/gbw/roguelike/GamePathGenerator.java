@@ -55,6 +55,7 @@ public class GamePathGenerator implements Tickable {
 
             currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(), new Point2D(0,0));
 
+            //Make sure to get a room that has the proper opposing exit
             while((currentMatchingExit = currentEvaluatedRoom.getExitByDirection(oppositeExitDirectionOfCurrent)) == null) {
                 currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(), new Point2D(0,0));
             }
@@ -67,7 +68,12 @@ public class GamePathGenerator implements Tickable {
             exitPool.remove(currentEvaluatedExit);
             exitPool.addAll(currentEvaluatedRoom.getExits());
 
-            exitPool.remove(currentMatchingExit);
+            //Remove all other exits leaving only 1 "un-connected" exit
+            while(currentEvaluatedRoom.getExits().size() > 1) {
+                int whichExitIndex = random.nextInt(0,currentEvaluatedRoom.getExits().size());
+                exitPool.remove(currentEvaluatedRoom.getExits().get(whichExitIndex));
+                currentEvaluatedRoom.getExits().remove(whichExitIndex);
+            }
             previousEvaluatedRoomId = currentEvaluatedRoom.getId();
         }
 

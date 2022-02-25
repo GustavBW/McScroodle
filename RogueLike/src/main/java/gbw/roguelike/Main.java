@@ -19,8 +19,8 @@ public class Main extends Application {
 
     public static Point2D canvasDim = new Point2D(1000,1000);
     public static Point2D sceneDim = new Point2D(1000,1000);
-    public static AnimationTimer inGameUpdates;
-    public static AnimationTimer uiUpdates;
+    private static AnimationTimer inGameUpdates;
+    private static AnimationTimer uiUpdates;
     public static boolean onPause = false;
 
     public static int inGameFrameCounter = 0, uiFrameCounter = 0, inGameFPS = 0, uiFPS = 0;
@@ -58,7 +58,6 @@ public class Main extends Application {
 
         worldSpace = new WorldSpace(localPlayer);
         gpg = new GamePathGenerator(worldSpace);
-        GamePathGenerator.setlevel(1);
 
         Pane pane = new Pane();
         canvasUI = new Canvas(canvasDim.getX(),canvasDim.getY());
@@ -143,6 +142,23 @@ public class Main extends Application {
             t.tick();
         }
         worldSpace.evaluateWhichRoomsAreVisible();
+    }
+
+    public static void startUIUpdates(){
+        uiUpdates.start();
+    }
+
+    public static void startInGameUpdates() {
+        GamePathGenerator.setlevel(1);
+        inGameUpdates.start();
+    }
+
+    public static void stopInGameUpdates(){
+        inGameUpdates.stop();
+    }
+
+    public static void stopUIUpdates(){
+        uiUpdates.stop();
     }
 
     public static void main(String[] args) {
