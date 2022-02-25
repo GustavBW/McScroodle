@@ -13,9 +13,9 @@ public class LevelInformation {
     private final Point2D roomIdRange;
     private final int id, maxRooms, specialRooms;
 
-    public LevelInformation(int id, Point2D rCR, Point2D rIR, int specialRooms){
-        this.roomCountRange = checkValues(rCR, "Invalid Room Count Range found in LevelConfig.txt");
-        this.roomIdRange = checkValues(rIR, "Invalid Room ID Range found in LevelConfig.txt");
+    public LevelInformation(int id, Point2D roomCountRange, Point2D roomIdRange, int specialRooms){
+        this.roomCountRange = checkValues(roomCountRange, "Invalid Room Count Range found in LevelConfig.txt");
+        this.roomIdRange = checkValues(roomIdRange, "Invalid Room ID Range found in LevelConfig.txt");
         this.id = id;
         this.maxRooms = calcMaxRooms();
         this.specialRooms = specialRooms;
@@ -36,14 +36,14 @@ public class LevelInformation {
         if(roomIdRange.getX() - roomIdRange.getY() == 0){
             return 1;
         }
-        return (int) roomCountRange.getX() + random.nextInt((int) (roomCountRange.getY() - roomCountRange.getX()));
+        return (int) roomCountRange.getX() + random.nextInt((int) (roomCountRange.getX() - roomCountRange.getY()));
     }
 
     public int getNextRoomId(){
         if(roomIdRange.getX() - roomIdRange.getY() == 0){
             return 1;
         }
-        return (int) roomIdRange.getX() + random.nextInt((int) (roomCountRange.getY() - roomCountRange.getX()));
+        return random.nextInt((int) roomIdRange.getY(), (int) roomIdRange.getX() + 1);
     }
 
     public int getId(){

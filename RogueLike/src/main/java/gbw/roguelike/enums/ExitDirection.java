@@ -2,17 +2,17 @@ package gbw.roguelike.enums;
 
 public enum ExitDirection {
 
-    NORTH("north", 0.0D,-1.0D, "south"),
-    EAST("east", 1.0D,0.0D, "west"),
-    SOUTH("south", 0.0D,1.0D, "north"),
-    WEST("west", -1.0D, 0.0D, "east");
+    NORTH(FacingDirection.NORTH, 0.0D,-1.0D, FacingDirection.SOUTH),
+    EAST(FacingDirection.EAST, 1.0D,0.0D, FacingDirection.WEST),
+    SOUTH(FacingDirection.SOUTH, 0.0D,1.0D, FacingDirection.NORTH),
+    WEST(FacingDirection.WEST, -1.0D, 0.0D, FacingDirection.EAST);
 
-    public String direction;
+    public FacingDirection direction;
     public double xOffset;
     public double yOffset;
-    public String opposite;
+    public FacingDirection opposite;
 
-    ExitDirection(String direction, double xOffset, double yOffset, String opposite){
+    ExitDirection(FacingDirection direction, double xOffset, double yOffset, FacingDirection opposite){
         this.direction = direction;
         this.xOffset = xOffset;
         this.yOffset = yOffset;

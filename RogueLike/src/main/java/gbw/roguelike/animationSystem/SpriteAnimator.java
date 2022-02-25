@@ -1,6 +1,7 @@
 package gbw.roguelike.animationSystem;
 
 import gbw.roguelike.enums.AnimationType;
+import gbw.roguelike.enums.FacingDirection;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -54,7 +55,6 @@ public class SpriteAnimator{
         }else if (!looping){
 
             currentFrame = currentAnimation[0];
-            gc.drawImage(currentFrame, pos.getX(), pos.getY());
 
         }
         gc.drawImage(currentFrame, pos.getX(), pos.getY());
@@ -90,6 +90,38 @@ public class SpriteAnimator{
             return true;
         }
         return false;
+    }
+
+    public boolean goIdle(FacingDirection dir){
+        AnimationType asAnimType = getFacingDirectionAsAnimType(dir);
+        Image defaultIdleAnim = animations.get(asAnimType)[0];
+        Image[] requstedIdle = null;
+
+        if(defaultIdleAnim != null){
+            previousAnimationType = currentAnimationType;
+
+            currentAnimationType = asAnimType;
+            currentAnimation = new Image[]{defaultIdleAnim};
+            currentAnimationLengthSeconds = animationLengths.get(asAnimType);
+            currentAnimationLengthFrames = 1;
+            looping = false;
+
+            nsPrFrameOfCurrent = (long) ((1_000_000_000 * currentAnimationLengthSeconds) / currentAnimationLengthFrames);
+            currentFrameNumber = 0;
+            return true;
+        }
+
+        return false;
+    }
+
+    public static AnimationType getFacingDirectionAsAnimType(FacingDirection dir) {
+        for(AnimationType a : AnimationType.values()){
+            if(a.direction == dir){
+                return a;
+            }
+        }
+
+        return null;
     }
 
     public void queueAnimation(AnimationType a){

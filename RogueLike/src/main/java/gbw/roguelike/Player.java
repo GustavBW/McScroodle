@@ -6,6 +6,7 @@ import gbw.roguelike.backend.ContentEngine;
 import gbw.roguelike.damagingSystem.Damagable;
 import gbw.roguelike.enums.BaseStatsType;
 import gbw.roguelike.enums.DamageType;
+import gbw.roguelike.enums.FacingDirection;
 import gbw.roguelike.interfaces.Clickable;
 import gbw.roguelike.interfaces.Renderable;
 import gbw.roguelike.interfaces.Tickable;
@@ -14,6 +15,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
+import java.security.Key;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,19 +23,19 @@ import java.util.List;
 public class Player extends Damagable implements Renderable, Clickable, Tickable {
 
     public static HashMap<AnimationType, Double> animationLengthSeconds = new HashMap<>();
+    private final static KeyCode[] movementKeys = new KeyCode[]{KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
 
     private final Point2D position;
-    private final Image tempImage;
     private final HashMap<BaseStatsType, Double> baseStats;
     private final HashMap<DamageType, Double> resistances;  //As your resistance reaches 1, you take less and less damage of that type
     private final List<KeyCode> currentInputs;
     private final List<InputAbility> abilities;
     private final SpriteAnimator spriteAnimator;
+    private FacingDirection facingDirection = FacingDirection.NORTH;
 
     public Player(Point2D pos){
         this.position = pos;
         this.baseStats = ContentEngine.getPlayerBaseStats();
-        this.tempImage = ContentEngine.getGraphicsNotFound();
         this.abilities = new LinkedList<>();
         this.currentInputs = new LinkedList<>();
         this.resistances = new HashMap<>();
@@ -65,19 +67,30 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
     private void evaluateKeyInput(KeyCode key){
         double moveSpeed = baseStats.get(BaseStatsType.SPEED_MOVEMENT);
 
-        switch (key){
-            case W -> {WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(0,1 * moveSpeed);
-                spriteAnimator.setAnimation(AnimationType.WALKING_NORTH);
-            }
-            case A -> {WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(1 * moveSpeed,0);
-                spriteAnimator.setAnimation(AnimationType.WALKING_WEST);
-            }
-            case S -> {WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(0,-1 * moveSpeed);
-                spriteAnimator.setAnimation(AnimationType.WALKING_SOUTH);
-            }
-            case D -> {WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(-1 * moveSpeed,0);
-                spriteAnimator.setAnimation(AnimationType.WALKING_EAST);
-            }
+        if (key == movementKeys[0]) {
+            WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(0,1 * moveSpeed);
+            spriteAnimator.setAnimation(AnimationType.WALKING_NORTH);
+            facingDirection = FacingDirection.NORTH;
+        }
+        if (key == movementKeys[1]) {
+            WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(1 * moveSpeed,0);
+            spriteAnimator.setAnimation(AnimationType.WALKING_WEST);
+            facingDirection = FacingDirection.WEST;
+        }
+        if (key == movementKeys[2]) {
+            WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(0,-1 * moveSpeed);
+            spriteAnimator.setAnimation(AnimationType.WALKING_SOUTH);
+            facingDirection = FacingDirection.SOUTH;
+        }
+        if (key == movementKeys[3]) {
+            WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(-1 * moveSpeed,0);
+            spriteAnimator.setAnimation(AnimationType.WALKING_EAST);
+            facingDirection = FacingDirection.EAST;
+        }
+
+        if(!currentInputsContainsMovement()){
+            System.out.println("Going idle");
+            spriteAnimator.goIdle(facingDirection);
         }
 
         for(InputAbility a : abilities){
@@ -85,9 +98,31 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
         }
     }
 
+    private boolean currentInputsContainsMovement() {
+        boolean toReturn = false;
+
+        for(KeyCode k : currentInputs){
+
+            if(k == KeyCode.W || k == KeyCode.A || k == KeyCode.S || k == KeyCode.D){
+                toReturn = true;
+            }
+        }
+        return toReturn;
+    }
+
+    public void addInput(KeyCode key) {
+        if(!currentInputs.contains(key)){
+            currentInputs.add(key);
+        }
+    }
+
+    public void removeInput(KeyCode key) {
+        currentInputs.remove(key);
+    }
+
     @Override
     public Point2D getPosition() {
-        return position;
+        return new Point2D(position.getX(), position.getY());
     }
 
     @Override
@@ -131,13 +166,5 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
         System.out.println("YOU FOUND ME!");
     }
 
-    public void addInput(KeyCode key) {
-        if(!currentInputs.contains(key)){
-            currentInputs.add(key);
-        }
-    }
 
-    public void removeInput(KeyCode key) {
-        currentInputs.remove(key);
-    }
 }

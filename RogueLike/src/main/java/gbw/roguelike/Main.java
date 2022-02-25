@@ -56,9 +56,9 @@ public class Main extends Application {
         keyPressHandler = new KeyPressHandler(localPlayer);
         keyReleasedHandler = new KeyReleasedHandler(localPlayer);
 
-        worldSpace = new WorldSpace();
+        worldSpace = new WorldSpace(localPlayer);
         gpg = new GamePathGenerator(worldSpace);
-        worldSpace.addRoom(gpg.getStartingRoom());
+        GamePathGenerator.setlevel(1);
 
         Pane pane = new Pane();
         canvasUI = new Canvas(canvasDim.getX(),canvasDim.getY());

@@ -1,6 +1,7 @@
 package gbw.roguelike.backend;
 
 import gbw.roguelike.LevelInformation;
+import gbw.roguelike.Room;
 import gbw.roguelike.RoomExit;
 import gbw.roguelike.enums.BaseStatsType;
 import gbw.roguelike.enums.ExitDirection;
@@ -20,7 +21,7 @@ public class TextProcessor {
     private final String roomDir = "/rooms";
     private final String configDir = "/Configs";
 
-    public ArrayList<RoomExit> getRoomExits(int id) {
+    public ArrayList<RoomExit> getRoomExits(int id, Room roomIBelongTo) {
         ArrayList<RoomExit> output = new ArrayList<>();
 
         try{
@@ -34,7 +35,8 @@ public class TextProcessor {
                 if(Integer.parseInt(lineSplit[0]) == id){
                     output.add(new RoomExit(
                             determineExitDirection(lineSplit[3]),
-                            new Point2D(Double.parseDouble(lineSplit[1]), Double.parseDouble(lineSplit[2]))
+                            new Point2D(Double.parseDouble(lineSplit[1]), Double.parseDouble(lineSplit[2])),
+                            roomIBelongTo
                     ));
                 }
             }
@@ -50,7 +52,7 @@ public class TextProcessor {
     private ExitDirection determineExitDirection(String s) {
 
         for(ExitDirection e : ExitDirection.values()){
-            if(e.direction.equalsIgnoreCase(s)){
+            if(e.direction.alias.equalsIgnoreCase(s)){
                 return e;
             }
         }

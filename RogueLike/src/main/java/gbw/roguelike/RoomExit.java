@@ -12,10 +12,12 @@ public class RoomExit extends GameObject implements Renderable {
     private Point2D position;
     private Point2D pointingTowards;
     private Point2D roomPos;
+    private final Room roomIBelongTo;
 
-    public RoomExit(ExitDirection e, Point2D p){
+    public RoomExit(ExitDirection e, Point2D p, Room roomIBelongTo){
         this.direction = e;
         this.position = p;
+        this.roomIBelongTo = roomIBelongTo;
         this.roomPos = new Point2D(0,0);
         this.pointingTowards = calcPointingTowards();
     }
@@ -38,6 +40,10 @@ public class RoomExit extends GameObject implements Renderable {
         gc.fillRoundRect(WorldSpace.worldSpaceOffset.getX() + pointingTowards.getX() - 5, WorldSpace.worldSpaceOffset.getY() + pointingTowards.getY() - 5, 10, 10, 10, 10);
     }
 
+    public Room getRoom(){
+        return roomIBelongTo;
+    }
+
     public void setRoomPos(Point2D p){
         this.roomPos = p;
         position = position.add(roomPos);
@@ -46,5 +52,10 @@ public class RoomExit extends GameObject implements Renderable {
 
     private Point2D calcPointingTowards(){
         return new Point2D( position.getX() + 50 * direction.xOffset,  position.getY() + 50 * direction.yOffset);
+    }
+
+    @Override
+    public String toString(){
+        return "Room Exit " + direction.direction.alias + " for room " + roomIBelongTo.getId();
     }
 }
