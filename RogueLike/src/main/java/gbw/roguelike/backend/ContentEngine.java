@@ -3,6 +3,7 @@ package gbw.roguelike.backend;
 import gbw.roguelike.LevelInformation;
 import gbw.roguelike.RoomExit;
 import gbw.roguelike.enums.AnimationType;
+import gbw.roguelike.enums.BaseStatsType;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -32,5 +33,9 @@ public class ContentEngine {
 
     public static ArrayList<LevelInformation> getLevelInformations() {
         return tp.getLevelInformations();
+    }
+
+    public static HashMap<BaseStatsType, Double> getPlayerBaseStats() {
+        return tp.getPlayerBaseStats();
     }
 }

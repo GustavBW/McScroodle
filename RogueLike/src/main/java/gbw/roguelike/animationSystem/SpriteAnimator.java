@@ -1,7 +1,6 @@
 package gbw.roguelike.animationSystem;
 
 import gbw.roguelike.enums.AnimationType;
-import gbw.roguelike.interfaces.Renderable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -13,12 +12,14 @@ public class SpriteAnimator{
     private HashMap<AnimationType, Image[]> animations;
     private HashMap<AnimationType, Double> animationLengths;
 
-    private int currentFrame = 0;
+    private int currentFrameNumber = 0;
     private int frameLengthOfCurrent = 0;
     private AnimationType currentAnimationType = AnimationType.UNKNOWN;
     private AnimationType previousAnimationType = AnimationType.UNKNOWN;
     private Image[] currentAnimation;
-    private double currentAnimationLength = 1;
+    private double currentAnimationLengthSeconds = 1;
+    private int currentAnimationLengthFrames = 1;
+    private Image currentFrame;
     private long nsPrFrameOfCurrent = 1;
     private long timestampLastFrame = 0;
     private boolean looping = false;
@@ -39,10 +40,12 @@ public class SpriteAnimator{
 
         if(looping && System.nanoTime() > timestampLastFrame + nsPrFrameOfCurrent){
 
-            System.out.println("Looping");
-            gc.drawImage(currentAnimation[(int) (currentFrame % currentAnimationLength)], pos.getX(), pos.getY());
-            currentHasFinished = currentFrame == currentAnimationLength;
-            currentFrame++;
+            currentFrame = currentAnimation[currentFrameNumber % currentAnimationLengthFrames];
+
+            currentHasFinished = currentFrameNumber == currentAnimationLengthFrames;
+
+            timestampLastFrame = System.nanoTime();
+            currentFrameNumber++;
 
             if(currentHasFinished && !queuedAnimations.isEmpty()){
                 queueGoNext();
@@ -50,10 +53,11 @@ public class SpriteAnimator{
 
         }else if (!looping){
 
-            System.out.println("Not looping");
-            gc.drawImage(currentAnimation[0], pos.getX(), pos.getY());
+            currentFrame = currentAnimation[0];
+            gc.drawImage(currentFrame, pos.getX(), pos.getY());
 
         }
+        gc.drawImage(currentFrame, pos.getX(), pos.getY());
     }
 
     private void queueGoNext() {
@@ -69,19 +73,20 @@ public class SpriteAnimator{
         }
     }
 
-    public boolean setAnimation(AnimationType a){
-        Image[] newAnim = animations.get(a);
+    public boolean setAnimation(AnimationType aType){
+        Image[] newAnim = animations.get(aType);
 
-        if(newAnim != null) {
+        if(newAnim != null && aType != currentAnimationType) {
             previousAnimationType = currentAnimationType;
 
-            currentAnimationType = a;
+            currentAnimationType = aType;
             currentAnimation = newAnim;
-            currentAnimationLength = animationLengths.get(a);
-            double newLength = animationLengths.get(a);
+            currentAnimationLengthSeconds = animationLengths.get(aType);
+            currentAnimationLengthFrames = newAnim.length;
             looping = newAnim.length > 1;
 
-            nsPrFrameOfCurrent = (long) ((1_000_000_000 * newLength) / newAnim.length);
+            nsPrFrameOfCurrent = (long) ((1_000_000_000 * currentAnimationLengthSeconds) / currentAnimationLengthFrames);
+            currentFrameNumber = 0;
             return true;
         }
         return false;
@@ -115,5 +120,9 @@ public class SpriteAnimator{
         }
 
         return toReturn;
+    }
+
+    public Image getCurrentFrame(){
+        return currentFrame == null ? getDefaultIdle()[0] : currentFrame;
     }
 }

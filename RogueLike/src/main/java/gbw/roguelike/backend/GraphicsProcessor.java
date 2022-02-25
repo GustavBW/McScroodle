@@ -74,6 +74,7 @@ public class GraphicsProcessor {
                     imagesFound.add(new Image(f.toURI().toString()));
 
                 }else if(fileIsOfType(f, "txt")){
+
                     Player.animationLengthSeconds.put(animationFound,readAnimationLengthFromConfig(f));
                 }
 

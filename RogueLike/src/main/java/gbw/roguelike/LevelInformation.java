@@ -46,4 +46,12 @@ public class LevelInformation {
         return (int) roomIdRange.getX() + random.nextInt((int) (roomCountRange.getY() - roomCountRange.getX()));
     }
 
+    public int getId(){
+        return id;
+    }
+
+    public int getMaxRooms(){
+        return maxRooms;
+    }
+
 }

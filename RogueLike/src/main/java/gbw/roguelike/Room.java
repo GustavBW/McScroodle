@@ -58,6 +58,13 @@ public class Room extends GameObject implements Renderable {
     public Point2D getPosition() {
         return position;
     }
+
+    @Override
+    public Point2D getSize() {
+        Image bI1 = baseImages[0];
+        return new Point2D(bI1.getWidth(), bI1.getHeight());
+    }
+
     private void giveExitsRoomPosition(){
         for(RoomExit r : exits){
             r.setRoomPos(position);

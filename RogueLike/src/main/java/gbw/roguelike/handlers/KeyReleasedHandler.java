@@ -1,18 +1,27 @@
 package gbw.roguelike.handlers;
 
+import gbw.roguelike.Player;
 import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class KeyReleasedHandler implements EventHandler<KeyEvent> {
 
+    private final Player player;
+
+    public KeyReleasedHandler(Player localPlayer) {
+        this.player = localPlayer;
+    }
 
     @Override
     public void handle(KeyEvent keyEvent) {
 
-        switch (keyEvent.getCode()){
+        KeyCode key = keyEvent.getCode();
+
+        switch (key){
 
 
-            default -> System.out.println("Being needy huh?");
+            default -> player.removeInput(key);
         }
     }
 }

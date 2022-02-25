@@ -2,6 +2,7 @@ package gbw.roguelike.backend;
 
 import gbw.roguelike.LevelInformation;
 import gbw.roguelike.RoomExit;
+import gbw.roguelike.enums.BaseStatsType;
 import gbw.roguelike.enums.ExitDirection;
 import javafx.geometry.Point2D;
 
@@ -10,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TextProcessor {
 
@@ -80,5 +82,39 @@ public class TextProcessor {
         }
 
         return output;
+    }
+
+    public HashMap<BaseStatsType, Double> getPlayerBaseStats() {
+        HashMap<BaseStatsType, Double> output = new HashMap<>();
+
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(projRootToTextDir + configDir + "/PlayerBaseStats.txt"));
+            String line;
+            String[] lineSplit;
+
+            while((line = br.readLine()) != null){
+                lineSplit = line.split(",");
+
+                output.put(getBaseStatType(lineSplit[0]), Double.parseDouble(lineSplit[1]));
+            }
+
+            br.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return output;
+    }
+
+    private BaseStatsType getBaseStatType(String s) {
+        BaseStatsType toReturn = BaseStatsType.UNKNOWN;
+
+        for(BaseStatsType b : BaseStatsType.values()){
+            if(b.alias.equalsIgnoreCase(s)){
+                return b;
+            }
+        }
+
+        return toReturn;
     }
 }

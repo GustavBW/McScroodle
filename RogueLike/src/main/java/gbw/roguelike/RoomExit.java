@@ -25,12 +25,17 @@ public class RoomExit extends GameObject implements Renderable {
     public Point2D getPosition(){return position;}
 
     @Override
+    public Point2D getSize() {
+        return new Point2D(0,0);
+    }
+
+    @Override
     public void render(GraphicsContext gc) {
         gc.setFill(Color.BLUE);
-        gc.fillRoundRect(position.getX() - 10, position.getY() - 10, 20, 20, 20, 20);
+        gc.fillRoundRect( WorldSpace.worldSpaceOffset.getX() + position.getX() - 10, WorldSpace.worldSpaceOffset.getY() + position.getY() - 10, 20, 20, 20, 20);
 
         gc.setFill(Color.RED);
-        gc.fillRoundRect(pointingTowards.getX() - 5, pointingTowards.getY() - 5, 10, 10, 10, 10);
+        gc.fillRoundRect(WorldSpace.worldSpaceOffset.getX() + pointingTowards.getX() - 5, WorldSpace.worldSpaceOffset.getY() + pointingTowards.getY() - 5, 10, 10, 10, 10);
     }
 
     public void setRoomPos(Point2D p){

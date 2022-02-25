@@ -24,11 +24,13 @@ public class Main extends Application {
     public static boolean onPause = false;
 
     public static int inGameFrameCounter = 0, uiFrameCounter = 0, inGameFPS = 0, uiFPS = 0;
+    public static boolean playerIsDead = false;
     private long fpsCalc1 = 0, fpsCalc2 = 0, tickLastCall = 0, fpsWanted = 1_000_000_000 / 60;
 
     private Canvas canvasUI;
     private Canvas canvasGAME;
-    private GraphicsContext gc1, gc2;
+    private Canvas canvasPLAYER;
+    private GraphicsContext gc1, gc2, gc3;
 
     private GamePathGenerator gpg;
     private WorldSpace worldSpace;
@@ -44,16 +46,15 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-
         mouseClickHandler = new MouseClickHandler();
         clickableManager = new ClickableManager();
         sceneManager = new SceneManager();
         SceneManager.changeScene(new StartMenuScene());
         damageInstanceManager = new DamageInstanceManager();
-        localPlayer = new Player(new Point2D(canvasDim.getX(),canvasDim.getY()));
+        localPlayer = new Player(canvasDim.multiply(0.5));
 
-        keyPressHandler = new KeyPressHandler();
-        keyReleasedHandler = new KeyReleasedHandler();
+        keyPressHandler = new KeyPressHandler(localPlayer);
+        keyReleasedHandler = new KeyReleasedHandler(localPlayer);
 
         worldSpace = new WorldSpace();
         gpg = new GamePathGenerator(worldSpace);
@@ -61,8 +62,13 @@ public class Main extends Application {
 
         Pane pane = new Pane();
         canvasUI = new Canvas(canvasDim.getX(),canvasDim.getY());
+        canvasPLAYER = new Canvas(canvasDim.getX(),canvasDim.getY());
+        canvasPLAYER.setScaleX(4);
+        canvasPLAYER.setScaleY(4);
         canvasGAME = new Canvas(canvasDim.getX(),canvasDim.getY());
+
         pane.getChildren().add(canvasGAME);
+        pane.getChildren().add(canvasPLAYER);
         pane.getChildren().add(canvasUI);
 
         inGameUpdates = new AnimationTimer() {
@@ -93,8 +99,12 @@ public class Main extends Application {
 
     private void updateInGame(){
         gc1 = canvasGAME.getGraphicsContext2D();
+        gc3 = canvasPLAYER.getGraphicsContext2D();
+
         gc1.setFill(Color.BLACK);
         gc1.fillRect(0,0,canvasDim.getX(), canvasDim.getY());
+
+        gc3.clearRect(0,0,canvasDim.getX(), canvasDim.getY());
 
         if(fpsCalc1 + 1_000_000_000 < System.nanoTime()){
             inGameFPS = inGameFrameCounter;
@@ -108,8 +118,8 @@ public class Main extends Application {
         }
 
         worldSpace.render(gc1);
-        localPlayer.render(gc1);
-        
+        localPlayer.render(gc3);
+
         inGameFrameCounter++;
     }
 

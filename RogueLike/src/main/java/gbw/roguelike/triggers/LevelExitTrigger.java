@@ -19,6 +19,11 @@ public class LevelExitTrigger extends Trigger{
     }
 
     @Override
+    public Point2D getSize() {
+        return new Point2D(0,0);
+    }
+
+    @Override
     public boolean isInBounds(Point2D p) {
         double distX = p.getX() - position.getX();
         double distY = p.getY() - position.getY();

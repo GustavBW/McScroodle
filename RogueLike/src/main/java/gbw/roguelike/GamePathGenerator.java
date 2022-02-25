@@ -12,7 +12,7 @@ public class GamePathGenerator implements Tickable {
     private static int currentLevel = 1;
     private static boolean levelChange = false;
     private static HashMap<Integer, ArrayList<Room>> storedLevels;
-    private ArrayList<LevelInformation> levelInformations;
+    private static ArrayList<LevelInformation> levelInformations;
     private WorldSpace worldSpace;
 
     public GamePathGenerator(WorldSpace wS){
@@ -27,12 +27,23 @@ public class GamePathGenerator implements Tickable {
 
     public static ArrayList<Room> generateLevel(int level){
         ArrayList<Room> output = new ArrayList<>();
+        LevelInformation levelInfo = getLevelInformation(level);
 
+        for(int i = 0; i < levelInfo.getMaxRooms(); i++){
 
-
+        }
 
         storedLevels.put(currentLevel,output);
         return output;
+    }
+
+    private static LevelInformation getLevelInformation(int level) {
+        for(LevelInformation l : levelInformations){
+            if(l.getId() == level){
+                return l;
+            }
+        }
+        return levelInformations.get(0);
     }
 
     public static void setlevel(int newLevel){
