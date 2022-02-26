@@ -6,6 +6,7 @@ public enum AnimationType {
     WALKING_SOUTH("walkingSouth", FacingDirection.SOUTH),
     WALKING_EAST("walkingEast", FacingDirection.EAST),
     WALKING_WEST("walkingWest", FacingDirection.WEST),
+    WALKING("walking", FacingDirection.NORTH),
 
     BEING_HURT("beingHurt", FacingDirection.NON_DIRECTIONAL),
     ATTACK_MELEE("attackMelee", FacingDirection.NON_DIRECTIONAL),

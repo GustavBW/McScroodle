@@ -5,10 +5,7 @@ import gbw.roguelike.enums.ExitDirection;
 import gbw.roguelike.interfaces.Tickable;
 import javafx.geometry.Point2D;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GamePathGenerator implements Tickable {
 
@@ -57,7 +54,7 @@ public class GamePathGenerator implements Tickable {
 
             //Make sure to get a room that has the proper opposing exit
             while((currentMatchingExit = currentEvaluatedRoom.getExitByDirection(oppositeExitDirectionOfCurrent)) == null) {
-                currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(), new Point2D(0,0));
+                currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(), new Point2D(3000,3000));
             }
             output.add(currentEvaluatedRoom);
 
@@ -80,16 +77,14 @@ public class GamePathGenerator implements Tickable {
         exitsInLevel.get(level).addAll(exitPool);
         storedLevels.put(currentLevel,output);
         return output;
+
     }
 
     private static Point2D calcNewRoomPosition(RoomExit exitToMatch, RoomExit exitFound, Room room) {
-        Point2D posOfExitToMatch = exitToMatch.getPosition();
-        Point2D posOfExitFound = exitFound.getPosition();
 
-        Point2D vecBetween = posOfExitToMatch.subtract(posOfExitFound);
-        Point2D currentRoomPosition = room.getPosition();
+        Point2D vecBetween = exitToMatch.getPosition().subtract(exitFound.getPosition());
 
-        return currentRoomPosition.add(vecBetween);
+        return room.getPosition().add(vecBetween);
     }
 
     private static ExitDirection getOppositeExitDirection(RoomExit currentEvaluatedExit) {

@@ -33,8 +33,8 @@ public class LevelInformation {
     }
 
     private int calcMaxRooms() {
-        if(roomIdRange.getX() - roomIdRange.getY() == 0){
-            return 1;
+        if((int) (roomIdRange.getX() - roomIdRange.getY()) == 0){
+            return (int) roomIdRange.getX();
         }
         return (int) roomCountRange.getX() + random.nextInt((int) (roomCountRange.getX() - roomCountRange.getY()));
     }

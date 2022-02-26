@@ -12,6 +12,7 @@ import gbw.roguelike.interfaces.Renderable;
 import gbw.roguelike.interfaces.Tickable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Light;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class Player extends Damagable implements Renderable, Clickable, Tickable {
 
+    public static FacingDirection facingDirection = FacingDirection.NORTH;
     public static HashMap<AnimationType, Double> animationLengthSeconds = new HashMap<>();
     private final static KeyCode[] movementKeys = new KeyCode[]{KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
 
@@ -31,7 +33,7 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
     private final List<KeyCode> currentInputs;
     private final List<InputAbility> abilities;
     private final SpriteAnimator spriteAnimator;
-    private FacingDirection facingDirection = FacingDirection.NORTH;
+    private long lastIdleCheck;
 
     public Player(Point2D pos){
         this.position = pos;
@@ -44,7 +46,7 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
             resistances.put(r, 0.00D);
         }
 
-        spriteAnimator = new SpriteAnimator(ContentEngine.getPlayerGraphics(), animationLengthSeconds);
+        this.spriteAnimator = new SpriteAnimator(ContentEngine.getPlayerGraphics(), animationLengthSeconds);
         spriteAnimator.setAnimation(AnimationType.WALKING_NORTH);
 
         Tickable.tickables.add(this);
@@ -58,6 +60,11 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
             evaluateKeyInput(input);
         }
 
+        if(!currentInputsContainsMovement() && lastIdleCheck + 500_000 < System.nanoTime()){
+            spriteAnimator.goIdle(facingDirection);
+            lastIdleCheck = System.nanoTime();
+        }
+
         if(baseStats.get(BaseStatsType.HEALTH) <= 0){
             Main.playerIsDead = true;
         }
@@ -66,31 +73,35 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
 
     private void evaluateKeyInput(KeyCode key){
         double moveSpeed = baseStats.get(BaseStatsType.SPEED_MOVEMENT);
+        boolean isMoving = false;
 
         if (key == movementKeys[0]) {
             WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(0,1 * moveSpeed);
-            spriteAnimator.setAnimation(AnimationType.WALKING_NORTH);
             facingDirection = FacingDirection.NORTH;
+            lastIdleCheck = System.nanoTime();
+            isMoving = true;
         }
         if (key == movementKeys[1]) {
             WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(1 * moveSpeed,0);
-            spriteAnimator.setAnimation(AnimationType.WALKING_WEST);
             facingDirection = FacingDirection.WEST;
+            lastIdleCheck = System.nanoTime();
+            isMoving = true;
         }
         if (key == movementKeys[2]) {
             WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(0,-1 * moveSpeed);
-            spriteAnimator.setAnimation(AnimationType.WALKING_SOUTH);
             facingDirection = FacingDirection.SOUTH;
+            lastIdleCheck = System.nanoTime();
+            isMoving = true;
         }
         if (key == movementKeys[3]) {
             WorldSpace.worldSpaceOffset = WorldSpace.worldSpaceOffset.add(-1 * moveSpeed,0);
-            spriteAnimator.setAnimation(AnimationType.WALKING_EAST);
             facingDirection = FacingDirection.EAST;
+            lastIdleCheck = System.nanoTime();
+            isMoving = true;
         }
 
-        if(!currentInputsContainsMovement()){
-            System.out.println("Going idle");
-            spriteAnimator.goIdle(facingDirection);
+        if(isMoving){
+            spriteAnimator.setAnimation(AnimationType.WALKING);
         }
 
         for(InputAbility a : abilities){
@@ -127,8 +138,12 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
 
     @Override
     public Point2D getSize() {
-        Image bIn = spriteAnimator.getCurrentFrame();
-        return new Point2D(bIn.getWidth(),bIn.getHeight());
+        return getRawSize().multiply(Main.playerCanvasScaling);
+    }
+
+    public Point2D getRawSize(){
+        //Only used to calculate the size of the playerCanvas
+        return new Point2D(spriteAnimator.getCurrentFrame().getWidth(), spriteAnimator.getCurrentFrame().getHeight());
     }
 
     @Override

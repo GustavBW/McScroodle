@@ -4,6 +4,7 @@ import gbw.roguelike.handlers.*;
 import gbw.roguelike.interfaces.Tickable;
 import gbw.roguelike.ui.StartMenuScene;
 import javafx.animation.AnimationTimer;
+import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -19,12 +20,15 @@ public class Main extends Application {
 
     public static Point2D canvasDim = new Point2D(1000,1000);
     public static Point2D sceneDim = new Point2D(1000,1000);
-    private static AnimationTimer inGameUpdates;
-    private static AnimationTimer uiUpdates;
+    public static double playerCanvasScaling = 2D;
     public static boolean onPause = false;
-
     public static int inGameFrameCounter = 0, uiFrameCounter = 0, inGameFPS = 0, uiFPS = 0;
     public static boolean playerIsDead = false;
+
+    private static AnimationTimer inGameUpdates;
+    private static AnimationTimer uiUpdates;
+    private static Color tempColor = new Color(1,1,1,0.5);
+
     private long fpsCalc1 = 0, fpsCalc2 = 0, tickLastCall = 0, fpsWanted = 1_000_000_000 / 60;
 
     private Canvas canvasUI;
@@ -51,7 +55,7 @@ public class Main extends Application {
         sceneManager = new SceneManager();
         SceneManager.changeScene(new StartMenuScene());
         damageInstanceManager = new DamageInstanceManager();
-        localPlayer = new Player(canvasDim.multiply(0.5));
+        localPlayer = new Player(new Point2D(0,0));
 
         keyPressHandler = new KeyPressHandler(localPlayer);
         keyReleasedHandler = new KeyReleasedHandler(localPlayer);
@@ -61,9 +65,11 @@ public class Main extends Application {
 
         Pane pane = new Pane();
         canvasUI = new Canvas(canvasDim.getX(),canvasDim.getY());
-        canvasPLAYER = new Canvas(canvasDim.getX(),canvasDim.getY());
-        canvasPLAYER.setScaleX(4);
-        canvasPLAYER.setScaleY(4);
+        canvasPLAYER = new Canvas(localPlayer.getRawSize().getX(), localPlayer.getRawSize().getY());
+        canvasPLAYER.setLayoutX(Main.canvasDim.multiply(0.5).getX() - localPlayer.getSize().multiply(0.5).getX());
+        canvasPLAYER.setLayoutY(Main.canvasDim.multiply(0.5).getY() - localPlayer.getSize().multiply(0.5).getY());
+        canvasPLAYER.setScaleX(playerCanvasScaling);
+        canvasPLAYER.setScaleY(playerCanvasScaling);
         canvasGAME = new Canvas(canvasDim.getX(),canvasDim.getY());
 
         pane.getChildren().add(canvasGAME);
@@ -111,12 +117,14 @@ public class Main extends Application {
             fpsCalc1 = System.nanoTime();
         }
 
-        if(System.nanoTime() > tickLastCall + fpsWanted){
+        if(System.nanoTime() > tickLastCall + fpsWanted && !onPause){
             tick();
             damageInstanceManager.evaluate();
         }
 
         worldSpace.render(gc1);
+
+        canvasPLAYER.setRotate(Player.facingDirection.inDegrees);
         localPlayer.render(gc3);
 
         inGameFrameCounter++;
@@ -164,4 +172,9 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch();
     }
+
+
+    //TODO Fix idle animations for player movement
+    //TODO Get that fcking level generator working
+    //TODO Lighting?
 }

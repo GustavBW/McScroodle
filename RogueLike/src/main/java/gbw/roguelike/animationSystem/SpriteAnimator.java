@@ -77,6 +77,7 @@ public class SpriteAnimator{
         Image[] newAnim = animations.get(aType);
 
         if(newAnim != null && aType != currentAnimationType) {
+            System.out.println("Changed animation upon behest from the player to: | " + aType);
             previousAnimationType = currentAnimationType;
 
             currentAnimationType = aType;
@@ -94,14 +95,14 @@ public class SpriteAnimator{
 
     public boolean goIdle(FacingDirection dir){
         AnimationType asAnimType = getFacingDirectionAsAnimType(dir);
-        Image defaultIdleAnim = animations.get(asAnimType)[0];
+        Image[] defaultIdleAnim = animations.get(asAnimType);
         Image[] requstedIdle = null;
 
         if(defaultIdleAnim != null){
             previousAnimationType = currentAnimationType;
 
             currentAnimationType = asAnimType;
-            currentAnimation = new Image[]{defaultIdleAnim};
+            currentAnimation = new Image[]{defaultIdleAnim[0]};
             currentAnimationLengthSeconds = animationLengths.get(asAnimType);
             currentAnimationLengthFrames = 1;
             looping = false;
@@ -140,18 +141,7 @@ public class SpriteAnimator{
     }
 
     private Image[] getDefaultIdle(){
-        Image[] toReturn = new Image[1];
-
-        for(AnimationType a : AnimationType.values()){
-            if(animations.get(a) != null){
-                toReturn[0] = animations.get(a)[0];
-                currentAnimationType = a;
-                looping = false;
-                break;
-            }
-        }
-
-        return toReturn;
+        return animations.get(AnimationType.IDLE);
     }
 
     public Image getCurrentFrame(){

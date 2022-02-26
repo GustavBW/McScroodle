@@ -100,6 +100,7 @@ public class GraphicsProcessor {
         int pos = path.lastIndexOf("\\");
         String animationName =  path.substring(pos + 1);
 
+        System.out.println("Found player animation " + animationName);
         for(AnimationType a : AnimationType.values()){
             if(a.name.equalsIgnoreCase(animationName)){
                 animationFound = a;
