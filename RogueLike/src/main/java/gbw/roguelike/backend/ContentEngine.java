@@ -3,7 +3,8 @@ package gbw.roguelike.backend;
 import gbw.roguelike.LevelInformation;
 import gbw.roguelike.Room;
 import gbw.roguelike.RoomExit;
-import gbw.roguelike.enums.AnimationType;
+import gbw.roguelike.enums.AttackAnimationType;
+import gbw.roguelike.enums.MovementAnimationTypes;
 import gbw.roguelike.enums.BaseStatsType;
 import javafx.scene.image.Image;
 
@@ -20,7 +21,7 @@ public class ContentEngine {
     public static Image[] getRoomGraphics(int id){
         return gp.getRoomGraphics(id);
     }
-    public static HashMap<AnimationType, Image[]> getPlayerGraphics(){
+    public static HashMap<MovementAnimationTypes, Image[]> getPlayerGraphics(){
         return gp.getPlayerGraphics();
     }
 
@@ -38,5 +39,13 @@ public class ContentEngine {
 
     public static HashMap<BaseStatsType, Double> getPlayerBaseStats() {
         return tp.getPlayerBaseStats();
+    }
+
+    public static HashMap<AttackAnimationType, Image[]> getWeaponAnimations(String name) {
+        return gp.getWeaponAnimations(name);
+    }
+
+    public static Image getItemGraphics(int id) {
+        return gp.getItemGraphics(id);
     }
 }

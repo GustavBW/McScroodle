@@ -176,5 +176,7 @@ public class Main extends Application {
 
     //TODO Fix idle animations for player movement
     //TODO Get that fcking level generator working
+    //TODO Implement RoomCart.propegate() for generation instead. It works. Surprisingly.
     //TODO Lighting?
+    //TODO weapon animation system
 }

@@ -9,6 +9,6 @@ public interface Clickable {
     public static ArrayList<Clickable> clickables = new ArrayList<>();
 
     boolean isInBounds(Point2D p);
-    void onInteraction();
+    void onClicked();
 
 }

@@ -8,6 +8,6 @@ public interface Interactible {
 
     ArrayList<Interactible> interactibles = new ArrayList<>();
 
-    boolean isInBounds(Point2D p);
+    boolean isWithinRange(Point2D p);
     void onInteraction();
 }

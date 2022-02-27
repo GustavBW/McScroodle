@@ -36,9 +36,9 @@ public class GamePathGenerator implements Tickable {
         output.add(startingRoom);
 
         LevelInformation levelInfo = getLevelInformation(level);
+        RoomChart roomChart = new RoomChart(levelInfo.getMaxRooms() *4, levelInfo.getMaxRooms() *4, 300);
 
-        ArrayList<RoomExit> exitPool = new ArrayList<>();
-        exitPool.addAll(startingRoom.getExits());
+        ArrayList<RoomExit> exitPool = new ArrayList<>(startingRoom.getExits());
         RoomExit currentEvaluatedExit;
         RoomExit currentMatchingExit;
         Room currentEvaluatedRoom;
@@ -50,16 +50,20 @@ public class GamePathGenerator implements Tickable {
             currentEvaluatedExit = exitPool.get(random.nextInt(exitPool.size() - 1));
             oppositeExitDirectionOfCurrent = getOppositeExitDirection(currentEvaluatedExit);
 
-            currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(), new Point2D(0,0));
+            currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(),Main.canvasDim.multiply(0.5));
+            currentMatchingExit = currentEvaluatedRoom.getExitByDirection(oppositeExitDirectionOfCurrent);
 
             //Make sure to get a room that has the proper opposing exit
-            while((currentMatchingExit = currentEvaluatedRoom.getExitByDirection(oppositeExitDirectionOfCurrent)) == null) {
-                currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(), new Point2D(3000,3000));
+            while(currentMatchingExit == null && !roomChart.isValidPlacement(currentEvaluatedRoom)){
+                currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(), Main.canvasDim.multiply(random.nextDouble(0,2)));
+                currentMatchingExit = currentEvaluatedRoom.getExitByDirection(oppositeExitDirectionOfCurrent);
+                currentEvaluatedRoom.setPosition(calcNewRoomPosition(currentEvaluatedExit, currentMatchingExit, currentEvaluatedRoom));
             }
-            output.add(currentEvaluatedRoom);
+            if(roomChart.add(currentEvaluatedRoom)) {
+                output.add(currentEvaluatedRoom);
+            }
 
-            currentEvaluatedRoom.setPosition(calcNewRoomPosition(currentEvaluatedExit, currentMatchingExit, currentEvaluatedRoom));
-            currentEvaluatedRoom.addAdjacentRoom(currentEvaluatedExit.getRoom());
+            currentEvaluatedRoom.addAdjacentRooms(roomChart.getNeighboors(currentEvaluatedRoom));
             currentEvaluatedExit.getRoom().addAdjacentRoom(currentEvaluatedRoom);
 
             exitPool.remove(currentEvaluatedExit);
@@ -76,8 +80,8 @@ public class GamePathGenerator implements Tickable {
 
         exitsInLevel.get(level).addAll(exitPool);
         storedLevels.put(currentLevel,output);
+        roomChart.print();
         return output;
-
     }
 
     private static Point2D calcNewRoomPosition(RoomExit exitToMatch, RoomExit exitFound, Room room) {

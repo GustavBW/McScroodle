@@ -24,7 +24,7 @@ public class StartMenuButton extends Button implements Clickable, Renderable {
     }
 
     @Override
-    public void onInteraction(){
+    public void onClicked(){
         SceneManager.changeScene(new StartMenuScene());
         Main.stopInGameUpdates();
     }

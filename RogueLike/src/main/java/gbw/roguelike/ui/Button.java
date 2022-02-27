@@ -15,7 +15,7 @@ public class Button implements Clickable, iGameObject {
     }
 
     @Override
-    public void onInteraction() {
+    public void onClicked() {
 
     }
 

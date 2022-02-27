@@ -1,6 +1,6 @@
 package gbw.roguelike.animationSystem;
 
-import gbw.roguelike.enums.AnimationType;
+import gbw.roguelike.enums.MovementAnimationTypes;
 import gbw.roguelike.enums.FacingDirection;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -10,13 +10,13 @@ import java.util.*;
 
 public class SpriteAnimator{
 
-    private HashMap<AnimationType, Image[]> animations;
-    private HashMap<AnimationType, Double> animationLengths;
+    private HashMap<MovementAnimationTypes, Image[]> animations;
+    private HashMap<MovementAnimationTypes, Double> animationLengths;
 
     private int currentFrameNumber = 0;
     private int frameLengthOfCurrent = 0;
-    private AnimationType currentAnimationType = AnimationType.UNKNOWN;
-    private AnimationType previousAnimationType = AnimationType.UNKNOWN;
+    private MovementAnimationTypes currentAnimationType = MovementAnimationTypes.UNKNOWN;
+    private MovementAnimationTypes previousAnimationType = MovementAnimationTypes.UNKNOWN;
     private Image[] currentAnimation;
     private double currentAnimationLengthSeconds = 1;
     private int currentAnimationLengthFrames = 1;
@@ -26,9 +26,9 @@ public class SpriteAnimator{
     private boolean looping = false;
     private boolean currentHasFinished = false;
     private List<Image[]> queuedAnimations;
-    private List<AnimationType> typesOfQueued;
+    private List<MovementAnimationTypes> typesOfQueued;
 
-    public SpriteAnimator(HashMap<AnimationType, Image[]> animations, HashMap<AnimationType, Double> animationLengths){
+    public SpriteAnimator(HashMap<MovementAnimationTypes, Image[]> animations, HashMap<MovementAnimationTypes, Double> animationLengths){
         this.animations = animations;
         this.animationLengths = animationLengths;
         this.currentAnimation = getDefaultIdle();
@@ -73,7 +73,7 @@ public class SpriteAnimator{
         }
     }
 
-    public boolean setAnimation(AnimationType aType){
+    public boolean setAnimation(MovementAnimationTypes aType){
         Image[] newAnim = animations.get(aType);
 
         if(newAnim != null && aType != currentAnimationType) {
@@ -94,7 +94,7 @@ public class SpriteAnimator{
     }
 
     public boolean goIdle(FacingDirection dir){
-        AnimationType asAnimType = getFacingDirectionAsAnimType(dir);
+        MovementAnimationTypes asAnimType = getFacingDirectionAsAnimType(dir);
         Image[] defaultIdleAnim = animations.get(asAnimType);
         Image[] requstedIdle = null;
 
@@ -115,8 +115,8 @@ public class SpriteAnimator{
         return false;
     }
 
-    public static AnimationType getFacingDirectionAsAnimType(FacingDirection dir) {
-        for(AnimationType a : AnimationType.values()){
+    public static MovementAnimationTypes getFacingDirectionAsAnimType(FacingDirection dir) {
+        for(MovementAnimationTypes a : MovementAnimationTypes.values()){
             if(a.direction == dir){
                 return a;
             }
@@ -125,23 +125,23 @@ public class SpriteAnimator{
         return null;
     }
 
-    public void queueAnimation(AnimationType a){
+    public void queueAnimation(MovementAnimationTypes a){
         if(animations.get(a) != null) {
             queuedAnimations.add(animations.get(a));
             typesOfQueued.add(a);
         }
     }
 
-    public AnimationType getCurrentAnimationType(){
+    public MovementAnimationTypes getCurrentAnimationType(){
         return currentAnimationType;
     }
 
-    public AnimationType whatAnimationJustFinished(){
+    public MovementAnimationTypes whatAnimationJustFinished(){
         return previousAnimationType;
     }
 
     private Image[] getDefaultIdle(){
-        return animations.get(AnimationType.IDLE);
+        return animations.get(MovementAnimationTypes.IDLE);
     }
 
     public Image getCurrentFrame(){

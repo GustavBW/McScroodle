@@ -25,7 +25,7 @@ public class StartGameButton extends Button implements Renderable {
     }
 
     @Override
-    public void onInteraction(){
+    public void onClicked(){
         SceneManager.changeScene(new InGameScene());
         Main.startInGameUpdates();
         GamePathGenerator.setlevel(1);

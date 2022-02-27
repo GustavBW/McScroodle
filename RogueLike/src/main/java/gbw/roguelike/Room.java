@@ -110,6 +110,15 @@ public class Room extends GameObject implements Renderable {
         }
         return success;
     }
+    public boolean addAdjacentRooms(ArrayList<Room> list){
+        boolean success = true;
+        for(Room r : list){
+            if(!addAdjacentRoom(r)){
+                success = false;
+            }
+        }
+        return success;
+    }
 
     public boolean hasExitByDirection(ExitDirection e){
         for(RoomExit r : exits){
@@ -131,5 +140,10 @@ public class Room extends GameObject implements Renderable {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString(){
+        return "Room " + id;
     }
 }

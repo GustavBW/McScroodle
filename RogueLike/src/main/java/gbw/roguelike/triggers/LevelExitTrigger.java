@@ -24,7 +24,7 @@ public class LevelExitTrigger extends Trigger{
     }
 
     @Override
-    public boolean isInBounds(Point2D p) {
+    public boolean isWithinRange(Point2D p) {
         double distX = p.getX() - position.getX();
         double distY = p.getY() - position.getY();
         double distSquared = distX * distX + distY * distY;

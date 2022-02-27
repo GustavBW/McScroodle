@@ -15,7 +15,7 @@ public class InteractionHandler {
     public static void evaluateInteractibles(){
 
         for(Interactible i : Interactible.interactibles){
-            if(i.isInBounds(new Point2D(Main.canvasDim.getX() * 0.5, Main.canvasDim.getY() * 0.5))){
+            if(i.isWithinRange(new Point2D(Main.canvasDim.getX() * 0.5, Main.canvasDim.getY() * 0.5))){
                 i.onInteraction();
             }
         }

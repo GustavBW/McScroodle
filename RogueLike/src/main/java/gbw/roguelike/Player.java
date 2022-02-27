@@ -1,7 +1,7 @@
 package gbw.roguelike;
 
 import gbw.roguelike.animationSystem.SpriteAnimator;
-import gbw.roguelike.enums.AnimationType;
+import gbw.roguelike.enums.MovementAnimationTypes;
 import gbw.roguelike.backend.ContentEngine;
 import gbw.roguelike.damagingSystem.Damagable;
 import gbw.roguelike.enums.BaseStatsType;
@@ -12,11 +12,8 @@ import gbw.roguelike.interfaces.Renderable;
 import gbw.roguelike.interfaces.Tickable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.Light;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
-import java.security.Key;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +21,7 @@ import java.util.List;
 public class Player extends Damagable implements Renderable, Clickable, Tickable {
 
     public static FacingDirection facingDirection = FacingDirection.NORTH;
-    public static HashMap<AnimationType, Double> animationLengthSeconds = new HashMap<>();
+    public static HashMap<MovementAnimationTypes, Double> animationLengthSeconds = new HashMap<>();
     private final static KeyCode[] movementKeys = new KeyCode[]{KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
 
     private final Point2D position;
@@ -47,7 +44,7 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
         }
 
         this.spriteAnimator = new SpriteAnimator(ContentEngine.getPlayerGraphics(), animationLengthSeconds);
-        spriteAnimator.setAnimation(AnimationType.WALKING_NORTH);
+        spriteAnimator.setAnimation(MovementAnimationTypes.WALKING);
 
         Tickable.tickables.add(this);
         Clickable.clickables.add(this);
@@ -101,7 +98,7 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
         }
 
         if(isMoving){
-            spriteAnimator.setAnimation(AnimationType.WALKING);
+            spriteAnimator.setAnimation(MovementAnimationTypes.WALKING);
         }
 
         for(InputAbility a : abilities){
@@ -177,7 +174,7 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
     }
 
     @Override
-    public void onInteraction() {
+    public void onClicked() {
         System.out.println("YOU FOUND ME!");
     }
 

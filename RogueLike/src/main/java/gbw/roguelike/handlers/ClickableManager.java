@@ -16,7 +16,7 @@ public class ClickableManager {
         for(Clickable c : Clickable.clickables){
 
             if(c.isInBounds(mPos)){
-                c.onInteraction();
+                c.onClicked();
                 break;
             }
         }
