@@ -9,13 +9,12 @@ import java.util.*;
 
 public class GamePathGenerator implements Tickable {
 
-    public static HashMap<Integer, ArrayList<RoomExit>> exitsInLevel = new HashMap<>();
-    private static Random random = new Random(420);
+    private static final Random random = new Random(420);
     private static int currentLevel = 1;
     private static boolean levelChange = false;
-    private static HashMap<Integer, ArrayList<Room>> storedLevels;
+    private static HashMap<Integer, RoomChart> storedLevels;
     private static ArrayList<LevelInformation> levelInformations;
-    private WorldSpace worldSpace;
+    private final WorldSpace worldSpace;
 
     public GamePathGenerator(WorldSpace wS){
         storedLevels = new HashMap<>();
@@ -28,59 +27,36 @@ public class GamePathGenerator implements Tickable {
         return new Room(1, new Point2D(Main.canvasDim.getX() * 0.3,Main.canvasDim.getY() * 0.4));
     }
 
-    public static ArrayList<Room> generateLevel(int level){
+    public static RoomChart generateLevel(int level){
 
-        System.out.println("Generating Level: " + level);
-        ArrayList<Room> output = new ArrayList<>();
-        Room startingRoom = new Room(1, Main.canvasDim.multiply(0.4));
-        output.add(startingRoom);
-
+        Room startingRoom = new Room(1, new Point2D(0,0));
         LevelInformation levelInfo = getLevelInformation(level);
-        RoomChart roomChart = new RoomChart(levelInfo.getMaxRooms() *4, levelInfo.getMaxRooms() *4, 300);
+        int roomCount = levelInfo.getMaxRooms();
+        RoomChart output = new RoomChart(roomCount * 2, roomCount *2, 200);
+        output.addRaw(startingRoom);
+        System.out.println("Generating Level: " + level + " with " + roomCount + " rooms");
 
-        ArrayList<RoomExit> exitPool = new ArrayList<>(startingRoom.getExits());
-        RoomExit currentEvaluatedExit;
-        RoomExit currentMatchingExit;
-        Room currentEvaluatedRoom;
-        int previousEvaluatedRoomId = startingRoom.getId();
+        Room currentRoom;
+        Point2D roomPos;
 
-        ExitDirection oppositeExitDirectionOfCurrent;
+        for(int i = 0; i < roomCount + 1; i++){
+            currentRoom = new Room(levelInfo.getNextRoomId(), new Point2D(0,0));
+            roomPos = output.findValidRandomPlacement(currentRoom, random.nextInt(0,1000));
 
-        for(int i = 0; i < levelInfo.getMaxRooms(); i++){
-            currentEvaluatedExit = exitPool.get(random.nextInt(exitPool.size() - 1));
-            oppositeExitDirectionOfCurrent = getOppositeExitDirection(currentEvaluatedExit);
-
-            currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(),Main.canvasDim.multiply(0.5));
-            currentMatchingExit = currentEvaluatedRoom.getExitByDirection(oppositeExitDirectionOfCurrent);
-
-            //Make sure to get a room that has the proper opposing exit
-            while(currentMatchingExit == null && !roomChart.isValidPlacement(currentEvaluatedRoom)){
-                currentEvaluatedRoom = new Room(levelInfo.getNextRoomId(), Main.canvasDim.multiply(random.nextDouble(0,2)));
-                currentMatchingExit = currentEvaluatedRoom.getExitByDirection(oppositeExitDirectionOfCurrent);
-                currentEvaluatedRoom.setPosition(calcNewRoomPosition(currentEvaluatedExit, currentMatchingExit, currentEvaluatedRoom));
+            if(roomPos != null){
+                currentRoom.setPosition(roomPos);
+                output.addRaw(currentRoom);
+            }else{
+                i--;
             }
-            if(roomChart.add(currentEvaluatedRoom)) {
-                output.add(currentEvaluatedRoom);
-            }
-
-            currentEvaluatedRoom.addAdjacentRooms(roomChart.getNeighboors(currentEvaluatedRoom));
-            currentEvaluatedExit.getRoom().addAdjacentRoom(currentEvaluatedRoom);
-
-            exitPool.remove(currentEvaluatedExit);
-            exitPool.addAll(currentEvaluatedRoom.getExits());
-
-            //Remove all other exits leaving only 1 "un-connected" exit
-            while(currentEvaluatedRoom.getExits().size() > 1) {
-                int whichExitIndex = random.nextInt(0,currentEvaluatedRoom.getExits().size());
-                exitPool.remove(currentEvaluatedRoom.getExits().get(whichExitIndex));
-                currentEvaluatedRoom.getExits().remove(whichExitIndex);
-            }
-            previousEvaluatedRoomId = currentEvaluatedRoom.getId();
         }
 
-        exitsInLevel.get(level).addAll(exitPool);
+        for(Room room : output.getAsArrayList()){
+            room.addAdjacentRooms(output.getNeighboors(room));
+        }
+
         storedLevels.put(currentLevel,output);
-        roomChart.print();
+        output.print();
         return output;
     }
 
@@ -113,7 +89,6 @@ public class GamePathGenerator implements Tickable {
 
     public static void setlevel(int newLevel){
         if(storedLevels.get(newLevel) == null){
-            exitsInLevel.put(newLevel, new ArrayList<>());
             storedLevels.put(newLevel, generateLevel(newLevel));
         }
 

@@ -11,9 +11,9 @@ public class WorldSpace implements Renderable {
     public static Point2D worldSpaceOffset = new Point2D(0,0);
 
     private final ArrayList<Room> allRooms;
+    private RoomChart roomChart;
     private final ArrayList<Room> visibleRooms;
     private final Player player;
-    private boolean funcInUse1 = false;
 
     public WorldSpace(Player player){
         allRooms = new ArrayList<>();
@@ -26,12 +26,9 @@ public class WorldSpace implements Renderable {
         //remove all rooms first.
         visibleRooms.clear();
 
-        Room theRoomThePlayerIsIn = getTheRoomThePlayerIsIn();
+        Room theRoomThePlayerIsIn = roomChart.getClosestRoomTo(player.getPosition().add(worldSpaceOffset.getX(), worldSpaceOffset.getY()));
         makeRoomVisibleIfNotAlready(theRoomThePlayerIsIn);
-
-        for(Room r : theRoomThePlayerIsIn.getAdjacentRooms()){
-            makeRoomVisibleIfNotAlready(r);
-        }
+        visibleRooms.addAll(roomChart.getNeighboors(theRoomThePlayerIsIn));
     }
 
     private void makeRoomVisibleIfNotAlready(Room room) {
@@ -40,41 +37,11 @@ public class WorldSpace implements Renderable {
         }
     }
 
-    private Room getTheRoomThePlayerIsIn() {
-        Point2D playerPos = player.getPosition();
-        Room toReturn = allRooms.get(0);
-
-        for(Room r : allRooms){
-            if(r.isInBounds(playerPos)){
-                toReturn = r;
-            }
-        }
-        return toReturn;
-    }
-
-    private boolean roomIsVisible(Room r){
-        Point2D dimensions = Main.canvasDim;
-        double worldOffX = worldSpaceOffset.getX();
-        double worldOffY = worldSpaceOffset.getY();
-
-        for(int[] pos : r.getBoundaries()){
-
-            boolean eval = (pos[0] + worldOffX > 0 && pos[0] + worldOffX < dimensions.getX())
-                            &&
-                           (pos[1] + worldOffY > 0 && pos[1] + worldOffY < dimensions.getY());
-
-            if(eval){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public void onLevelChange(ArrayList<Room> newRooms){
+    public void onLevelChange(RoomChart newRooms){
         allRooms.clear();
         visibleRooms.clear();
-        allRooms.addAll(newRooms);
+        allRooms.addAll(newRooms.getAsArrayList());
+        roomChart = newRooms;
     }
 
     @Override

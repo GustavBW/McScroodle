@@ -44,7 +44,7 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
         }
 
         this.spriteAnimator = new SpriteAnimator(ContentEngine.getPlayerGraphics(), animationLengthSeconds);
-        spriteAnimator.setAnimation(MovementAnimationTypes.WALKING);
+        spriteAnimator.setAnimation(MovementAnimationTypes.IDLE);
 
         Tickable.tickables.add(this);
         Clickable.clickables.add(this);
@@ -107,15 +107,12 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
     }
 
     private boolean currentInputsContainsMovement() {
-        boolean toReturn = false;
-
-        for(KeyCode k : currentInputs){
-
+         for(KeyCode k : currentInputs){
             if(k == KeyCode.W || k == KeyCode.A || k == KeyCode.S || k == KeyCode.D){
-                toReturn = true;
+                return true;
             }
         }
-        return toReturn;
+        return false;
     }
 
     public void addInput(KeyCode key) {
