@@ -28,7 +28,7 @@ public class WorldSpace implements Renderable {
 
         Room theRoomThePlayerIsIn = roomChart.getClosestRoomTo(player.getPosition().add(worldSpaceOffset.getX(), worldSpaceOffset.getY()));
         makeRoomVisibleIfNotAlready(theRoomThePlayerIsIn);
-        visibleRooms.addAll(roomChart.getNeighboors(theRoomThePlayerIsIn));
+        visibleRooms.addAll(roomChart.getAsArrayList());
     }
 
     private void makeRoomVisibleIfNotAlready(Room room) {
