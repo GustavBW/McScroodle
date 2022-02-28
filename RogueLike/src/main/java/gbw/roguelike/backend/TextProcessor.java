@@ -1,6 +1,7 @@
 package gbw.roguelike.backend;
 
 import gbw.roguelike.LevelInformation;
+import gbw.roguelike.NPCInfo;
 import gbw.roguelike.Room;
 import gbw.roguelike.RoomExit;
 import gbw.roguelike.enums.BaseStatsType;
@@ -20,6 +21,7 @@ public class TextProcessor {
     private final String projRootToTextDir = ContentEngine.projRootToRessourceDir + textDir;
     private final String roomDir = "/rooms";
     private final String configDir = "/Configs";
+    private final String npcDir = "/NPCs";
 
     public ArrayList<RoomExit> getRoomExits(int id, Room roomIBelongTo) {
         ArrayList<RoomExit> output = new ArrayList<>();
@@ -118,5 +120,62 @@ public class TextProcessor {
         }
 
         return toReturn;
+    }
+
+    public ArrayList<String> getNPCLines(int id) {
+        ArrayList<String> output = new ArrayList<>();
+        String path = projRootToTextDir + npcDir + "/lines.txt";
+        String line;
+        String[] lineSplit;
+
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(path));
+
+            while((line = br.readLine()) != null){
+                lineSplit = line.split(",");
+
+                if(Integer.parseInt(lineSplit[0]) == id){
+                    output.add(lineSplit[1]);
+                }
+            }
+
+            br.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+        return output;
+    }
+
+    public NPCInfo getNPCInfo(int id) {
+        NPCInfo output = null;
+        String path = projRootToTextDir + npcDir + "/info.txt";
+        String line;
+        String[] lineSplit;
+
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(path));
+
+            while((line = br.readLine()) != null){
+                lineSplit = line.split(",");
+
+                if(Integer.parseInt(lineSplit[0]) == id){
+                    output = new NPCInfo(
+                            lineSplit[1],
+                            lineSplit[2],
+                            Integer.parseInt(lineSplit[3])
+                    );
+                    break;
+                }
+            }
+
+            br.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+        return output;
     }
 }

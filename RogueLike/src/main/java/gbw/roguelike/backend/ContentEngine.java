@@ -1,6 +1,7 @@
 package gbw.roguelike.backend;
 
 import gbw.roguelike.LevelInformation;
+import gbw.roguelike.NPCInfo;
 import gbw.roguelike.Room;
 import gbw.roguelike.RoomExit;
 import gbw.roguelike.enums.AttackAnimationType;
@@ -47,5 +48,17 @@ public class ContentEngine {
 
     public static Image getItemGraphics(int id) {
         return gp.getItemGraphics(id);
+    }
+
+    public static ArrayList<String> getNPCLines(int id) {
+        return tp.getNPCLines(id);
+    }
+
+    public static NPCInfo getNPCInfo(int id) {
+        return tp.getNPCInfo(id);
+    }
+
+    public static Image getNPCImage(int id) {
+        return gp.getNPCGraphics(id);
     }
 }

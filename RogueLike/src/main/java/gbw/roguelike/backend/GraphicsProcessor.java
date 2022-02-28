@@ -20,6 +20,7 @@ public class GraphicsProcessor {
     private final String MISCDir = "/MISC";
     private final String weaponDir = "/weapons";
     private final String itemDir = "/items";
+    private final String npcDir = "/NPCs";
 
     public Image[] getRoomGraphics(int id){
         String dirPath = projRootToGraphicsDir + roomDir + "/" + id;
@@ -189,6 +190,20 @@ public class GraphicsProcessor {
             output = getGraphicsNotFound();
         }else{
             output = new Image(image.toURI().toString());
+        }
+
+        return output;
+    }
+
+    public Image getNPCGraphics(int id) {
+        Image output = null;
+        String path = projRootToGraphicsDir + npcDir + "/" + id + ".png";
+        File file = new File(path);
+
+        if(file.exists()){
+            output = new Image(file.toURI().toString());
+        }else{
+            output = getGraphicsNotFound();
         }
 
         return output;
