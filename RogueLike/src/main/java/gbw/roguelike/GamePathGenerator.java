@@ -9,22 +9,20 @@ import java.util.*;
 
 public class GamePathGenerator implements Tickable {
 
-    private static final Random random = new Random(420);
+    private static final Random random = new Random(System.nanoTime());
     private static int currentLevel = 1;
     private static boolean levelChange = false;
     private static HashMap<Integer, RoomChart> storedLevels;
     private static ArrayList<LevelInformation> levelInformations;
     private final WorldSpace worldSpace;
+    private final Minimap minimap;
 
-    public GamePathGenerator(WorldSpace wS){
+    public GamePathGenerator(WorldSpace wS, Minimap minimap){
         storedLevels = new HashMap<>();
         levelInformations = ContentEngine.getLevelInformations();
         this.worldSpace = wS;
+        this.minimap = minimap;
         Tickable.tickables.add(this);
-    }
-
-    public Room getStartingRoom(){
-        return new Room(1, new Point2D(Main.canvasDim.getX() * 0.3,Main.canvasDim.getY() * 0.4));
     }
 
     public static RoomChart generateLevel(int level){
@@ -56,7 +54,8 @@ public class GamePathGenerator implements Tickable {
         }
 
         storedLevels.put(currentLevel,output);
-        output.print();
+        System.out.println("Level " + currentLevel + " generated with " + output.getAsArrayList().size() + " rooms");
+        //output.print();
         return output;
     }
 
@@ -102,6 +101,8 @@ public class GamePathGenerator implements Tickable {
     public void tick() {
         if(levelChange){
             worldSpace.onLevelChange(storedLevels.get(currentLevel));
+            System.out.println("Drawing minimap for level " + currentLevel);
+            minimap.drawRoomChart(storedLevels.get(currentLevel));
             levelChange = false;
         }
     }

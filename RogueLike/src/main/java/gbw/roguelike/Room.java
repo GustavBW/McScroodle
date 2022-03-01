@@ -12,16 +12,18 @@ import java.util.ArrayList;
 
 public class Room extends GameObject implements Renderable {
 
+    private static int roomCount = 0;
     private final Image[] baseImages;
     private Point2D position;
     private final Point2D size;
     private final int[][] boundaries;
     private ArrayList<RoomExit> exits;
     private final ArrayList<Room> adjacentRooms;
-    private int id;
+    private int id, positionalID;
 
 
     public Room(int id, Point2D position){
+        roomCount++;
         this.id = id;
         this.position = position;
         this.adjacentRooms = new ArrayList<>();
@@ -30,7 +32,7 @@ public class Room extends GameObject implements Renderable {
         exits = ContentEngine.getRoomExits(id, this);
         boundaries = calcVisualBoundaries();
         this.size = getSize();
-
+        this.positionalID = roomCount;
         giveExitsRoomPosition();
     }
 
@@ -93,6 +95,17 @@ public class Room extends GameObject implements Renderable {
         return true;
     }
 
+    public boolean isInBoundsRaw(Point2D pos){
+        //Takes in a raw, un-translated position and checks if there's any color in the base room image at that point
+        Image bI1 = baseImages[0];
+
+        if(pos.getX() > bI1.getWidth() || pos.getY() > bI1.getHeight()){
+            return false;
+        }
+
+        return bI1.getPixelReader().getColor((int) pos.getX(), (int) pos.getY()).getOpacity() > 0.05;
+    }
+
     private void giveExitsRoomPosition(){
         for(RoomExit r : exits){
             r.setRoomPos(position);
@@ -144,6 +157,6 @@ public class Room extends GameObject implements Renderable {
 
     @Override
     public String toString(){
-        return "Room " + id;
+        return "Room " + positionalID + " of type " + id;
     }
 }

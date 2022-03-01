@@ -26,9 +26,12 @@ public class WorldSpace implements Renderable {
         //remove all rooms first.
         visibleRooms.clear();
 
-        Room theRoomThePlayerIsIn = roomChart.getClosestRoomTo(player.getPosition().add(worldSpaceOffset.getX(), worldSpaceOffset.getY()));
-        makeRoomVisibleIfNotAlready(theRoomThePlayerIsIn);
-        visibleRooms.addAll(roomChart.getAsArrayList());
+        Room theRoomThePlayerIsIn = roomChart.getClosestRoomTo(Main.translatedPlayerPosition.subtract(worldSpaceOffset.getX(), worldSpaceOffset.getY()));
+
+        if(theRoomThePlayerIsIn != null) {
+            visibleRooms.add(theRoomThePlayerIsIn);
+            visibleRooms.addAll(roomChart.getAsArrayList());
+        }
     }
 
     private void makeRoomVisibleIfNotAlready(Room room) {

@@ -24,13 +24,40 @@ public class RoomChart {
     //communicate if a room wasn't found and the likes.
 
     public RoomChart(int width, int height, int increment){
-        this.increment = increment;
+        this.increment = checkIfValid(increment);
         this.width = width;
         this.height = height;
         this.offsetX = width / 2;
         this.offsetY = height / 2;
         this.chart = new Room[height + 1][width + 1];
         this.quickChart = new ArrayList<>();
+    }
+
+    private int checkIfValid(int increment) {
+        if(increment <= 0){
+            return 1;
+        }
+        return increment;
+    }
+
+    public RoomChart(RoomChart rC){
+        this.increment = rC.getIncrement();
+        this.width = rC.getWidth();
+        this.height = rC.getHeight();
+        this.offsetX = rC.getOffsetX();
+        this.offsetY = rC.getOffsetY();
+        this.chart = rC.getChart();
+        this.quickChart = rC.getAsArrayList();
+    }
+
+    public int getIncrement() {
+        return increment;
+    }
+    public int getOffsetY() {
+        return offsetY;
+    }
+    public int getOffsetX(){
+        return offsetX;
     }
 
     public boolean addRaw(Room room){
@@ -49,7 +76,10 @@ public class RoomChart {
 
             for(int cX = 0; cX < roomW; cX++){
 
-                chart[roomY + cY][roomX + cX] = room;
+                //Filtering positions based on if there's graphical information at this position or not
+                if(room.isInBoundsRaw(new Point2D(cX + (increment / 2.00), cY + (increment / 2.00)))) {
+                    chart[roomY + cY][roomX + cX] = room;
+                }
             }
         }
         quickChart.add(room);
@@ -83,6 +113,11 @@ public class RoomChart {
         int roomH = (int) room.getSize().getY() / increment;
 
         if(roomX + roomW > width || roomY + roomH > height){
+            System.err.println("RoomChart | index Y: " + roomY + " X: " + roomX + ". Is out of bounds for W: " + width + " H: " + height);
+            return false;
+        }
+
+        if(roomX < 0 || roomY < 0){
             System.err.println("RoomChart | index Y: " + roomY + " X: " + roomX + ". Is out of bounds for W: " + width + " H: " + height);
             return false;
         }
@@ -168,38 +203,38 @@ public class RoomChart {
     }
 
     private ArrayList<Room> getRoomsInColumn(int colNum, int countStart, int howMany){
-        ArrayList<Room> output = new ArrayList<>();
+        Set<Room> output = new HashSet<>();
 
-        if(height < countStart + howMany){
+        if(height <= countStart + howMany){
             System.err.println("RoomChart | Inaccessible values | Requested: " + "[" + (countStart + howMany) + "," + colNum + "]");
-            return output;
+            return new ArrayList<>(output);
         }
 
-        for(int cY = 0; cY < howMany; cY++){
+        for(int cY = 0; cY <= howMany; cY++){
 
             if(chart[cY + countStart][colNum] != null) {
                 output.add(chart[cY + countStart][colNum]);
             }
         }
 
-        return output;
+        return new ArrayList<>(output);
     }
 
     private ArrayList<Room> getRoomsInRow(int rowNum, int countStart, int howMany){
-        ArrayList<Room> output = new ArrayList<>();
+        Set<Room> output = new HashSet<>();
 
-        if(width < countStart + howMany){
+        if(width <= countStart + howMany){
             System.err.println("RoomChart | Inaccessible values | Requested: " + "[" + (countStart + howMany) + "," + rowNum + "]");
-            return output;
+            return new ArrayList<>(output);
         }
 
-        for(int cX = 0; cX < howMany; cX++){
+        for(int cX = 0; cX <= howMany; cX++){
             if(chart[rowNum][cX + countStart] != null){
                 output.add(chart[rowNum][cX + countStart]);
             }
         }
 
-        return output;
+        return new ArrayList<>(output);
     }
 
     public boolean isValidPoint(int x, int y){
@@ -228,7 +263,7 @@ public class RoomChart {
         return closest;
     }
 
-    private Room ringSearch(int tPx, int tPy) {
+    public Room ringSearch(int tPx, int tPy) {
         int offset = 1;
 
         while(isValidPoint(tPx + offset, tPy + offset) && isValidPoint(tPx - offset, tPy - offset)){
@@ -284,8 +319,18 @@ public class RoomChart {
         return output;
     }
 
+    public int getWidth(){
+        return width;
+    }
+    public int getHeight(){
+        return height;
+    }
+
     public ArrayList<Room> getAsArrayList(){
         return new ArrayList<>(quickChart);
+    }
+    public Room[][] getChart(){
+        return chart.clone();
     }
 
     public void print(){

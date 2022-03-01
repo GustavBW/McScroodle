@@ -20,6 +20,7 @@ public class Main extends Application {
 
     public static Point2D canvasDim = new Point2D(1000,1000);
     public static Point2D sceneDim = new Point2D(1000,1000);
+    public static Point2D translatedPlayerPosition = new Point2D(0,0);
     public static double playerCanvasScaling = 2D;
     public static boolean onPause = false;
     public static int inGameFrameCounter = 0, uiFrameCounter = 0, inGameFPS = 0, uiFPS = 0;
@@ -31,7 +32,9 @@ public class Main extends Application {
 
     private long fpsCalc1 = 0, fpsCalc2 = 0, tickLastCall = 0, fpsWanted = 1_000_000_000 / 60;
 
+    private Pane pane;
     private Canvas canvasUI;
+    private Minimap minimap;
     private Canvas canvasGAME;
     private Canvas canvasPLAYER;
     private GraphicsContext gc1, gc2, gc3;
@@ -56,24 +59,27 @@ public class Main extends Application {
         SceneManager.changeScene(new StartMenuScene());
         damageInstanceManager = new DamageInstanceManager();
         localPlayer = new Player(new Point2D(0,0));
+        minimap = new Minimap(Main.canvasDim.multiply(0), new Point2D(400,200));
 
         keyPressHandler = new KeyPressHandler(localPlayer);
         keyReleasedHandler = new KeyReleasedHandler(localPlayer);
 
         worldSpace = new WorldSpace(localPlayer);
-        gpg = new GamePathGenerator(worldSpace);
+        gpg = new GamePathGenerator(worldSpace,minimap);
 
-        Pane pane = new Pane();
+        pane = new Pane();
         canvasUI = new Canvas(canvasDim.getX(),canvasDim.getY());
         canvasPLAYER = new Canvas(localPlayer.getRawSize().getX(), localPlayer.getRawSize().getY());
         canvasPLAYER.setLayoutX(Main.canvasDim.multiply(0.5).getX() - localPlayer.getSize().multiply(0.5).getX());
         canvasPLAYER.setLayoutY(Main.canvasDim.multiply(0.5).getY() - localPlayer.getSize().multiply(0.5).getY());
         canvasPLAYER.setScaleX(playerCanvasScaling);
         canvasPLAYER.setScaleY(playerCanvasScaling);
+        translatedPlayerPosition = new Point2D(Main.canvasDim.getX(), Main.canvasDim.getY());
         canvasGAME = new Canvas(canvasDim.getX(),canvasDim.getY());
 
         pane.getChildren().add(canvasGAME);
         pane.getChildren().add(canvasPLAYER);
+        pane.getChildren().add(minimap.getCanvas());
         pane.getChildren().add(canvasUI);
 
         inGameUpdates = new AnimationTimer() {
@@ -106,7 +112,7 @@ public class Main extends Application {
         gc1 = canvasGAME.getGraphicsContext2D();
         gc3 = canvasPLAYER.getGraphicsContext2D();
 
-        gc1.setFill(Color.BLACK);
+        gc1.setFill(Color.WHITE);
         gc1.fillRect(0,0,canvasDim.getX(), canvasDim.getY());
 
         gc3.clearRect(0,0,canvasDim.getX(), canvasDim.getY());
@@ -123,6 +129,7 @@ public class Main extends Application {
         }
 
         worldSpace.render(gc1);
+        minimap.render();
 
         canvasPLAYER.setRotate(Player.facingDirection.inDegrees);
         localPlayer.render(gc3);
@@ -176,7 +183,9 @@ public class Main extends Application {
 
     //TODO Fix idle animations for player movement
     //TODO Get that fcking level generator working
-    //TODO Implement RoomCart.propegate() for generation instead. It works. Surprisingly.
+    //TODO confirm that RoomChart filters correctly.
+    //TODO Fix the minimap. It's ugly. The scaling is completely out of whack
+    //TODO Auto-generating walls for collisions yes?
     //TODO Lighting?
     //TODO weapon animation system
 }
