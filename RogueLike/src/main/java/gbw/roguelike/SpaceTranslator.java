@@ -7,8 +7,8 @@ public class SpaceTranslator {
 
     public static int[] toChartSpace(@NamedArg("WorldSpace pos") Point2D p, RoomChart chart){
 
-        int x = (int) Math.round((p.getX() / chart.getIncrement()) + chart.getOffsetX());
-        int y = (int) Math.round((p.getY() / chart.getIncrement()) + chart.getOffsetY());
+        int x = (int) Math.floor((p.getX() / chart.getIncrement()) + chart.getOffsetX());
+        int y = (int) Math.floor((p.getY() / chart.getIncrement()) + chart.getOffsetY());
 
         return new int[]{x,y};
     }

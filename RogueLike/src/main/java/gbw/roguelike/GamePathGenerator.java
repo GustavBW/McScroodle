@@ -106,4 +106,5 @@ public class GamePathGenerator implements Tickable {
             levelChange = false;
         }
     }
+
 }

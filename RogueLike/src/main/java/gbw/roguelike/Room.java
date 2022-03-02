@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-public class Room extends GameObject implements Renderable {
+public class Room extends GameObject implements Renderable{
 
     private static int roomCount = 0;
     private final Image[] baseImages;
@@ -159,4 +159,5 @@ public class Room extends GameObject implements Renderable {
     public String toString(){
         return "Room " + positionalID + " of type " + id;
     }
+
 }

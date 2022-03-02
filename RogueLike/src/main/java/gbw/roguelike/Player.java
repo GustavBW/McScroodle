@@ -57,10 +57,14 @@ public class Player extends Damagable implements Renderable, Clickable, Tickable
             evaluateKeyInput(input);
         }
 
+        /*
         if(!currentInputsContainsMovement() && lastIdleCheck + 500_000 < System.nanoTime()){
             spriteAnimator.goIdle(facingDirection);
             lastIdleCheck = System.nanoTime();
         }
+
+         */
+
 
         if(baseStats.get(BaseStatsType.HEALTH) <= 0){
             Main.playerIsDead = true;
