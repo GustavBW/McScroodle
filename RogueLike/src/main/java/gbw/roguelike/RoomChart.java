@@ -2,10 +2,7 @@ package gbw.roguelike;
 
 import javafx.geometry.Point2D;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class RoomChart {
 
@@ -19,7 +16,7 @@ public class RoomChart {
     //The primary function is to find neighbooring rooms and thus it's scaled down
     //Compared to a pixel repressentation of the rooms in relation to each other.
     //increment is the lowest significant width / height of any room added. This is the scaling factor
-    //width & height is used to compensate for the fact that ArrayLists can't "expand" in negative directions
+    //width & height is used to compensate for the fact that arrays can't naturally "expand" in negative directions
     //thus all positions is locally offset. Any negative position values are thus invalid but used to
     //communicate if a room wasn't found and the likes.
 
@@ -66,8 +63,7 @@ public class RoomChart {
         }
 
         //Translating units from "pixel-space" to chart space.
-        int roomX = (int) (room.getPosition().getX() / increment) + offsetX;
-        int roomY = (int) (room.getPosition().getY() / increment) + offsetY;
+        int[] roomPos = SpaceTranslator.toChartSpace(room.getPosition(), this);
         int roomW = (int) room.getSize().getX() / increment;
         int roomH = (int) room.getSize().getY() / increment;
 
@@ -78,7 +74,7 @@ public class RoomChart {
 
                 //Filtering positions based on if there's graphical information at this position or not
                 if(room.isInBoundsRaw(new Point2D(cX + (increment / 2.00), cY + (increment / 2.00)))) {
-                    chart[roomY + cY][roomX + cX] = room;
+                    chart[roomPos[1] + cY][roomPos[0] + cX] = room;
                 }
             }
         }
@@ -89,6 +85,7 @@ public class RoomChart {
 
     public boolean remove(Room room){
         int[] chartPos = getRoomPositionInChart(room);
+
         if(chartPos[0] == -1 || chartPos[1] == -1){
             return false;
         }
@@ -107,18 +104,18 @@ public class RoomChart {
 
     public boolean isValidPlacement(Room room){
         //Translating units from "pixel-space" to chart space.
-        int roomX = (int) (room.getPosition().getX() / increment) + offsetX;
-        int roomY = (int) (room.getPosition().getY() / increment) + offsetY;
+        int[] roomPos = SpaceTranslator.toChartSpace(room.getPosition(), this);
+
         int roomW = (int) room.getSize().getX() / increment;
         int roomH = (int) room.getSize().getY() / increment;
 
-        if(roomX + roomW > width || roomY + roomH > height){
-            System.err.println("RoomChart | index Y: " + roomY + " X: " + roomX + ". Is out of bounds for W: " + width + " H: " + height);
+        if(roomPos[0] + roomW > width || roomPos[1] + roomH > height){
+            System.err.println("RoomChart | index Y: " + roomPos[1] + " X: " + roomPos[0] + ". Is out of bounds for W: " + width + " H: " + height);
             return false;
         }
 
-        if(roomX < 0 || roomY < 0){
-            System.err.println("RoomChart | index Y: " + roomY + " X: " + roomX + ". Is out of bounds for W: " + width + " H: " + height);
+        if(roomPos[0] < 0 || roomPos[1] < 0){
+            System.err.println("RoomChart | index Y: " + roomPos[1] + " X: " + roomPos[0] + ". Is out of bounds for W: " + width + " H: " + height);
             return false;
         }
 
@@ -127,7 +124,7 @@ public class RoomChart {
 
             for(int cX = 0; cX < roomW; cX++){
 
-                if(chart[roomY + cY][roomX + cX] != null){
+                if(chart[roomPos[1] + cY][roomPos[0] + cX] != null){
                     return false;
                 }
             }
@@ -140,6 +137,8 @@ public class RoomChart {
         //This function finds the position closest to another room, that is valid.
         Point2D output = null;
         ArrayList<Room> copy = new ArrayList<>(quickChart);
+
+        //TODO Make this take room exists into account
 
         if(copy.isEmpty()){
             System.err.println("RoomChart | Invalid Method Call |  findValidRandomPlacement() requires a non-empty roomChart");
@@ -156,19 +155,18 @@ public class RoomChart {
             current = copy.size() <= 1 ? copy.get(0) : copy.get(random.nextInt(copy.size()));
 
             int[] r1Pos = getRoomPositionInChart(current);
-            int r1W = (int) current.getSize().getX() / increment;
-            int r1H = (int) current.getSize().getY() / increment;
+            int[] rDim = SpaceTranslator.roomDimToChartSpace(current.getSize(),this);
 
             for(int i = 0; i < 4; i ++) {
                 switch ((seed + i) % 4) {
                     //To the left
-                    case 0 -> output = new Point2D(((r1Pos[0] - roomW) - offsetX) * increment, (r1Pos[1] - offsetY) * increment);
+                    case 0 -> output = SpaceTranslator.toWorldSpace((r1Pos[0] - roomW), r1Pos[1], this);
                     //On top
-                    case 1 -> output = new Point2D((r1Pos[0] - offsetX) * increment, ((r1Pos[1] - roomH) - offsetY) * increment);
+                    case 1 -> output = SpaceTranslator.toWorldSpace(r1Pos[0], (r1Pos[1] - roomH), this);
                     //To the right
-                    case 2 -> output = new Point2D(((r1Pos[0] + r1W) - offsetX) * increment, (r1Pos[1] - offsetY) * increment);
+                    case 2 -> output = SpaceTranslator.toWorldSpace((r1Pos[0] + rDim[0]), r1Pos[1], this);
                     //Below
-                    case 3 -> output = new Point2D((r1Pos[0] - offsetX) * increment, ((r1Pos[1] + r1H) - offsetY) * increment);
+                    case 3 -> output = SpaceTranslator.toWorldSpace(r1Pos[0], (r1Pos[1] + rDim[1]), this);
                 }
 
                 room.setPosition(output);
@@ -190,14 +188,13 @@ public class RoomChart {
             return new ArrayList<>(output);
         }
 
-        int roomW = (int) room.getSize().getX() / increment;
-        int roomH = (int) room.getSize().getY() / increment;
+        int[] roomDim = SpaceTranslator.roomDimToChartSpace(room.getSize(),this);
 
-        output.addAll(getRoomsInColumn(chartPos[0] - 1, chartPos[1], roomH));
-        output.addAll(getRoomsInColumn(chartPos[0] + roomW + 1, chartPos[1], roomH));
+        output.addAll(getRoomsInColumn(chartPos[0] - 1, chartPos[1], roomDim[1]));
+        output.addAll(getRoomsInColumn(chartPos[0] + roomDim[0] + 1, chartPos[1], roomDim[1]));
 
-        output.addAll(getRoomsInRow(chartPos[1] - 1, chartPos[0], roomW));
-        output.addAll(getRoomsInRow(chartPos[1] + roomH + 1, chartPos[0], roomW));
+        output.addAll(getRoomsInRow(chartPos[1] - 1, chartPos[0], roomDim[0]));
+        output.addAll(getRoomsInRow(chartPos[1] + roomDim[1] + 1, chartPos[0], roomDim[0]));
 
         return new ArrayList<>(output);
     }
@@ -245,20 +242,19 @@ public class RoomChart {
     }
 
     public Room getClosestRoomTo(Point2D p){
-        int tPx = (int) (p.getX() / increment) + offsetX;
-        int tPy = (int) (p.getY() / increment) + offsetY;
+        int[] chartSpaceP = SpaceTranslator.toChartSpace(p,this);
 
         Room closest = null;
 
-        if(!isValidPoint(tPx, tPy)){
+        if(!isValidPoint(chartSpaceP[0], chartSpaceP[1])){
             return closest;
         }
 
-        if(chart[tPy][tPx] != null){
-            return chart[tPy][tPx];
+        if(chart[chartSpaceP[1]][chartSpaceP[0]] != null){
+            return chart[chartSpaceP[1]][chartSpaceP[0]];
         }
 
-        closest = ringSearch(tPx, tPy);
+        closest = ringSearch(chartSpaceP[0], chartSpaceP[1]);
 
         return closest;
     }
@@ -312,9 +308,10 @@ public class RoomChart {
 
     public int[] getMiddle(Room room){
         int[] output = getRoomPositionInChart(room);
+        int[] roomDimCS = SpaceTranslator.roomDimToChartSpace(room.getSize(),this);
 
-        output[0] += (int) (room.getSize().getX() / increment) / 2;
-        output[1] += (int) (room.getSize().getY() / increment) / 2;
+        output[0] += (roomDimCS[0]) / 2;
+        output[1] += (roomDimCS[1]) / 2;
 
         return output;
     }
