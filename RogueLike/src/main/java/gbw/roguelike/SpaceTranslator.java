@@ -5,6 +5,8 @@ import javafx.geometry.Point2D;
 
 public class SpaceTranslator {
 
+    public static Point2D minimapToScreenFactor = new Point2D(0,0);
+
     public static int[] toChartSpace(@NamedArg("WorldSpace pos") Point2D p, RoomChart chart){
 
         int x = (int) Math.round((p.getX() / chart.getIncrement()) + chart.getOffsetX());
