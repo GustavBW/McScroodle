@@ -99,11 +99,11 @@ public class Room extends GameObject implements Renderable {
         //Takes in a raw, un-translated position and checks if there's any color in the base room image at that point
         Image bI1 = baseImages[0];
 
-        if(pos.getX() > bI1.getWidth() || pos.getY() > bI1.getHeight()){
+        if(pos.getX() > bI1.getWidth() || pos.getY() > bI1.getHeight() || pos.getX() < 0 || pos.getY() < 0){
             return false;
         }
-
-        return bI1.getPixelReader().getColor((int) pos.getX(), (int) pos.getY()).getOpacity() > 0.05;
+        //TODO get better at drawing so that this check doesn't fail when you miss a pixel in the corner
+        return bI1.getPixelReader().getColor((int) pos.getX() +10, (int) pos.getY() + 10).getOpacity() > 0.05;
     }
 
     private void giveExitsRoomPosition(){

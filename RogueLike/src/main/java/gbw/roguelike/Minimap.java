@@ -39,23 +39,12 @@ public class Minimap {
 
     public void drawRoomChart(RoomChart r){
         this.roomChart = r;
-        scaleX = size.getX() / roomChart.getWidth();
-        scaleY = size.getY() / roomChart.getHeight();
-
         roomsAsDots.clear();
-        Room[][] currentChart = roomChart.getChart();
 
-        for(int y = 0; y < roomChart.getHeight(); y++){
-            for(int x = 0; x < roomChart.getWidth(); x++){
-
-                if(currentChart[y][x] != null) {
-                    Point2D pos = SpaceTranslator.toWorldSpace(x,y,r);
-                    pos = pos.multiply(scaleX);
-                    roomsAsDots.add(new Dot(new Point2D(x *scaleX,y *scaleY), scaleX, scaleY));
-                }
-
-            }
+        for(Vector2D pos : r.getAllRoomPositions()){
+            roomsAsDots.add(new Dot(pos, scaleX, scaleY));
         }
+
         System.out.println("roomsAsDots contains " + roomsAsDots.size() + " dots");
     }
 
@@ -64,7 +53,7 @@ public class Minimap {
 
         for(Room r : list){
             roomsAsDots.add(new Dot(
-                    new Point2D(
+                    new Vector2D(
                             r.getPosition().getX(),
                             r.getPosition().getY()),
                     2,
@@ -76,35 +65,32 @@ public class Minimap {
     public void render() {
         gc = canvas.getGraphicsContext2D();
 
-        gc.clearRect(position.getX(), position.getY(),position.getX() + size.getX(),position.getX() + size.getY());
+        gc.clearRect(position.getX(), position.getY(),size.getX(),size.getY());
 
         gc.setFill(backgroundColor);
         gc.fillRect(position.getX(), position.getY(), size.getX(), size.getY());
 
-        gc.setFill(Color.ORANGE);
-        gc.fillRect(position.getX() + size.getX(), position.getY() + size.getY(), 1*scaleX, 1*scaleY);
-
         gc.setFill(roomColor);
         for(Dot d : roomsAsDots){
-            d.render(gc, WorldSpace.worldSpaceOffset.multiply(1.00 / SpaceTranslator.minimapToScreenFactor.getX()));
+            d.render(gc);
         }
     }
 
 
     private class Dot {
 
-        private final Point2D position;
+        private final Vector2D position;
         private final double sizeX;
         private final double sizeY;
 
-        public Dot(Point2D position, double sizeX, double sizeY) {
+        public Dot(Vector2D position, double sizeX, double sizeY) {
             this.position = position;
             this.sizeX = sizeX;
             this.sizeY = sizeY;
         }
 
-        public void render(GraphicsContext gc, Point2D translatedWSO) {
-            gc.fillRect(position.getX() + translatedWSO.getX(), position.getY() + translatedWSO.getY(),sizeX,sizeY);
+        public void render(GraphicsContext gc) {
+            gc.fillRect(position.getX(), position.getY(),sizeX,sizeY);
         }
     }
 }

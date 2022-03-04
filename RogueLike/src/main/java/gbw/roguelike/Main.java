@@ -60,7 +60,7 @@ public class Main extends Application {
         SceneManager.changeScene(new StartMenuScene());
         damageInstanceManager = new DamageInstanceManager();
         localPlayer = new Player(new Point2D(0,0));
-        minimap = new Minimap(Main.canvasDim.multiply(0.5), minimapDim);
+        minimap = new Minimap(Main.canvasDim.multiply(0), minimapDim);
         SpaceTranslator.minimapToScreenFactor  = new Point2D(Main.canvasDim.getX() / minimapDim.getX(), Main.canvasDim.getY() / minimapDim.getY());
 
         keyPressHandler = new KeyPressHandler(localPlayer);
