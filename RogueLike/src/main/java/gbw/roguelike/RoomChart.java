@@ -58,17 +58,22 @@ public class RoomChart {
     }
 
     public boolean addRaw(Room room){
+        if(!isValidPlacement(room)){
+           return false;
+        }
+
         //Translating units from "pixel-space" to chart space.
         int[] roomPos = SpaceTranslator.toChartSpace(room.getPosition(), this);
-        int[] roomDim = SpaceTranslator.roomDimToChartSpace(room.getSize(),this);
+        int roomW = (int) room.getSize().getX() / increment;
+        int roomH = (int) room.getSize().getY() / increment;
 
         //Then filling all those spots with the room
-        for(int cY = 0; cY < roomDim[1]; cY++){
+        for(int cY = 0; cY < roomH; cY++){
 
-            for(int cX = 0; cX < roomDim[0]; cX++){
+            for(int cX = 0; cX < roomW; cX++){
 
                 //Filtering positions based on if there's graphical information at this position or not
-                if(room.isInBoundsRaw(new Point2D(cX,cY))) {
+                if(room.isInBoundsRaw(new Point2D(cX + (increment / 2.00), cY + (increment / 2.00)))) {
                     chart[roomPos[1] + cY][roomPos[0] + cX] = room;
                 }
             }
@@ -76,19 +81,6 @@ public class RoomChart {
         quickChart.add(room);
 
         return true;
-    }
-    public ArrayList<Vector2D> getAllRoomPositions(){
-        ArrayList<Vector2D> output = new ArrayList<>();
-
-        for(int y = 0; y < height; y++){
-            for(int x = 0; x < width; x++){
-                if(chart[y][x] != null){
-                    output.add(new Vector2D(x,y));
-                }
-            }
-        }
-
-        return output;
     }
 
     public boolean remove(Room room){
@@ -114,7 +106,6 @@ public class RoomChart {
         //Translating units from "pixel-space" to chart space.
         int[] roomPos = SpaceTranslator.toChartSpace(room.getPosition(), this);
 
-        //TODO Use SpaceTranslator here
         int roomW = (int) room.getSize().getX() / increment;
         int roomH = (int) room.getSize().getY() / increment;
 
@@ -129,13 +120,11 @@ public class RoomChart {
         }
 
         //Then checking if any of those spaces are already occupied.
-        Room roomFound;
         for(int cY = 0; cY < roomH; cY++){
 
             for(int cX = 0; cX < roomW; cX++){
-                roomFound = chart[roomPos[1] + cY][roomPos[0] + cX];
-                //TODO SAMLE THE ROOM WHEN ONE IS FOUND
-                if(roomFound != null && roomFound.isInBoundsRaw(SpaceTranslator.toLocalRoomSpace(cX + 0.5,cY + 0.5,this))){
+
+                if(chart[roomPos[1] + cY][roomPos[0] + cX] != null){
                     return false;
                 }
             }
@@ -181,7 +170,7 @@ public class RoomChart {
                 }
 
                 room.setPosition(output);
-                if (output != null && isValidPlacement(room)) {
+                if (isValidPlacement(room)) {
                     return output;
                 }
             }
@@ -189,15 +178,6 @@ public class RoomChart {
         }
 
         return output;
-    }
-    public boolean addRoomAtRandom(Room room, int seed){
-        Point2D pos = findValidRandomPlacement(room,seed);
-        if(pos != null){
-            room.setPosition(pos);
-            addRaw(room);
-            return true;
-        }
-        return false;
     }
 
     public ArrayList<Room> getNeighboors(Room room){
