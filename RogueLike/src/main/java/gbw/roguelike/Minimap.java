@@ -22,8 +22,8 @@ public class Minimap {
     private final ArrayList<Dot> roomsAsDots;
 
     public Minimap(Point2D p, Point2D size) {
-        this.position = p;
         this.size = size;
+        this.position = p;
         this.roomsAsDots = new ArrayList<>();
 
         canvas = new Canvas(size.getX(), size.getY());
@@ -39,21 +39,12 @@ public class Minimap {
 
     public void drawRoomChart(RoomChart r){
         this.roomChart = r;
-        scaleX = size.getX() / roomChart.getWidth();
-        scaleY = size.getY() / roomChart.getHeight();
-
         roomsAsDots.clear();
-        Room[][] currentChart = roomChart.getChart();
 
-        for(int y = 0; y < roomChart.getHeight(); y++){
-            for(int x = 0; x < roomChart.getWidth(); x++){
-
-                if(currentChart[y][x] != null) {
-                    roomsAsDots.add(new Dot(new Point2D(x * scaleX, y * scaleY), scaleX, scaleY));
-                }
-
-            }
+        for(Vector2D pos : r.getAllRoomPositions()){
+            roomsAsDots.add(new Dot(pos, scaleX, scaleY));
         }
+
         System.out.println("roomsAsDots contains " + roomsAsDots.size() + " dots");
     }
 
@@ -62,24 +53,44 @@ public class Minimap {
 
         for(Room r : list){
             roomsAsDots.add(new Dot(
-                    new Point2D(
+                    new Vector2D(
                             r.getPosition().getX(),
                             r.getPosition().getY()),
-                    2,2));
+                    2,
+                    4)
+            );
         }
     }
 
     public void render() {
         gc = canvas.getGraphicsContext2D();
 
-        gc.clearRect(position.getX(), position.getY(), size.getX(),size.getY());
+        gc.clearRect(position.getX(), position.getY(),size.getX(),size.getY());
 
         gc.setFill(backgroundColor);
         gc.fillRect(position.getX(), position.getY(), size.getX(), size.getY());
 
         gc.setFill(roomColor);
         for(Dot d : roomsAsDots){
-            d.render(gc, WorldSpace.worldSpaceOffset.multiply(1.00 / roomChart.getIncrement()));
+            d.render(gc);
+        }
+    }
+
+
+    private class Dot {
+
+        private final Vector2D position;
+        private final double sizeX;
+        private final double sizeY;
+
+        public Dot(Vector2D position, double sizeX, double sizeY) {
+            this.position = position;
+            this.sizeX = sizeX;
+            this.sizeY = sizeY;
+        }
+
+        public void render(GraphicsContext gc) {
+            gc.fillRect(position.getX(), position.getY(),sizeX,sizeY);
         }
     }
 }

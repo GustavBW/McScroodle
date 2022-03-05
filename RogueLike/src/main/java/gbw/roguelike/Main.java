@@ -22,6 +22,7 @@ public class Main extends Application {
 
     public static Point2D canvasDim = new Point2D(1000,1000);
     public static Point2D sceneDim = new Point2D(1000,1000);
+    public static Point2D minimapDim = new Point2D(200,100);
     public static Point2D translatedPlayerPosition = new Point2D(0,0);
     public static double playerCanvasScaling = 2D;
     public static boolean onPause = false;
@@ -61,7 +62,8 @@ public class Main extends Application {
         SceneManager.changeScene(new StartMenuScene());
         damageInstanceManager = new DamageInstanceManager();
         localPlayer = new Player(new Point2D(0,0));
-        minimap = new Minimap(Main.canvasDim.multiply(0), new Point2D(400,200));
+        minimap = new Minimap(Main.canvasDim.multiply(0), minimapDim);
+        SpaceTranslator.minimapToScreenFactor  = new Point2D(Main.canvasDim.getX() / minimapDim.getX(), Main.canvasDim.getY() / minimapDim.getY());
 
         keyPressHandler = new KeyPressHandler(localPlayer);
         keyReleasedHandler = new KeyReleasedHandler(localPlayer);
