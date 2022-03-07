@@ -40,6 +40,7 @@ public class GamePathGenerator implements Tickable {
 
         for(int i = 0; i < roomCount + 1; i++){
             currentRoom = new Room(levelInfo.getNextRoomId(), new Point2D(0,0));
+
             if(!output.addRoomAtRandom(currentRoom,random.nextInt())){
                 i--;
             }
