@@ -8,6 +8,10 @@ public class Vector2D {
         this.x = x;
         this.y = y;
     }
+    public Vector2D(Vector2D v1, Vector2D v2){
+        this.x = v1.getX() - v2.getX();
+        this.y = v1.getY() - v2.getY();
+    }
 
     //BASIC MATH
     public void multiply(double fx, double fy){
@@ -107,6 +111,26 @@ public class Vector2D {
     }
 
     //COOL MATH
+    public void limitTo(Vector2D pos, Vector2D vec2){
+        //View this vector object as a velocity vector from point "pos". This limits the x and y parameters of this object to the vec2 given.
+        //Vec2 is viewed as a point in space.
+        double exceedingByX = vec2.getX() - (pos.getX() + this.getX());
+        double exceedingByY = vec2.getY() - (pos.getY() + this.getY());
+
+        if(exceedingByX > 0){
+            x += exceedingByX;
+        }
+        if(exceedingByY > 0){
+            y += exceedingByY;
+        }
+
+    }
+    public double distanceTo(Vector2D vec2){
+        return new Vector2D(this,vec2).magnitude();
+    }
+    public double distanceToSQ(Vector2D vec2){
+        return new Vector2D(this,vec2).magnitudeSQ();
+    }
     public Vector2D getNormalized(){
         double mag = magnitude();
         if (mag == 0.0) {
@@ -120,9 +144,11 @@ public class Vector2D {
         y /= magnitude();
     }
     public double magnitude(){
+        //For multiple calls in a row, use the squared version Vector2D.magnitudeSQ()
         return Math.sqrt((x * x) + (y * y));
     }
     public double magnitudeSQ(){
+        //For multiple magnitude calls in a row, not calling Math.sqrt() improves performance drastically
         return(x * x) + (y * y);
     }
     public double angleTo(Vector2D vec){
@@ -153,9 +179,19 @@ public class Vector2D {
         return new Vector2D(this.getX(),this.getY());
     }
 
+    //BASIC STUFF
     public double getX(){return x;}
     public double getY(){return y;}
     public void setX(double fx){x = fx;}
     public void setY(double fy){y = fy;}
+
+    //STATIC STUFF
+    public static double distance(Vector2D v1, Vector2D v2){
+        return new Vector2D(v1,v2).magnitude();
+    }
+    public static double distanceSQ(Vector2D v1, Vector2D v2){
+        return new Vector2D(v1,v2).magnitudeSQ();
+    }
+
 
 }
