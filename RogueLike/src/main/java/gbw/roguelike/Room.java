@@ -103,6 +103,7 @@ public class Room extends GameObject implements Renderable {
             return false;
         }
         //TODO get better at drawing so that this check doesn't fail when you miss a pixel in the corner
+        System.out.println("Opacity val Room106 of " + this + " is " + bI1.getPixelReader().getColor((int) pos.getX(), (int) pos.getY()).getOpacity() + " with pos X: ");
         return bI1.getPixelReader().getColor((int) pos.getX(), (int) pos.getY()).getOpacity() > 0.05;
     }
 
