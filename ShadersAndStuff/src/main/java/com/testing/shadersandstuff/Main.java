@@ -84,7 +84,7 @@ public class Main extends Application {
     private ArrayList<Texture> evaluateTextureArray(){
         ArrayList<Texture> array = new ArrayList<>();
 
-        array.add(new Voronoi(1005,5));
+        array.add(new Voronoi(100,5));
 
         return array;
     }
