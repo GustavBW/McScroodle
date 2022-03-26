@@ -1,7 +1,8 @@
 package gbw.gravityslingshot.gravityslingshot;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.geometry.Point2D;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface MassEffected extends IGameObject{
     List<MassEffected> expended = new ArrayList<>();
     List<MassEffected> newborn = new ArrayList<>();
 
-    void evaluate(MassEffected m);
+    void evaluateGravity(BigDecimal force, Point2D direction);
     double getMass();
 
 }

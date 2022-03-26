@@ -6,4 +6,5 @@ public interface IGameObject {
 
     Point2D getPosition();
     void destroy();
+    void spawn();
 }

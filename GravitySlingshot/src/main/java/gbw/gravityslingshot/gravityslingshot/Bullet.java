@@ -5,6 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.Light;
 import javafx.scene.paint.Color;
 
+import java.math.BigDecimal;
+
 public class Bullet implements Tickable, Renderable, MassEffected {
 
     private Point2D position;
@@ -39,12 +41,22 @@ public class Bullet implements Tickable, Renderable, MassEffected {
 
     @Override
     public void destroy() {
-
+        MassEffected.expended.add(this);
+        Tickable.expended.add(this);
+        Renderable.expended.add(this);
     }
 
     @Override
-    public void evaluate(MassEffected m) {
+    public void spawn() {
+        MassEffected.newborn.add(this);
+        Tickable.newborn.add(this);
+        Renderable.newborn.add(this);
+    }
 
+    @Override
+    public void evaluateGravity(BigDecimal force, Point2D direction) {
+        Point2D change = direction.multiply(force.doubleValue());
+        position = position.add(change);
     }
 
     @Override

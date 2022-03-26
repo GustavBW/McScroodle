@@ -23,4 +23,21 @@ public class Cannon implements Tickable, Renderable {
     public void tick() {
 
     }
+
+    @Override
+    public Point2D getPosition() {
+        return position;
+    }
+
+    @Override
+    public void destroy() {
+        Tickable.expended.add(this);
+        Renderable.expended.add(this);
+    }
+
+    @Override
+    public void spawn() {
+        Tickable.newborn.add(this);
+        Renderable.newborn.add(this);
+    }
 }

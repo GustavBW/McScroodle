@@ -12,6 +12,8 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+    private GravityHandler gravityHandler;
+
     private Canvas mainCanvas;
     private Pane mainPane;
     private Stage mainStage;
@@ -23,11 +25,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        gravityHandler = new GravityHandler();
+        gravityHandler.spawn();
+
         mainCanvas = new Canvas();
         mainPane = new Pane();
         mainStage = stage;
         mainPane.getChildren().add(mainCanvas);
-        Scene scene = new Scene(mainPane, 320, 240);
+        Scene scene = new Scene(mainPane, 1500, 1000);
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -54,8 +59,9 @@ public class Main extends Application {
 
     private void render(GraphicsContext gc) {
 
-
-
+        for(Renderable r : Renderable.active){
+            r.render(gc);
+        }
 
         Renderable.active.removeAll(Renderable.expended);
         Renderable.active.addAll(Renderable.newborn);
@@ -64,8 +70,9 @@ public class Main extends Application {
     }
 
     private void tick(){
-
-
+        for(Tickable t : Tickable.active){
+            t.tick();
+        }
 
         Tickable.active.removeAll(Tickable.expended);
         Tickable.active.addAll(Tickable.newborn);
