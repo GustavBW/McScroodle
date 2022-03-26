@@ -2,17 +2,29 @@ package gbw.gravityslingshot.gravityslingshot;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Main extends Application {
 
+    public static Point2D dim = new Point2D(1500,1000);
+    public static Random rand = new Random(System.currentTimeMillis());
+    public static AnimationTimer inGameTimer;
+
     private GravityHandler gravityHandler;
+    private CollisionHandler collisionHandler;
+    private KeyInputHandler keyInputHandler;
+    private MouseInputHandler mouseInputHandler;
 
     private Canvas mainCanvas;
     private Pane mainPane;
@@ -25,22 +37,26 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        gravityHandler = new GravityHandler();
-        gravityHandler.spawn();
+        mouseInputHandler = new MouseInputHandler();
+        keyInputHandler = new KeyInputHandler();
 
-        mainCanvas = new Canvas();
+        mainCanvas = new Canvas(dim.getX(),dim.getY());
+        mainCanvas.setOnMouseMoved(e -> mouseInputHandler.mouseMoved(e));
         mainPane = new Pane();
         mainStage = stage;
         mainPane.getChildren().add(mainCanvas);
-        Scene scene = new Scene(mainPane, 1500, 1000);
+        Scene scene = new Scene(mainPane, dim.getX(),dim.getY());
+        scene.setOnKeyPressed(e -> keyInputHandler.keyPress(e));
+        scene.setOnKeyReleased(e -> keyInputHandler.keyReleased(e));
 
-        AnimationTimer timer = new AnimationTimer() {
+        inGameTimer = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 update();
             }
         };
-        timer.start();
+
+        generateLevel();
 
         mainStage.setTitle("Gravity Slingshot");
         mainStage.setScene(scene);
@@ -58,6 +74,9 @@ public class Main extends Application {
     }
 
     private void render(GraphicsContext gc) {
+        
+        gc.setFill(Color.LIGHTGRAY);
+        gc.fillRect(0,0,dim.getX(),dim.getY());
 
         for(Renderable r : Renderable.active){
             r.render(gc);
@@ -73,11 +92,33 @@ public class Main extends Application {
         for(Tickable t : Tickable.active){
             t.tick();
         }
-
         Tickable.active.removeAll(Tickable.expended);
         Tickable.active.addAll(Tickable.newborn);
         Tickable.expended.clear();
         Tickable.newborn.clear();
+    }
+
+    private void generateLevel(){
+        if(inGameTimer != null) {
+            inGameTimer.stop();
+            System.out.println("Stopped inGameTimer");
+        }
+        System.out.println("Generating level");
+        List<IGameObject> level = new ArrayList<>(List.of(
+            new GravityHandler(),
+            new CollisionHandler(),
+            new Cannon(0, new Point2D(0, dim.getY())),
+            new GravityObject(100,  new Point2D(rand.nextDouble() * dim.getX(), rand.nextDouble() * dim.getY())))
+        );
+        System.out.println("Spawning objects");
+        for(IGameObject g : level){
+            g.spawn();
+        }
+
+        if(inGameTimer != null) {
+            inGameTimer.start();
+            System.out.println("Started Timer");
+        }
     }
 
     public static void main(String[] args) {

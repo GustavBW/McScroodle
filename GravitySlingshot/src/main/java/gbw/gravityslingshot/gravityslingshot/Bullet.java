@@ -7,11 +7,12 @@ import javafx.scene.paint.Color;
 
 import java.math.BigDecimal;
 
-public class Bullet implements Tickable, Renderable, MassEffected {
+public class Bullet implements Tickable, Renderable, MassEffected, Collidable {
 
     private Point2D position;
     private Point2D velocity;
     private double mass;
+    private double size;
 
     public Bullet(Point2D pos, Point2D vel){
         this(pos, vel, 10);
@@ -20,6 +21,7 @@ public class Bullet implements Tickable, Renderable, MassEffected {
         this.position = pos;
         this.velocity = vel;
         this.mass = mass;
+        this.size = mass / 4.0;
     }
 
 
@@ -31,7 +33,20 @@ public class Bullet implements Tickable, Renderable, MassEffected {
 
     @Override
     public void tick() {
+        position = position.add(velocity);
+    }
 
+    @Override
+    public boolean isInBounds(Point2D p) {
+        double distance = position.distance(p);
+        return distance < size;
+    }
+
+    @Override
+    public void onCollisionWith(Collidable c) {
+        if(c instanceof GravityObject){
+            destroy();
+        }
     }
 
     @Override

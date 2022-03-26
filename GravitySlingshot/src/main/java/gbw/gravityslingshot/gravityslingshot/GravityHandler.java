@@ -39,11 +39,11 @@ public class GravityHandler implements Tickable{
     }
 
     private void applyGravity(MassEffected obj1, Point2D obj1Pos, double obj1Mass, Point2D obj2Pos, double obj2Mass ) {
-        double distance = obj2Pos.distance(obj1Pos);
+        double distanceSQ = Math.pow(obj2Pos.distance(obj1Pos),2);
         Point2D direction = obj2Pos.subtract(obj1Pos);
         BigDecimal force = (     //Force calc = (gConst * m1 * m2) / dist * dist
                 gConst.multiply(BigDecimal.valueOf(obj2Mass * obj1Mass)))
-                .divide(BigDecimal.valueOf(distance * distance), RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(distanceSQ), RoundingMode.UP)
                 .multiply(BigDecimal.valueOf(GRAVITY_MULTIPLIER)
                 );
         obj1.evaluateGravity(force, direction.normalize());

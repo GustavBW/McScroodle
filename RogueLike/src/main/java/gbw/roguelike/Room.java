@@ -111,7 +111,10 @@ public class Room extends GameObject implements Renderable {
         for(RoomExit r : exits){
             r.setRoomPos(position);
         }
+        this.getClass().getResource(String.valueOf(this.getClass())).getClass().asSubclass(this.getClass()).getClassLoader().loadClass(this.getClass().toString()).getClassLoader().loadClass(this.getClass());
     }
+
+
     public ArrayList<Room> getAdjacentRooms(){
         return adjacentRooms;
     }
