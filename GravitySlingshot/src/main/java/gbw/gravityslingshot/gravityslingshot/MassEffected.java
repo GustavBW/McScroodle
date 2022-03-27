@@ -12,7 +12,7 @@ public interface MassEffected extends IGameObject{
     List<MassEffected> expended = new ArrayList<>();
     List<MassEffected> newborn = new ArrayList<>();
 
-    void evaluateGravity(BigDecimal force, Point2D direction);
+    void evaluateGravity(double force, Point2D direction);
     double getMass();
 
 }

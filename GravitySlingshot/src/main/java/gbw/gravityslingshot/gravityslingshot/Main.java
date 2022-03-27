@@ -74,7 +74,7 @@ public class Main extends Application {
     }
 
     private void render(GraphicsContext gc) {
-        
+
         gc.setFill(Color.LIGHTGRAY);
         gc.fillRect(0,0,dim.getX(),dim.getY());
 
@@ -107,9 +107,12 @@ public class Main extends Application {
         List<IGameObject> level = new ArrayList<>(List.of(
             new GravityHandler(),
             new CollisionHandler(),
-            new Cannon(0, new Point2D(0, dim.getY())),
-            new GravityObject(100,  new Point2D(rand.nextDouble() * dim.getX(), rand.nextDouble() * dim.getY())))
-        );
+            new Cannon(0, dim.multiply(0.5))
+        ));
+
+        for(int i =  0; i < 10; i++){
+            level.add(new GravityObject(100,  new Point2D(rand.nextDouble() * dim.getX(), rand.nextDouble() * dim.getY())));
+        }
         System.out.println("Spawning objects");
         for(IGameObject g : level){
             g.spawn();

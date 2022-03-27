@@ -24,15 +24,13 @@ public class Cannon implements Tickable, Renderable {
 
     @Override
     public void tick() {
-        //point towards the mouse
-
         if(KeyInputHandler.currentlyActive.contains(KeyCode.SPACE)){
             shoot();
         }
     }
 
     private void shoot(){
-        Point2D velocity = position.subtract(MouseInputHandler.mousePosition);
+        Point2D velocity = MouseInputHandler.mousePosition.subtract(position).normalize();
         Bullet bullet = new Bullet(position, velocity, 20);
         bullet.spawn();
     }

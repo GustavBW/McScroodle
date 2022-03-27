@@ -13,6 +13,7 @@ public class Bullet implements Tickable, Renderable, MassEffected, Collidable {
     private Point2D velocity;
     private double mass;
     private double size;
+    private double speed;
 
     public Bullet(Point2D pos, Point2D vel){
         this(pos, vel, 10);
@@ -33,7 +34,7 @@ public class Bullet implements Tickable, Renderable, MassEffected, Collidable {
 
     @Override
     public void tick() {
-        position = position.add(velocity);
+        position = position.add(velocity.multiply(speed));
     }
 
     @Override
@@ -69,8 +70,8 @@ public class Bullet implements Tickable, Renderable, MassEffected, Collidable {
     }
 
     @Override
-    public void evaluateGravity(BigDecimal force, Point2D direction) {
-        Point2D change = direction.multiply(force.doubleValue());
+    public void evaluateGravity(double force, Point2D direction) {
+        Point2D change = direction.multiply(force);
         position = position.add(change);
     }
 

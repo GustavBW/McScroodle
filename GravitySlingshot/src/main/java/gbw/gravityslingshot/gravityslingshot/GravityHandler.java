@@ -7,7 +7,7 @@ import java.math.RoundingMode;
 
 public class GravityHandler implements Tickable{
 
-    public static BigDecimal gConst = BigDecimal.valueOf(6.67 * Math.pow(10, -11));
+    public static double gConst = 6.67 * Math.pow(10, -11);
     public static double GRAVITY_MULTIPLIER = 1;
 
     @Override
@@ -41,11 +41,7 @@ public class GravityHandler implements Tickable{
     private void applyGravity(MassEffected obj1, Point2D obj1Pos, double obj1Mass, Point2D obj2Pos, double obj2Mass ) {
         double distanceSQ = Math.pow(obj2Pos.distance(obj1Pos),2);
         Point2D direction = obj2Pos.subtract(obj1Pos);
-        BigDecimal force = (     //Force calc = (gConst * m1 * m2) / dist * dist
-                gConst.multiply(BigDecimal.valueOf(obj2Mass * obj1Mass)))
-                .divide(BigDecimal.valueOf(distanceSQ), RoundingMode.UP)
-                .multiply(BigDecimal.valueOf(GRAVITY_MULTIPLIER)
-                );
+        double force = (gConst * obj2Mass * obj1Mass / distanceSQ) * GRAVITY_MULTIPLIER;
         obj1.evaluateGravity(force, direction.normalize());
     }
 
