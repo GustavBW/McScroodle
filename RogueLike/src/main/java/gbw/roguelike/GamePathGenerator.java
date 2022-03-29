@@ -27,23 +27,18 @@ public class GamePathGenerator implements Tickable {
 
     public static RoomChart generateLevel(int level){
 
-        Room startingRoom = new Room(1, new Point2D(0,0));
         LevelInformation levelInfo = getLevelInformation(level);
         int roomCount = levelInfo.getMaxRooms();
         RoomChart output = new RoomChart(roomCount * 2, roomCount *2, 200);
 
-        output.addRaw(startingRoom);
+        Room currentRoom = new Room(1, new Point2D(0,0));
+        output.addRaw(currentRoom);
         System.out.println("Generating Level: " + level + " with " + roomCount + " rooms");
 
-        Room currentRoom;
-        Point2D roomPos;
-
-        for(int i = 0; i < roomCount + 1; i++){
+        while(output.getAsArrayList().size() < roomCount){
             currentRoom = new Room(levelInfo.getNextRoomId(), new Point2D(0,0));
 
-            if(!output.addRoomAtRandom(currentRoom,random.nextInt())){
-                i--;
-            }
+            output.addRoomAtRandom(currentRoom,random.nextInt());
         }
 
         for(Room room : output.getAsArrayList()){

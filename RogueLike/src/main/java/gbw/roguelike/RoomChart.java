@@ -6,6 +6,7 @@ import java.util.*;
 
 public class RoomChart {
 
+    private static final Random rand = new Random(System.currentTimeMillis());
     private final int width;
     private final int height;
     private final int offsetX, offsetY, increment;
@@ -132,16 +133,16 @@ public class RoomChart {
             for(int cX = 0; cX < roomDim[0]; cX++){
                 roomFound = chart[roomPos[1] + cY][roomPos[0] + cX];
 
-                if(roomFound != null){
+                if(roomFound != null && room.isInBoundsRaw(SpaceTranslator.toLocalRoomSpace(roomPos[0] + cX + 0.5, roomPos[1] + cY + 0.5,this))){
+                    //TODO sample room before returning false
                     return false;
                 }
             }
         }
-
         return true;
     }
 
-    public Point2D findValidRandomPlacement(Room room, int seed){
+    public Point2D findValidRandomPlacement(Room room, int randomInt){
         //This function finds the position closest to another room, that is valid.
         Point2D output = null;
         ArrayList<Room> copy = new ArrayList<>(quickChart);
@@ -153,19 +154,18 @@ public class RoomChart {
             return null;
         }
 
-        Random random = new Random(seed);
         Room current;
 
         int[] roomDim = SpaceTranslator.roomDimToChartSpace(room.getSize(),this);
 
         while(copy.size() >= 1){
-            current = copy.size() <= 1 ? copy.get(0) : copy.get(random.nextInt(copy.size()));
+            current = copy.size() <= 1 ? copy.get(0) : copy.get(rand.nextInt(0,copy.size()-1));
 
             int[] r1Pos = getRoomPositionInChart(current);
             int[] rDim = SpaceTranslator.roomDimToChartSpace(current.getSize(),this);
 
             for(int i = 0; i < 4; i ++) {
-                switch ((seed + i) % 4) {
+                switch ((randomInt + i) % 4) {
                     //To the left
                     case 0 -> output = SpaceTranslator.toWorldSpace((r1Pos[0] - roomDim[0]), r1Pos[1], this);
                     //On top
