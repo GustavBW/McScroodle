@@ -16,13 +16,12 @@ public class Path {
     private final WayPoint end;
     private final double pathLength;
 
-    public Path (ArrayList<WayPoint> points){
-        this.points = sortById(points);
+    public Path(int numOfWayPoints){
+        this.points = sortById(createWayPoints(numOfWayPoints));
         this.start = points.get(0);
-        this.end = points.get(points.size() -1);
+        this.end = points.get(points.size() - 1);
         this.pathLength = calcPathLength();
-
-        System.out.println("Path length is " + pathLength);
+        System.out.println("Path generated with length = " + pathLength);
     }
 
     public void render(GraphicsContext gc){
@@ -40,8 +39,7 @@ public class Path {
     public WayPoint getStart(){return start;}
     public WayPoint getEnd(){return end;}
     public WayPoint getNext(WayPoint current){
-
-        return current.getId() + 1 == end.getId() ? end : points.get(current.getId());
+        return current.getId() + 1 >= end.getId() ? end : points.get(current.getId());
     }
     private ArrayList<WayPoint> sortById(ArrayList<WayPoint> list){
         WayPoint[] tempArray = new WayPoint[list.size()];
@@ -54,6 +52,22 @@ public class Path {
         Collections.addAll(output, tempArray);
 
         return output;
+    }
+    private ArrayList<WayPoint> createWayPoints(int numOfWayPoints){
+
+        ArrayList<WayPoint> wayPoints = new ArrayList<>();
+        wayPoints.add(new WayPoint(0,0,1));
+
+        ArrayList<WayPoint> list = new ArrayList<>();
+
+        for(int i = 2; i < numOfWayPoints + 1; i++){
+            list.add(new WayPoint(Main.random.nextInt((int) Main.canvasSize.getX()), Main.random.nextInt((int) Main.canvasSize.getY()), i));
+        }
+
+        wayPoints.addAll(list);
+        wayPoints.add(new WayPoint(Main.canvasSize.getX()* 0.9,  Main.canvasSize.getY() * 0.9, numOfWayPoints));
+
+        return wayPoints;
     }
 
     public double getPathLength(){return pathLength;}

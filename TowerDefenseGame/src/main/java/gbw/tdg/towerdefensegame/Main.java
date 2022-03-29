@@ -21,24 +21,23 @@ import java.util.Random;
 public class Main extends Application {
 
     public static Point2D canvasSize = new Point2D(2000,1500);
+    public static Random random = new Random(System.currentTimeMillis());
     private Canvas canvas;
     private Stage mainStage;
     private Rectangle2D screenDim;
-    private Random random;
     private GraphicsContext gc;
     private MouseHandler mouseHandler;
     private KeyPressHandler keyPressHandler;
-    private UIController uiController;
+    private static UIController uiController;
 
     private Path path;
     private ArrayList<WayPoint> wayPoints;
 
     private long lastCall = 0, lastCall2 = 0;
     private final double fpsWanted = 60;
-    private final int numOfWayPoints = 11;
     public static int HP = 10, MAXHP = 10;
     public static boolean isRunning, onPause;
-    public static GameState state = GameState.START_MENU;
+    public static GameState state = GameState.VOID;
 
     private ArrayList<Enemy> enemies;
     public static ArrayList<Enemy> removeEnemy = new ArrayList<>();
@@ -83,14 +82,13 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
-        random = new Random();
-
-        path = new Path(createWayPoints());
+        path = new Path(11);
 
         clickables = new ArrayList<>();
         mouseHandler = new MouseHandler(clickables);
         keyPressHandler = new KeyPressHandler();
         uiController = new UIController(this);
+        setState(GameState.START_MENU);
 
         enemies = new ArrayList<>();
         towers = new ArrayList<>();
@@ -105,39 +103,22 @@ public class Main extends Application {
 
     private void update(){
 
-        switch (state) {
-
-            case START_MENU -> {
-                uiController.showStartMenu();
-                render();
-
+            if (HP <= 0) {
+                state = GameState.GAME_OVER;
+                //resetGameParams();
+                isRunning = false;
             }
 
-            case GAME_OVER -> {
-                uiController.showGameOver();
-                render();
+            render();
 
-            }
-
-            case IN_GAME -> {
-                uiController.showInGame();
-
-                if (HP <= -1) {
-                    state = GameState.GAME_OVER;
-                    //resetGameParams();
-                    isRunning = false;
-                }
-
-                render();
-
-                if (!onPause) {
-                    if ((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()) {
-                        lastCall = System.nanoTime();
-                        tick();
-                    }
+            if (!onPause) {
+                if ((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()) {
+                    lastCall = System.nanoTime();
+                    tick();
                 }
             }
-        }
+
+
         cleanUp();
     }
 
@@ -236,8 +217,11 @@ public class Main extends Application {
     public ArrayList<Enemy> getEnemies(){
         return enemies;
     }
-    public static void setState(GameState state){
-        System.out.println("Main.state changed to: " + state);
-        Main.state = state;
+    public static void setState(GameState newState){
+        if(state != newState) {
+            System.out.println("Main.state changed to: " + state);
+            state = newState;
+            uiController.changeScene(state);
+        }
     }
 }

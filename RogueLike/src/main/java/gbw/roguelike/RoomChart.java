@@ -133,9 +133,12 @@ public class RoomChart {
             for(int cX = 0; cX < roomDim[0]; cX++){
                 roomFound = chart[roomPos[1] + cY][roomPos[0] + cX];
 
-                if(roomFound != null && room.isInBoundsRaw(SpaceTranslator.toLocalRoomSpace(roomPos[0] + cX + 0.5, roomPos[1] + cY + 0.5,this))){
-                    //TODO sample room before returning false
-                    return false;
+                if(roomFound != null ){
+
+                    if(room.isInBoundsRaw(SpaceTranslator.toLocalRoomSpace(roomPos[0] + cX + 0.5, roomPos[1] + cY + 0.5,this))){
+                        return false;
+                    }
+
                 }
             }
         }

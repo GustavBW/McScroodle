@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame.UI;
 
+import gbw.tdg.towerdefensegame.GameState;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
@@ -45,19 +46,13 @@ public class UIController implements Tickable {
         inGameScreen = new InGameScreen();
     }
 
-    public void showGameOver(){
+    public void changeScene(GameState state){
         removeCurrentUI();
-        screenToShow = gameOverScreen;
-    }
-
-    public void showStartMenu(){
-        removeCurrentUI();
-        screenToShow = startMenuScreen;
-    }
-
-    public void showInGame(){
-        removeCurrentUI();
-        screenToShow = inGameScreen;
+        switch (state){
+            case START_MENU -> screenToShow = startMenuScreen;
+            case IN_GAME -> screenToShow = inGameScreen;
+            case GAME_OVER -> screenToShow = gameOverScreen;
+        }
     }
 
     private void removeCurrentUI(){
