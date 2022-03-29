@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class DummyBullet implements Tickable{
+public class DummyBullet implements Tickable,Renderable{
 
     private Point2D position, velocity;
     private double speed = 20, lifeTime = 2 * 1_000_000_000, spawnTime, damage, size = 10;
@@ -17,7 +17,6 @@ public class DummyBullet implements Tickable{
         this.damage = damage;
         this.speed = target.getMvspeed() * 2;
         spawnTime = System.nanoTime();
-        Main.addTickable.add(this);
     }
 
     public void tick(){
@@ -31,15 +30,25 @@ public class DummyBullet implements Tickable{
 
         checkForCollision();
     }
-
+    @Override
     public void render(GraphicsContext gc){
         gc.setFill(Color.BLACK);
         gc.fillRoundRect(position.getX() -size / 2,position.getY() -size / 2,size,size,size,size);
     }
 
-    private void destroy(){
-        Main.removeProjectile.add(this);
-        Main.removeTickable.add(this);
+    @Override
+    public void destroy(){
+        Tickable.expended.add(this);
+        Renderable.expended.add(this);
+    }
+    @Override
+    public void spawn(){
+        Tickable.newborn.add(this);
+        Renderable.newborn.add(this);
+    }
+    @Override
+    public Point2D getPosition(){
+        return position;
     }
 
     private void checkForCollision(){

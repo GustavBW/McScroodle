@@ -23,13 +23,9 @@ public class FancyProgressBar extends ProgressBar implements Tickable {
         this.color1 = color1;
         this.color2 = color2;
         prevCurrent = max;
-
-        Main.addTickable.add(this);
     }
 
     public void tick(){
-
-
         if(System.nanoTime() > lastCall + 500_000_000) {
             if (prevCurrent > current) {
                 prevCurrent *= 0.99;
@@ -60,5 +56,15 @@ public class FancyProgressBar extends ProgressBar implements Tickable {
     @Override
     public void setVal(double i) {
         current = i;
+    }
+
+    @Override
+    public void spawn() {
+        Tickable.newborn.add(this);
+    }
+
+    @Override
+    public void destroy() {
+        Tickable.expended.add(this);
     }
 }

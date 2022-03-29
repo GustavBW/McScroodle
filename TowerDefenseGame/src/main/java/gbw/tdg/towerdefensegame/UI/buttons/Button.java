@@ -1,13 +1,15 @@
-package gbw.tdg.towerdefensegame.UI;
+package gbw.tdg.towerdefensegame.UI.buttons;
 
-import gbw.tdg.towerdefensegame.Destroyable;
 import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.Renderable;
+import gbw.tdg.towerdefensegame.UI.Clickable;
+import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class Button implements Clickable, Destroyable {
+public class Button implements Clickable, Renderable {
 
     private final Point2D position,origin;
     private final double sizeX, sizeY;
@@ -22,13 +24,13 @@ public class Button implements Clickable, Destroyable {
         this.origin = position.subtract(sizeX / 2, sizeY / 2);
         rimColor = new Color(1,1,1,1);
         backGroundColor = new Color(0,0,0,0.5);
-        Main.addClickable.add(this);
     }
 
     public Button(Point2D position, double sizeX, double sizeY){
         this(position,sizeX,sizeY,new RText("",new Point2D(0,0), 0, Color.BLACK, Font.font("Impact")));
     }
 
+    @Override
     public void render(GraphicsContext gc){
         gc.setFill(backGroundColor);
         gc.fillRect(position.getX() - sizeX / 2, position.getY() - sizeY / 2, sizeX, sizeY);
@@ -42,6 +44,10 @@ public class Button implements Clickable, Destroyable {
         text.render(gc);
     }
 
+    @Override
+    public Point2D getPosition() {
+        return position;
+    }
 
     @Override
     public boolean isInBounds(Point2D pos) {
@@ -55,12 +61,15 @@ public class Button implements Clickable, Destroyable {
     }
 
     @Override
-    public void destroy() {
-        Main.removeClickable.remove(this);
+    public void spawn() {
+        Clickable.newborn.add(this);
+        Renderable.newborn.add(this);
     }
 
     @Override
-    public void reInstantiate() {
-        Main.addClickable.add(this);
+    public void destroy() {
+        Clickable.expended.add(this);
+        Renderable.expended.add(this);
     }
+
 }

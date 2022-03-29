@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Main extends Application {
@@ -31,7 +32,7 @@ public class Main extends Application {
     private static UIController uiController;
 
     private Path path;
-    private ArrayList<WayPoint> wayPoints;
+    private List<WayPoint> wayPoints;
 
     private long lastCall = 0, lastCall2 = 0;
     private final double fpsWanted = 60;
@@ -41,19 +42,10 @@ public class Main extends Application {
 
     private ArrayList<Enemy> enemies;
     public static ArrayList<Enemy> removeEnemy = new ArrayList<>();
-    private ArrayList<Clickable> clickables;
-    public static ArrayList<Clickable> removeClickable = new ArrayList<>();
-    public static ArrayList<Clickable> addClickable = new ArrayList<>();
-    private ArrayList<Tower> towers;
-    public static ArrayList<Tower> removeTower = new ArrayList<>();
-    public static ArrayList<Tower> addTower = new ArrayList<>();
+
     private ArrayList<DummyBullet> projectiles;
     public static ArrayList<DummyBullet> addProjectile = new ArrayList<>();
     public static ArrayList<DummyBullet> removeProjectile = new ArrayList<>();
-    private ArrayList<Tickable> tickables;
-    public static ArrayList<Tickable> addTickable = new ArrayList<>();
-    public static ArrayList<Tickable> removeTickable = new ArrayList<>();
-
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -78,23 +70,23 @@ public class Main extends Application {
 
         Scene scene = new Scene(bp, canvasSize.getX(),canvasSize.getY());
 
-        stage.setTitle("Tower Defense Game");
+        stage.setTitle("Σ Tower Defense Game");
         stage.setScene(scene);
         stage.show();
 
         path = new Path(11);
+        wayPoints = path.getPoints();
 
-        clickables = new ArrayList<>();
-        mouseHandler = new MouseHandler(clickables);
+        mouseHandler = new MouseHandler();
         keyPressHandler = new KeyPressHandler();
         uiController = new UIController(this);
+        uiController.spawn();
         setState(GameState.START_MENU);
 
         enemies = new ArrayList<>();
-        towers = new ArrayList<>();
         projectiles = new ArrayList<>();
-        tickables = new ArrayList<>();
-        towers.add(new Tower(new Point2D(500,500), 40, 500, 1.00, this));
+        Tower newTower = new Tower(new Point2D(500,500), 40, 500, 1.00, this);
+        newTower.spawn();
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
         scene.setOnKeyPressed(e -> keyPressHandler.handle(e));
@@ -124,11 +116,12 @@ public class Main extends Application {
 
     private void tick(){
         if(lastCall2 + 500 < System.currentTimeMillis()){
-            enemies.add(new Enemy(path.getStart().x,path.getStart().y,path));
+            Enemy newEnemy = new Enemy(path.getStartPoint().x,path.getStartPoint().y,path);
+            newEnemy.spawn();
             lastCall2 = System.currentTimeMillis();
         }
 
-        for(Tickable t : tickables){
+        for(Tickable t : Tickable.active){
             t.tick();
         }
 
@@ -143,20 +136,8 @@ public class Main extends Application {
 
         path.render(gc);
 
-        for(WayPoint p : wayPoints){
-            p.render(gc);
-        }
-
-        for(Enemy e : enemies){
-            e.render(gc);
-        }
-
-        for(Tower t : towers){
-            t.render(gc);
-        }
-
-        for(DummyBullet d : projectiles){
-            d.render(gc);
+        for(Renderable r : Renderable.active){
+            r.render(gc);
         }
 
         uiController.render(gc);
@@ -167,43 +148,30 @@ public class Main extends Application {
         enemies.removeAll(removeEnemy);
         removeEnemy.clear();
 
+        Clickable.active.addAll(Clickable.newborn);
+        Clickable.active.removeAll(Clickable.expended);
+        Clickable.expended.clear();
+        Clickable.newborn.clear();
 
-        while(clickables.removeAll(removeClickable)){
-            System.out.println("Checking stuff");
-        }
-        removeClickable.clear();
-        clickables.addAll(addClickable);
-        addClickable.clear();
+        ITower.active.addAll(ITower.newborn);
+        ITower.active.removeAll(ITower.expended);
+        ITower.expended.clear();
+        ITower.newborn.clear();
 
-        towers.removeAll(removeTower);
-        removeTower.clear();
-        towers.addAll(addTower);
-        addTower.clear();
+        Tickable.active.addAll(Tickable.newborn);
+        Tickable.active.removeAll(Tickable.expended);
+        Tickable.newborn.clear();
+        Tickable.expended.clear();
+
+        Renderable.active.addAll(Renderable.newborn);
+        Renderable.active.removeAll(Renderable.expended);
+        Renderable.newborn.clear();
+        Renderable.expended.clear();
 
         projectiles.removeAll(removeProjectile);
         removeProjectile.clear();
         projectiles.addAll(addProjectile);
         addProjectile.clear();
-
-        tickables.removeAll(removeTickable);
-        removeTickable.clear();
-        tickables.addAll(addTickable);
-        addTickable.clear();
-    }
-
-    private ArrayList<WayPoint> createWayPoints(){
-        wayPoints = new ArrayList<>();
-        wayPoints.add(new WayPoint(0,0,1));
-
-        ArrayList<WayPoint> list = new ArrayList<>();
-        for(int i = 2; i < numOfWayPoints + 1; i++){
-            list.add(new WayPoint(random.nextInt((int) canvasSize.getX()), random.nextInt((int) canvasSize.getY()), i));
-        }
-
-        wayPoints.addAll(list);
-        wayPoints.add(new WayPoint(canvasSize.getX()* 0.9,  canvasSize.getY() * 0.9,numOfWayPoints));
-
-        return wayPoints;
     }
 
     private void resetGameParams(){

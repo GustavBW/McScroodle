@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Tower implements Clickable, Tickable, Renderable{
+public class Tower implements Clickable, Tickable, ITower{
 
     private double size, range, damage, atkSpeed = 40, attackDelay;
     private Main game;
@@ -28,8 +28,6 @@ public class Tower implements Clickable, Tickable, Renderable{
         this.game = game;
         random = new Random();
         attackDelay = 1_000_000_000 / atkSpeed;
-        Main.addTickable.add(this);
-        Main.addClickable.add(this);
     }
 
     public void tick(){
@@ -54,6 +52,11 @@ public class Tower implements Clickable, Tickable, Renderable{
 
         gc.setFill(Color.BLUE);
         gc.fillRect(position.getX() - size / 2, position.getY() - size / 2, size, size);
+    }
+
+    @Override
+    public Point2D getPosition() {
+        return position;
     }
 
 
@@ -165,17 +168,23 @@ public class Tower implements Clickable, Tickable, Renderable{
         dirToTarget = dirToTarget.normalize();
 
         DummyBullet d = new DummyBullet(position,dirToTarget,target,damage);
-        Main.addProjectile.add(d);
-    }
-
-    public void destroy(){
-        Main.removeTower.add(this);
-        Main.removeTickable.add(this);
+        d.spawn();
     }
 
     @Override
-    public void reInstantiate() {
-        Main.addClickable.add(this);
+    public void spawn() {
+        Clickable.newborn.add(this);
+        Tickable.newborn.add(this);
+        Renderable.newborn.add(this);
+        ITower.newborn.add(this);
+    }
+
+    @Override
+    public void destroy(){
+        ITower.expended.add(this);
+        Tickable.expended.add(this);
+        Renderable.expended.add(this);
+        Clickable.expended.add(this);
     }
 
 

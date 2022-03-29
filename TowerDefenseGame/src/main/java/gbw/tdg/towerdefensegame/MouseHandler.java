@@ -9,17 +9,15 @@ import java.util.ArrayList;
 
 public class MouseHandler implements EventHandler<MouseEvent> {
 
-    private ArrayList<Clickable> clickables;
+    public MouseHandler(){
 
-    public MouseHandler(ArrayList<Clickable> list){
-        this.clickables = list;
     }
 
     @Override
     public void handle(MouseEvent mouseEvent) {
         Point2D clickPos = new Point2D(mouseEvent.getX(),mouseEvent.getY());
 
-        for(Clickable c : clickables){
+        for(Clickable c : Clickable.active){
             if(c.isInBounds(clickPos)){
                 c.onInteraction();
                 break;

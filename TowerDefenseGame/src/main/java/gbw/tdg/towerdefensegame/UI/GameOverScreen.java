@@ -2,12 +2,13 @@ package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
+import gbw.tdg.towerdefensegame.UI.buttons.MenuButton;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class GameOverScreen implements Renderable, Clickable {
+public class GameOverScreen extends GScene{
 
     private MenuButton menuButton;
     private RText youDiedText;
@@ -33,22 +34,20 @@ public class GameOverScreen implements Renderable, Clickable {
     }
 
     @Override
-    public boolean isInBounds(Point2D pos) {
-        return false;
+    public Point2D getPosition() {
+        return new Point2D(0,0);
     }
 
     @Override
-    public void onInteraction() {
-
+    public void spawn() {
+        Renderable.newborn.add(this);
+        menuButton.spawn();
     }
 
     @Override
     public void destroy() {
         menuButton.destroy();
+        Renderable.expended.add(this);
     }
 
-    @Override
-    public void reInstantiate() {
-        menuButton.reInstantiate();
-    }
 }

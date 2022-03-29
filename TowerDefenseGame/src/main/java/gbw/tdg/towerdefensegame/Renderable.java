@@ -1,9 +1,17 @@
 package gbw.tdg.towerdefensegame;
 
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
-public interface Renderable {
+import java.util.HashSet;
+import java.util.Set;
+
+public interface Renderable extends IGameObject{
+
+    Set<Renderable> active = new HashSet<>();
+    Set<Renderable> newborn = new HashSet<>();
+    Set<Renderable> expended = new HashSet<>();
 
     void render(GraphicsContext gc);
-    void destroy();
+    Point2D getPosition();
 }

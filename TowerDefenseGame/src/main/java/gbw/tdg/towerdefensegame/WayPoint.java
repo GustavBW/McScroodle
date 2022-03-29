@@ -14,7 +14,6 @@ public class WayPoint {
         this.id = id;
     }
 
-
     public void render(GraphicsContext gc){
         gc.setFill(Color.BLACK);
         gc.fillRoundRect(x - 5,y - 5,10,10,10,10);

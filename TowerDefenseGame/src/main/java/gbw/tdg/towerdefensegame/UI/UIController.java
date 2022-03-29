@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-public class UIController implements Tickable {
+public class UIController implements Tickable{
 
     private final Main game;
     private FancyProgressBar mainHealthBar;
@@ -25,7 +25,6 @@ public class UIController implements Tickable {
         this.game = game;
 
         effects = new ArrayList<>();
-        Main.addTickable.add(this);
         createUI();
     }
 
@@ -35,6 +34,10 @@ public class UIController implements Tickable {
         screenToShow.render(gc);
     }
 
+    public Point2D getPosition() {
+        return new Point2D(0,0);
+    }
+    @Override
     public void tick(){
         mainHealthBar.setVal((double) Main.HP / Main.MAXHP);
     }
@@ -53,6 +56,7 @@ public class UIController implements Tickable {
             case IN_GAME -> screenToShow = inGameScreen;
             case GAME_OVER -> screenToShow = gameOverScreen;
         }
+        screenToShow.spawn();
     }
 
     private void removeCurrentUI(){
@@ -64,5 +68,15 @@ public class UIController implements Tickable {
         if(screenToShow != null) {
             screenToShow.destroy();
         }
+    }
+
+    @Override
+    public void spawn() {
+        Tickable.newborn.add(this);
+    }
+
+    @Override
+    public void destroy() {
+        Tickable.expended.add(this);
     }
 }

@@ -7,7 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Enemy implements Clickable, Tickable, Destroyable{
+public class Enemy implements Clickable,Tickable,Renderable{
 
     private WayPoint latest;
     private WayPoint next;
@@ -24,18 +24,15 @@ public class Enemy implements Clickable, Tickable, Destroyable{
         this.x = x;
         this.y = y;
         this.path = path;
-        latest = path.getStart();
+        latest = path.getStartPoint();
         next = path.getNext(latest);
         hpBar = new FancyProgressBar(100, 15,new Point2D(x,y - 10),new Color(211 / 255.0,0,0,1), new Color(211 / 255.0,88/255.0,0,0.8));
-        Main.addClickable.add(this);
-        Main.addTickable.add(this);
 
         enemyCount++;
         this.id = enemyCount;
     }
-
+    @Override
     public void tick(){
-
         if(hp <= 0 || next == null){
             alive = false;
             destroy();
@@ -58,14 +55,13 @@ public class Enemy implements Clickable, Tickable, Destroyable{
             hpBar.setPosition(new Point2D(x, y - 10));
         }
     }
-
+    @Override
     public void render(GraphicsContext gc){
         gc.setFill(Color.RED);
         gc.fillRect(x-10,y-10,size,size);
 
         hpBar.render(gc);
     }
-
 
     private Point2D checkDistanceToNext(){
         double distX = (next.x - x) * (next.x - x);
@@ -90,14 +86,17 @@ public class Enemy implements Clickable, Tickable, Destroyable{
         destroy();
     }
 
-    public void destroy(){
-        Main.removeEnemy.add(this);
-        Main.removeClickable.remove(this);
+    @Override
+    public void spawn() {
+        Clickable.newborn.add(this);
+        Tickable.newborn.add(this);
+        Renderable.newborn.add(this);
     }
 
-    @Override
-    public void reInstantiate() {
-        Main.addClickable.add(this);
+    public void destroy(){
+        Clickable.expended.add(this);
+        Tickable.expended.add(this);
+        Renderable.expended.add(this);
     }
 
     @Override
