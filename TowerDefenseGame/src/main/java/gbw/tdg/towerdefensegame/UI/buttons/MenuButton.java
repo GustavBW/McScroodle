@@ -15,6 +15,7 @@ public class MenuButton extends Button{
     @Override
     public void onInteraction(){
         Main.setState(GameState.START_MENU);
+        Main.onGameOver();
         System.out.println("Menu button pressed");
     }
 }

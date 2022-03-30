@@ -18,9 +18,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class Main extends Application {
 
+    public static RenderHandler renderHandler = new RenderHandler();
     public static Point2D canvasSize = new Point2D(2000,1500);
     public static Random random = new Random(System.currentTimeMillis());
     private Canvas canvas;
@@ -39,9 +41,6 @@ public class Main extends Application {
     public static int HP = 10, MAXHP = 10;
     public static boolean isRunning, onPause;
     public static GameState state = GameState.VOID;
-
-    private ArrayList<Enemy> enemies;
-    public static ArrayList<Enemy> removeEnemy = new ArrayList<>();
 
     private ArrayList<DummyBullet> projectiles;
     public static ArrayList<DummyBullet> addProjectile = new ArrayList<>();
@@ -83,7 +82,6 @@ public class Main extends Application {
         uiController.spawn();
         setState(GameState.START_MENU);
 
-        enemies = new ArrayList<>();
         projectiles = new ArrayList<>();
         Tower newTower = new Tower(new Point2D(500,500), 40, 500, 1.00, this);
         newTower.spawn();
@@ -96,7 +94,8 @@ public class Main extends Application {
     private void update(){
 
             if (HP <= 0) {
-                state = GameState.GAME_OVER;
+                setState(GameState.GAME_OVER);
+                onPause = true;
                 //resetGameParams();
                 isRunning = false;
             }
@@ -114,10 +113,26 @@ public class Main extends Application {
         cleanUp();
     }
 
+    public static void onGameOver() {
+        destroyAll();
+
+    }
+
+    private static void destroyAll(){
+        Tickable.newborn.clear();
+        Tickable.expended.addAll(Tickable.active);
+        Tickable.expended.clear();
+
+        Renderable.newborn.clear();
+        Renderable.expended.addAll(Renderable.active);
+        Renderable.expended.clear();
+
+        
+    }
+
     private void tick(){
         if(lastCall2 + 500 < System.currentTimeMillis()){
-            Enemy newEnemy = new Enemy(path.getStartPoint().x,path.getStartPoint().y,path);
-            newEnemy.spawn();
+            new Enemy(path.getStartPoint().x,path.getStartPoint().y,path).spawn();
             lastCall2 = System.currentTimeMillis();
         }
 
@@ -136,17 +151,12 @@ public class Main extends Application {
 
         path.render(gc);
 
-        for(Renderable r : Renderable.active){
-            r.render(gc);
-        }
+        renderHandler.render(gc);
 
-        uiController.render(gc);
+        //uiController.render(gc);
     }
 
     private void cleanUp(){
-
-        enemies.removeAll(removeEnemy);
-        removeEnemy.clear();
 
         Clickable.active.addAll(Clickable.newborn);
         Clickable.active.removeAll(Clickable.expended);
@@ -163,10 +173,10 @@ public class Main extends Application {
         Tickable.newborn.clear();
         Tickable.expended.clear();
 
-        Renderable.active.addAll(Renderable.newborn);
-        Renderable.active.removeAll(Renderable.expended);
-        Renderable.newborn.clear();
-        Renderable.expended.clear();
+        IEnemy.active.addAll(IEnemy.newborn);
+        IEnemy.active.removeAll(IEnemy.expended);
+        IEnemy.newborn.clear();
+        IEnemy.expended.clear();
 
         projectiles.removeAll(removeProjectile);
         removeProjectile.clear();
@@ -182,9 +192,6 @@ public class Main extends Application {
         launch();
     }
 
-    public ArrayList<Enemy> getEnemies(){
-        return enemies;
-    }
     public static void setState(GameState newState){
         if(state != newState) {
             System.out.println("Main.state changed to: " + state);

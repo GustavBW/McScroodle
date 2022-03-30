@@ -1,13 +1,15 @@
 package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class FancyProgressBar extends ProgressBar implements Tickable {
+public class FancyProgressBar extends ProgressBar implements Tickable, Renderable {
 
+    private static final double renderingPriority = 80D;
     private final double sizeX, sizeY;
     private Point2D position;
     private final Color colorBackdrop, color1, color2;
@@ -25,6 +27,7 @@ public class FancyProgressBar extends ProgressBar implements Tickable {
         prevCurrent = max;
     }
 
+    @Override
     public void tick(){
         if(System.nanoTime() > lastCall + 500_000_000) {
             if (prevCurrent > current) {
@@ -52,7 +55,10 @@ public class FancyProgressBar extends ProgressBar implements Tickable {
         gc.fillRect(bar2Xpos,position.getY(), bar2Width, sizeY);
     }
 
-
+    @Override
+    public double getRenderingPriority() {
+        return renderingPriority;
+    }
     @Override
     public void setVal(double i) {
         current = i;
@@ -61,10 +67,12 @@ public class FancyProgressBar extends ProgressBar implements Tickable {
     @Override
     public void spawn() {
         Tickable.newborn.add(this);
+        Renderable.newborn.add(this);
     }
 
     @Override
     public void destroy() {
         Tickable.expended.add(this);
+        Renderable.expended.add(this);
     }
 }

@@ -6,10 +6,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class Tower implements Clickable, Tickable, ITower{
 
+    private static final double renderingPriority = 55D;
     private double size, range, damage, atkSpeed = 40, attackDelay;
     private Main game;
     private boolean isSelected = true, isActive = true;
@@ -33,7 +36,7 @@ public class Tower implements Clickable, Tickable, ITower{
     public void tick(){
         if(isActive && lastCall + attackDelay < System.nanoTime()){
 
-            Enemy target = findTarget(findEnemies());
+            IEnemy target = findTarget(findEnemies());
 
             if(target != null){
                 attack(target);
@@ -59,12 +62,17 @@ public class Tower implements Clickable, Tickable, ITower{
         return position;
     }
 
+    @Override
+    public double getRenderingPriority() {
+        return renderingPriority;
+    }
 
-    private ArrayList<Enemy> findEnemies(){
+
+    private ArrayList<IEnemy> findEnemies(){
         Point2D origin = new Point2D(position.getX() - size / 2, position.getY() - size /2);
-        ArrayList<Enemy> enemiesFound = new ArrayList<>();
+        ArrayList<IEnemy> enemiesFound = new ArrayList<>();
 
-        for(Enemy e : game.getEnemies()){
+        for(IEnemy e : IEnemy.active){
             double distX = Math.pow(e.getPosition().getX() - origin.getX(), 2);
             double distY = Math.pow(e.getPosition().getY() - origin.getY(), 2);
             double distance = Math.sqrt(distX + distY);
@@ -78,16 +86,16 @@ public class Tower implements Clickable, Tickable, ITower{
         return enemiesFound;
     }
 
-    private Enemy findTarget(ArrayList<Enemy> list){
+    private IEnemy findTarget(List<IEnemy> list){
 
-        Enemy target = null;
+        IEnemy target = null;
 
         if(!list.isEmpty()) {
             switch (targetingType) {
                 case FIRST -> {
-                    Enemy first = list.get(0);
+                    IEnemy first = list.get(0);
 
-                    for (Enemy e : list) {
+                    for (IEnemy e : list) {
                         if (e.getProgress() > first.getProgress()) {
                             first = e;
                         }
@@ -103,9 +111,9 @@ public class Tower implements Clickable, Tickable, ITower{
                 }
 
                 case LAST -> {
-                    Enemy last = list.get(0);
+                    IEnemy last = list.get(0);
 
-                    for (Enemy e : list) {
+                    for (IEnemy e : list) {
                         if (e.getProgress() < last.getProgress()) {
                             last = e;
                         }
@@ -116,9 +124,9 @@ public class Tower implements Clickable, Tickable, ITower{
 
                 case BEEFIEST -> {
 
-                    Enemy beefiest = list.get(0);
+                    IEnemy beefiest = list.get(0);
 
-                    for (Enemy e : list) {
+                    for (IEnemy e : list) {
                         if (e.getHp() > beefiest.getHp()) {
                             beefiest = e;
                         }
@@ -129,9 +137,9 @@ public class Tower implements Clickable, Tickable, ITower{
 
                 case WEAKEST -> {
 
-                    Enemy weakest = list.get(0);
+                    IEnemy weakest = list.get(0);
 
-                    for (Enemy e : list) {
+                    for (IEnemy e : list) {
                         if (e.getHp() < weakest.getHp()) {
                             weakest = e;
                         }
@@ -142,9 +150,9 @@ public class Tower implements Clickable, Tickable, ITower{
 
                 case FASTEST -> {
 
-                    Enemy fastest = list.get(0);
+                    IEnemy fastest = list.get(0);
 
-                    for (Enemy e : list) {
+                    for (IEnemy e : list) {
                         if (e.getMvspeed() > fastest.getMvspeed()) {
                             fastest = e;
                         }
@@ -159,11 +167,11 @@ public class Tower implements Clickable, Tickable, ITower{
         return target;
     }
 
-    private void attack(Enemy target){
+    private void attack(IEnemy target){
         shootAt(target);
     }
 
-    private void shootAt(Enemy target){
+    private void shootAt(IEnemy target){
         Point2D dirToTarget = target.getPosition().subtract(position);
         dirToTarget = dirToTarget.normalize();
 

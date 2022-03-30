@@ -1,0 +1,12 @@
+Render Priority
+
+0-10 Ground
+11-20
+21-30 
+31-40 Enemies
+41-50 Tower Overlays
+51-60 Towers
+61-70 Bullets
+71-80 UI
+81-90 UI
+91-99 Function buttons

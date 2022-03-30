@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 
 public class GameOverScreen extends GScene{
 
+    private static final double renderingPriority = 75D;
     private MenuButton menuButton;
     private RText youDiedText;
     private Color backgroundColor;
@@ -36,6 +37,11 @@ public class GameOverScreen extends GScene{
     @Override
     public Point2D getPosition() {
         return new Point2D(0,0);
+    }
+
+    @Override
+    public double getRenderingPriority() {
+        return renderingPriority;
     }
 
     @Override

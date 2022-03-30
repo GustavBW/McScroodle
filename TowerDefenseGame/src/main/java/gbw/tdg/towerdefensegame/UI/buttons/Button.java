@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 
 public class Button implements Clickable, Renderable {
 
+    private static final double renderingPriority = 85D;
     private final Point2D position,origin;
     private final double sizeX, sizeY;
     private final RText text;
@@ -47,6 +48,11 @@ public class Button implements Clickable, Renderable {
     @Override
     public Point2D getPosition() {
         return position;
+    }
+
+    @Override
+    public double getRenderingPriority() {
+        return renderingPriority;
     }
 
     @Override

@@ -7,8 +7,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Enemy implements Clickable,Tickable,Renderable{
+public class Enemy implements Clickable,Tickable,IEnemy{
 
+    private final static double renderingPriority = 40D;
     private WayPoint latest;
     private WayPoint next;
     private double x,y;
@@ -73,7 +74,7 @@ public class Enemy implements Clickable,Tickable,Renderable{
             next = path.getNext(next);
         }
 
-        if(next == null){
+        if(latest == path.getEndPoint()){
             completedRun();
             return null;
         }
@@ -91,12 +92,15 @@ public class Enemy implements Clickable,Tickable,Renderable{
         Clickable.newborn.add(this);
         Tickable.newborn.add(this);
         Renderable.newborn.add(this);
+        IEnemy.newborn.add(this);
     }
 
     public void destroy(){
         Clickable.expended.add(this);
         Tickable.expended.add(this);
         Renderable.expended.add(this);
+        IEnemy.expended.add(this);
+
     }
 
     @Override
@@ -111,15 +115,23 @@ public class Enemy implements Clickable,Tickable,Renderable{
 
     public Point2D getPosition(){return new Point2D(x,y);}
 
+    @Override
+    public double getRenderingPriority() {
+        return renderingPriority;
+    }
+    @Override
     public double getProgress(){
         return lengthTraveled / path.getPathLength();
     }
-
+    @Override
     public int getHp(){return hp;}
+    @Override
     public void changeHp(double amount){hp += amount;}
+    @Override
     public double getMvspeed(){
         return mvspeed;
     }
+    @Override
     public double getSize(){return size;}
 
 

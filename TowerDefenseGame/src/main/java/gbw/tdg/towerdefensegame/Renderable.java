@@ -14,4 +14,5 @@ public interface Renderable extends IGameObject{
 
     void render(GraphicsContext gc);
     Point2D getPosition();
+    double getRenderingPriority();
 }

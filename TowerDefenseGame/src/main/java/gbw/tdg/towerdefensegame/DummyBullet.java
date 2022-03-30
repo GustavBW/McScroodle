@@ -6,11 +6,12 @@ import javafx.scene.paint.Color;
 
 public class DummyBullet implements Tickable,Renderable{
 
+    private static final double renderingPriority = 65D;
     private Point2D position, velocity;
     private double speed = 20, lifeTime = 2 * 1_000_000_000, spawnTime, damage, size = 10;
-    private Enemy target;
+    private IEnemy target;
 
-    public DummyBullet(Point2D position, Point2D velocity, Enemy target, double damage){
+    public DummyBullet(Point2D position, Point2D velocity, IEnemy target, double damage){
         this.position = position;
         this.velocity = velocity;
         this.target = target;
@@ -49,6 +50,11 @@ public class DummyBullet implements Tickable,Renderable{
     @Override
     public Point2D getPosition(){
         return position;
+    }
+
+    @Override
+    public double getRenderingPriority() {
+        return renderingPriority;
     }
 
     private void checkForCollision(){
