@@ -55,6 +55,7 @@ public class Tower implements Clickable, Tickable, ITower{
             }
         }
         atkSpeed = Math.max(0.5,atkSpeed);
+        range = Math.max(100,range);
 
         this.game = Main.getInstance();
         attackDelay = 1_000_000_000 / atkSpeed;
@@ -238,7 +239,11 @@ public class Tower implements Clickable, Tickable, ITower{
 
     @Override
     public void onInteraction() {
-        isSelected = !isSelected;
+        isSelected = true;
         System.out.println("You clicked " + this);
+    }
+    @Override
+    public void deselect(){
+        isSelected = false;
     }
 }

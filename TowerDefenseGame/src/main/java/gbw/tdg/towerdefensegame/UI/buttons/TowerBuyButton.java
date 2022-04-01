@@ -50,14 +50,8 @@ public class TowerBuyButton extends Button implements Tickable {
     public void onInteraction(){
         if(Main.GOLD >= price) {
             Main.GOLD -= price;
-            ((TowerShop) owner).increasePointBuy(1);
             owner.childClicked(this);
         }
-    }
-
-    public void toggleDisable(){
-        disabled = !disabled;
-        setDisabled(disabled);
     }
 
     public void setDisabled(boolean disabled){

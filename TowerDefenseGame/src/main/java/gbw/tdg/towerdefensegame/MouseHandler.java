@@ -11,6 +11,7 @@ public class MouseHandler implements EventHandler<MouseEvent> {
 
     public static boolean locked, someoneListening, nextClick = false;
     public static Point2D mousePos = new Point2D(0,0);
+    private Clickable selected;
 
     public MouseHandler(){
 
@@ -28,6 +29,10 @@ public class MouseHandler implements EventHandler<MouseEvent> {
             for (Clickable c : Clickable.active) {
                 if (c.isInBounds(clickPos)) {
                     c.onInteraction();
+                    if(selected != null){
+                        selected.deselect();
+                    }
+                    selected = c;
                     break;
                 }
             }

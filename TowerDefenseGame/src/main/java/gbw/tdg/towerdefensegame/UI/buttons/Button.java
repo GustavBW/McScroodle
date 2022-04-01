@@ -78,4 +78,9 @@ public class Button implements Clickable, Renderable {
         Renderable.expended.add(this);
     }
 
+    @Override
+    public void deselect(){
+
+    }
+
 }

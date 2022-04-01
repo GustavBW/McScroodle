@@ -13,13 +13,13 @@ public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
     private WayPoint latest;
     private WayPoint next;
     private double x,y;
-    private final double mvspeed = 15, minDistToPoint = 10, size = 40;
+    private final double mvspeed = 5, minDistToPoint = 10, size = 40;
     private final Path path;
     private final ProgressBar hpBar;
     private int maxHP = 5, id, hp = maxHP;
     private double lengthTraveled = 0;
     private static int enemyCount = 0;
-    private boolean alive = true;
+    private boolean alive = true,selected = false;
 
     public Enemy(double x, double y, Path path){
         this.x = x;
@@ -113,6 +113,7 @@ public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
     @Override
     public void onInteraction() {
         hp--;
+        System.out.println("OOF");
     }
 
     public Point2D getPosition(){return new Point2D(x,y);}
@@ -135,7 +136,10 @@ public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
     }
     @Override
     public double getSize(){return size;}
+    @Override
+    public void deselect(){
 
+    }
 
     @Override
     public String toString(){return "Enemy " + id;}

@@ -24,7 +24,7 @@ public class Main extends Application {
 
     private static Main instance;
     public static RenderHandler renderHandler = new RenderHandler();
-    public static Point2D canvasSize = new Point2D(2000,1500);
+    public static Point2D canvasSize = new Point2D(1500,1000);
     public static Random random = new Random(System.currentTimeMillis());
     private Canvas canvas;
     private Stage mainStage;
@@ -52,11 +52,11 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
 
         screenDim = Screen.getPrimary().getBounds();
-
+        canvasSize = new Point2D(screenDim.getWidth(),screenDim.getHeight());
         mainStage = stage;
         BorderPane bp = new BorderPane();
 
-        canvas = new Canvas(canvasSize.getX(),canvasSize.getY());
+        canvas = new Canvas(screenDim.getWidth(),screenDim.getHeight());
         canvas.setScaleX(1);
         canvas.setScaleY(1);
         bp.setCenter(canvas);
@@ -70,13 +70,13 @@ public class Main extends Application {
         };
         timer.start();
 
-        Scene scene = new Scene(bp, canvasSize.getX(),canvasSize.getY());
+        Scene scene = new Scene(bp, screenDim.getWidth(),screenDim.getHeight());
 
         stage.setTitle("Σ Tower Defense Game");
         stage.setScene(scene);
         stage.show();
 
-        path = new Path(11);
+        path = new Path(50);
         wayPoints = path.getPoints();
 
         mouseHandler = new MouseHandler();
