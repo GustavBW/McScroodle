@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.Clickable;
+import gbw.tdg.towerdefensegame.UI.TowerStatDisplay;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -19,6 +20,7 @@ public class Tower implements Clickable, Tickable, ITower{
     private Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
     private long lastCall = 0;
+    private final TowerStatDisplay statDisplay;
 
     private static Color rangeIndicatorColor = new Color(0,0,0,0.28);
 
@@ -29,6 +31,7 @@ public class Tower implements Clickable, Tickable, ITower{
         this.damage = damage;
         this.game = game;
         attackDelay = 1_000_000_000 / atkSpeed;
+        this.statDisplay = new TowerStatDisplay(this, position.add(Main.canvasSize.multiply(0.002)));
     }
     public Tower(int points){
         this.position = new Point2D(0,0);
@@ -57,6 +60,7 @@ public class Tower implements Clickable, Tickable, ITower{
         atkSpeed = Math.max(0.5,atkSpeed);
         range = Math.max(100,range);
 
+        this.statDisplay = new TowerStatDisplay(this, position.add(Main.canvasSize.multiply(0.002)));
         this.game = Main.getInstance();
         attackDelay = 1_000_000_000 / atkSpeed;
         System.out.println("Tower made with " + "DMG: " + damage + " RNG: " + range + " SPD: " + atkSpeed + " Points remaining: " + points);
@@ -77,20 +81,24 @@ public class Tower implements Clickable, Tickable, ITower{
 
     public void render(GraphicsContext gc){
 
+        gc.setFill(Color.BLUE);
+        gc.fillRect(position.getX() - size / 2, position.getY() - size / 2, size, size);
+
         if(isSelected) {
             gc.setFill(rangeIndicatorColor);
             gc.fillRoundRect(position.getX() - range, position.getY() - range, range * 2, range * 2, range * 2, range* 2);
+            statDisplay.render(gc);
         }
-
-        gc.setFill(Color.BLUE);
-        gc.fillRect(position.getX() - size / 2, position.getY() - size / 2, size, size);
     }
 
     @Override
     public Point2D getPosition() {
         return position;
     }
-    public void setPosition(Point2D newPos){position = newPos;}
+    public void setPosition(Point2D newPos){
+        position = newPos;
+        statDisplay.setPosition(position.add(Main.canvasSize.multiply(0.002)));
+    }
 
     @Override
     public double getRenderingPriority() {

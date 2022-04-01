@@ -29,7 +29,7 @@ public class MouseHandler implements EventHandler<MouseEvent> {
             for (Clickable c : Clickable.active) {
                 if (c.isInBounds(clickPos)) {
                     c.onInteraction();
-                    if(selected != null){
+                    if(selected != null && selected != c){
                         selected.deselect();
                     }
                     selected = c;
