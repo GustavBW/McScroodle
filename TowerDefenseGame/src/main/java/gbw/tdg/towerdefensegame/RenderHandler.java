@@ -9,7 +9,8 @@ public class RenderHandler {
     private List<Renderable> currentFrame = new LinkedList<>();
 
     public void render(GraphicsContext gc){
-        gatherDrawCall();
+        cleanUp();
+        getDrawOrder();
 
         for(Renderable r : currentFrame){
             r.render(gc);
@@ -17,14 +18,14 @@ public class RenderHandler {
 
     }
 
-    private void gatherDrawCall(){
-        cleanUp();
+    private void getDrawOrder(){
 
         List<Renderable> copyOfNewborn = new ArrayList<>(Renderable.newborn);
         int currentFrameSize = currentFrame.size();
 
+        TreeSet<Renderable> treeSet = new TreeSet<>(Comparator.comparingDouble(Renderable::getRenderingPriority));
+
         for(Renderable r : copyOfNewborn){
-            System.out.println("Finding index for " + r + " with prio " + r.getRenderingPriority());
             currentFrameSize = currentFrame.size();
             double rPrio = r.getRenderingPriority();
             int matchingIndex = (int) ((currentFrameSize) * (rPrio / 100.00));
@@ -45,8 +46,9 @@ public class RenderHandler {
                     }
                     currentFrame.add(matchingIndex + 1, r);
                 }
+            }else{
+                currentFrame.add(matchingIndex, r);
             }
-            System.out.println("Gave index: " + matchingIndex);
         }
 
         Renderable.newborn.clear();

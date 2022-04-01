@@ -12,9 +12,9 @@ import javafx.scene.text.Font;
 public class Button implements Clickable, Renderable {
 
     private static final double renderingPriority = 85D;
-    private final Point2D position,origin;
-    private final double sizeX, sizeY;
-    private final RText text;
+    protected Point2D position,origin;
+    protected final double sizeX, sizeY;
+    protected final RText text;
     private Color backGroundColor, rimColor;
 
     public Button(Point2D position, double sizeX, double sizeY, RText textUnit){

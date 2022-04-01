@@ -44,19 +44,19 @@ public class Path {
 
         ArrayList<WayPoint> wayPoints = new ArrayList<>();
         startPoint = new WayPoint(0,0,1);
-        System.out.println("Made " + startPoint);
+        //System.out.println("Made " + startPoint);
         wayPoints.add(startPoint);
 
         ArrayList<WayPoint> list = new ArrayList<>();
         for(int i = 2; i < numOfWayPoints; i++){
             WayPoint midwayWP = new WayPoint(Main.random.nextInt((int) Main.canvasSize.getX()), Main.random.nextInt((int) Main.canvasSize.getY()), i);
-            System.out.println("Made " + midwayWP);
+            //System.out.println("Made " + midwayWP);
             list.add(midwayWP);
         }
 
         wayPoints.addAll(list);
         endPoint = new WayPoint(Main.canvasSize.getX()* 0.9,  Main.canvasSize.getY() * 0.9, numOfWayPoints);
-        System.out.println("Made " + endPoint);
+        //System.out.println("Made " + endPoint);
         wayPoints.add(endPoint);
 
         return wayPoints;

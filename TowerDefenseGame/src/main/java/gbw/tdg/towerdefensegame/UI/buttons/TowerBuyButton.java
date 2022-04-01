@@ -1,0 +1,72 @@
+package gbw.tdg.towerdefensegame.UI.buttons;
+
+import gbw.tdg.towerdefensegame.*;
+import gbw.tdg.towerdefensegame.UI.Clickable;
+import gbw.tdg.towerdefensegame.UI.IClickableOwner;
+import gbw.tdg.towerdefensegame.UI.RText;
+import gbw.tdg.towerdefensegame.UI.TowerShop;
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
+public class TowerBuyButton extends Button implements Tickable {
+
+    private final Tower tower;
+    private final IClickableOwner owner;
+    private int clickCount;
+    private int price;
+    private boolean disabled;
+    private final Color enabledColor = new Color(1,1,1,1);
+    private final Color disabledColor = new Color(0,0,0,0.5);
+    private Color backgroundColor = enabledColor;
+
+    public TowerBuyButton(Point2D position, double sizeX, double sizeY, RText textUnit, Tower tower, IClickableOwner owner, int price) {
+        super(position, sizeX, sizeY, textUnit);
+        this.tower = tower;
+        this.owner = owner;
+        this.price = price;
+        textUnit.setText(tower.toString() + "\nPrice: " + price);
+    }
+
+    @Override
+    public void render(GraphicsContext gc){
+        gc.setFill(backgroundColor);
+        gc.fillRect(getPosition().getX(),getPosition().getY(),sizeX,sizeY);
+        text.render(gc);
+    }
+
+    @Override
+    public void tick(){
+        if(clickCount == 1){
+            position = MouseHandler.mousePos;
+        }
+    }
+
+    public Tower getTower(){
+        return tower;
+    }
+
+    @Override
+    public void onInteraction(){
+        if(Main.GOLD >= price) {
+            Main.GOLD -= price;
+            ((TowerShop) owner).increasePointBuy(1);
+            owner.childClicked(this);
+        }
+    }
+
+    public void toggleDisable(){
+        disabled = !disabled;
+        setDisabled(disabled);
+    }
+
+    public void setDisabled(boolean disabled){
+        if(disabled){
+            Clickable.expended.add(this);
+            backgroundColor = disabledColor;
+        }else{
+            Clickable.newborn.add(this);
+            backgroundColor = enabledColor;
+        }
+    }
+}

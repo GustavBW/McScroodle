@@ -13,15 +13,14 @@ import java.util.Set;
 public class Tower implements Clickable, Tickable, ITower{
 
     private static final double renderingPriority = 55D;
-    private double size, range, damage, atkSpeed = 40, attackDelay;
+    private double size, range, damage, atkSpeed, attackDelay;
     private Main game;
-    private boolean isSelected = true, isActive = true;
+    private boolean isSelected = false, isActive = true;
     private Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
     private long lastCall = 0;
-    private Random random;
 
-    private static Color rangeIndicatorColor = new Color(0,0,0,0.5);
+    private static Color rangeIndicatorColor = new Color(0,0,0,0.28);
 
     public Tower(Point2D position, double size, double range, double damage, Main game){
         this.position = position;
@@ -29,8 +28,37 @@ public class Tower implements Clickable, Tickable, ITower{
         this.range = range;
         this.damage = damage;
         this.game = game;
-        random = new Random();
         attackDelay = 1_000_000_000 / atkSpeed;
+    }
+    public Tower(int points){
+        this.position = new Point2D(0,0);
+        this.size = 40;
+
+        while(points > 0) {
+            if(Main.random.nextBoolean()) {
+                damage++;
+                points--;
+            }
+
+            if(points <= 0){break;}
+
+            if(Main.random.nextBoolean()) {
+                range += 100;
+                points--;
+            }
+
+            if(points <= 0){break;}
+
+            if(Main.random.nextBoolean()) {
+                atkSpeed++;
+                points--;
+            }
+        }
+        atkSpeed = Math.max(0.5,atkSpeed);
+
+        this.game = Main.getInstance();
+        attackDelay = 1_000_000_000 / atkSpeed;
+        System.out.println("Tower made with " + "DMG: " + damage + " RNG: " + range + " SPD: " + atkSpeed + " Points remaining: " + points);
     }
 
     public void tick(){
@@ -61,6 +89,7 @@ public class Tower implements Clickable, Tickable, ITower{
     public Point2D getPosition() {
         return position;
     }
+    public void setPosition(Point2D newPos){position = newPos;}
 
     @Override
     public double getRenderingPriority() {
@@ -105,7 +134,7 @@ public class Tower implements Clickable, Tickable, ITower{
                 }
 
                 case RANDOM -> {
-                    int index = Math.max(random.nextInt(list.size()) - 1,0);
+                    int index = Math.max(Main.random.nextInt(list.size()) - 1,0);
 
                     target = list.get(index);
                 }
@@ -198,11 +227,18 @@ public class Tower implements Clickable, Tickable, ITower{
 
     @Override
     public boolean isInBounds(Point2D pos) {
-        return false;
+        return (pos.getX() > position.getX() && pos.getX() < position.getX() + size) &&
+                (pos.getY() > position.getY() && pos.getY() < position.getY() + size);
+    }
+
+    @Override
+    public String toString(){
+        return "DMG: " + damage + "\n" + "RNG: " + range + "\n" + "SPD " + atkSpeed;
     }
 
     @Override
     public void onInteraction() {
         isSelected = !isSelected;
+        System.out.println("You clicked " + this);
     }
 }

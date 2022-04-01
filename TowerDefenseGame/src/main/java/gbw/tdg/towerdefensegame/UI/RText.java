@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 public class RText {
 
+    public static final RText EMPTY = new RText("",new Point2D(0,0),0,Color.BLACK,Font.font("Verdana",10));
     private String text;
     private Point2D position;
     private final double dropShadowOffset;
@@ -24,6 +25,10 @@ public class RText {
         this.font = font;
         this.position = this.position.subtract(font.getSize() * 1.1,(-font.getSize() / 2) * 0.9);
         dropShadowColor = new Color(0,0,0,1);
+    }
+
+    public RText(Point2D p){
+        this("",p,1,Color.BLACK,Font.font("Verdana", 20));
     }
 
     public void render(GraphicsContext gc){

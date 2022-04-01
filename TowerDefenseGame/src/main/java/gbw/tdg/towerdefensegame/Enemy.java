@@ -7,7 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Enemy implements Clickable,Tickable,IEnemy{
+public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
 
     private final static double renderingPriority = 40D;
     private WayPoint latest;
@@ -16,7 +16,7 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     private final double mvspeed = 15, minDistToPoint = 10, size = 40;
     private final Path path;
     private final ProgressBar hpBar;
-    private int hp = 20, id, maxHP = 20;
+    private int maxHP = 5, id, hp = maxHP;
     private double lengthTraveled = 0;
     private static int enemyCount = 0;
     private boolean alive = true;
@@ -27,15 +27,18 @@ public class Enemy implements Clickable,Tickable,IEnemy{
         this.path = path;
         latest = path.getStartPoint();
         next = path.getNext(latest);
-        hpBar = new FancyProgressBar(100, 15,new Point2D(x,y - 10),new Color(211 / 255.0,0,0,1), new Color(211 / 255.0,88/255.0,0,0.8));
+        hpBar = new FancyProgressBar(100, 15,Main.canvasSize.multiply(0.5),
+                new Color(211 / 255.0,0,0,1),
+                new Color(0 / 255.0,0/255.0,0,0.8),this);
 
         enemyCount++;
         this.id = enemyCount;
     }
     @Override
     public void tick(){
-        if(hp <= 0 || next == null){
+        if(hp <= 0){
             alive = false;
+            Main.GOLD += maxHP;
             destroy();
         }
 
@@ -53,7 +56,7 @@ public class Enemy implements Clickable,Tickable,IEnemy{
             }
 
             hpBar.setVal((double) hp / maxHP);
-            hpBar.setPosition(new Point2D(x, y - 10));
+            hpBar.setPosition(new Point2D(x, y - size));
         }
     }
     @Override
@@ -100,7 +103,6 @@ public class Enemy implements Clickable,Tickable,IEnemy{
         Tickable.expended.add(this);
         Renderable.expended.add(this);
         IEnemy.expended.add(this);
-
     }
 
     @Override

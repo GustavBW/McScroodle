@@ -22,6 +22,7 @@ import java.util.Set;
 
 public class Main extends Application {
 
+    private static Main instance;
     public static RenderHandler renderHandler = new RenderHandler();
     public static Point2D canvasSize = new Point2D(2000,1500);
     public static Random random = new Random(System.currentTimeMillis());
@@ -31,14 +32,15 @@ public class Main extends Application {
     private GraphicsContext gc;
     private MouseHandler mouseHandler;
     private KeyPressHandler keyPressHandler;
+    private static WaveManager waveManager;
     private static UIController uiController;
 
     private Path path;
     private List<WayPoint> wayPoints;
 
-    private long lastCall = 0, lastCall2 = 0;
+    private long lastCall = 0;
     private final double fpsWanted = 60;
-    public static int HP = 10, MAXHP = 10;
+    public static int HP = 10, MAXHP = 10, GOLD = 20;
     public static boolean isRunning, onPause;
     public static GameState state = GameState.VOID;
 
@@ -58,6 +60,7 @@ public class Main extends Application {
         canvas.setScaleX(1);
         canvas.setScaleY(1);
         bp.setCenter(canvas);
+        projectiles = new ArrayList<>();
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -78,17 +81,16 @@ public class Main extends Application {
 
         mouseHandler = new MouseHandler();
         keyPressHandler = new KeyPressHandler();
+        waveManager = new WaveManager(path);
         uiController = new UIController(this);
         uiController.spawn();
         setState(GameState.START_MENU);
 
-        projectiles = new ArrayList<>();
-        Tower newTower = new Tower(new Point2D(500,500), 40, 500, 1.00, this);
-        newTower.spawn();
-
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
+        scene.setOnMouseMoved(e -> mouseHandler.updateMousePos(e));
         scene.setOnKeyPressed(e -> keyPressHandler.handle(e));
         isRunning = true;
+        instance = this;
     }
 
     private void update(){
@@ -115,7 +117,7 @@ public class Main extends Application {
 
     public static void onGameOver() {
         destroyAll();
-
+        waveManager.destroy();
     }
 
     private static void destroyAll(){
@@ -131,15 +133,9 @@ public class Main extends Application {
     }
 
     private void tick(){
-        if(lastCall2 + 500 < System.currentTimeMillis()){
-            new Enemy(path.getStartPoint().x,path.getStartPoint().y,path).spawn();
-            lastCall2 = System.currentTimeMillis();
-        }
-
         for(Tickable t : Tickable.active){
             t.tick();
         }
-
     }
 
     private void render(){
@@ -190,6 +186,13 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    public static void onGameStart(){
+        waveManager.spawn();
+    }
+    public static Main getInstance(){
+        return instance;
     }
 
     public static void setState(GameState newState){

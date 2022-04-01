@@ -30,20 +30,15 @@ public class UIController implements Tickable{
 
     public void render(GraphicsContext gc){
         mainHealthBar.render(gc);
-
         screenToShow.render(gc);
     }
 
     public Point2D getPosition() {
         return new Point2D(0,0);
     }
-    @Override
-    public void tick(){
-        mainHealthBar.setVal((double) Main.HP / Main.MAXHP);
-    }
 
     private void createUI(){
-        mainHealthBar = new FancyProgressBar(Main.canvasSize.getX() - 10, 50, new Point2D(5,5), new Color(31 / 255.0,122 / 255.0,4 / 255.0,1), new Color(255 / 255.0,69 / 255.0,0,1));
+        //mainHealthBar = new FancyProgressBar(Main.canvasSize.getX() - 10, 50, new Point2D(5,5), new Color(31 / 255.0,122 / 255.0,4 / 255.0,1), new Color(255 / 255.0,69 / 255.0,0,1));
         startMenuScreen = new StartMenuScreen();
         gameOverScreen = new GameOverScreen();
         inGameScreen = new InGameScreen();
@@ -78,5 +73,10 @@ public class UIController implements Tickable{
     @Override
     public void destroy() {
         Tickable.expended.add(this);
+    }
+
+    @Override
+    public void tick() {
+
     }
 }

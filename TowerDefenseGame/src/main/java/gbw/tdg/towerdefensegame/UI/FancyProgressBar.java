@@ -1,13 +1,11 @@
 package gbw.tdg.towerdefensegame.UI;
 
-import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.Renderable;
-import gbw.tdg.towerdefensegame.Tickable;
+import gbw.tdg.towerdefensegame.*;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class FancyProgressBar extends ProgressBar implements Tickable, Renderable {
+public class FancyProgressBar extends ProgressBar implements Tickable, IOwnedRenderable {
 
     private static final double renderingPriority = 80D;
     private final double sizeX, sizeY;
@@ -16,8 +14,8 @@ public class FancyProgressBar extends ProgressBar implements Tickable, Renderabl
     private double prevCurrent;
     private long lastCall = 0;
 
-    public FancyProgressBar(double sizeX, double sizeY, Point2D position, Color color1, Color color2) {
-        super(0, 1, sizeX, true, position);
+    public FancyProgressBar(double sizeX, double sizeY, Point2D position, Color color1, Color color2, IRenderableOwner owner) {
+        super(0, 1, sizeX, true, position,owner);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.position = position;
