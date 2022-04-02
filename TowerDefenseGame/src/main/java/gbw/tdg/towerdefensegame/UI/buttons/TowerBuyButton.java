@@ -1,10 +1,8 @@
 package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.*;
-import gbw.tdg.towerdefensegame.UI.Clickable;
-import gbw.tdg.towerdefensegame.UI.IClickableOwner;
-import gbw.tdg.towerdefensegame.UI.RText;
-import gbw.tdg.towerdefensegame.UI.TowerShop;
+import gbw.tdg.towerdefensegame.UI.*;
+import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -48,9 +46,11 @@ public class TowerBuyButton extends Button implements Tickable {
 
     @Override
     public void onInteraction(){
-        if(Main.GOLD >= price) {
-            Main.GOLD -= price;
+        if(Main.getGold() >= price) {
+            Main.alterGoldAmount(-price);
             owner.childClicked(this);
+        }else{
+            new OnScreenWarning("Not enough gold!", Main.canvasSize.multiply(0.5), 3).spawn();
         }
     }
 

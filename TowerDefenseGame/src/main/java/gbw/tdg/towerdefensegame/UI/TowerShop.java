@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.buttons.TowerBuyButton;
+import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

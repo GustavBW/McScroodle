@@ -1,14 +1,16 @@
-package gbw.tdg.towerdefensegame.UI;
+package gbw.tdg.towerdefensegame.UI.Screens;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
+import gbw.tdg.towerdefensegame.UI.GScene;
+import gbw.tdg.towerdefensegame.UI.RText;
 import gbw.tdg.towerdefensegame.UI.buttons.MenuButton;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class GameOverScreen extends GScene{
+public class GameOverScreen extends GScene {
 
     private static final double renderingPriority = 75D;
     private MenuButton menuButton;

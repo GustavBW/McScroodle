@@ -5,17 +5,16 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class FancyProgressBar extends ProgressBar implements Tickable, IOwnedRenderable {
+public class FancyProgressBar extends ProgressBar implements Tickable{
 
     private static final double renderingPriority = 80D;
     private final double sizeX, sizeY;
-    private Point2D position;
     private final Color colorBackdrop, color1, color2;
     private double prevCurrent;
     private long lastCall = 0;
 
-    public FancyProgressBar(double sizeX, double sizeY, Point2D position, Color color1, Color color2, IRenderableOwner owner) {
-        super(0, 1, sizeX, true, position,owner);
+    public FancyProgressBar(double sizeX, double sizeY, Point2D position, Color color1, Color color2) {
+        super(0, 1, sizeX, true, position);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.position = position;
@@ -32,9 +31,7 @@ public class FancyProgressBar extends ProgressBar implements Tickable, IOwnedRen
                 prevCurrent *= 0.99;
             }
         }
-
-        position = super.getPosition().add(0,-10);
-
+        //position = super.getPosition().add(0,-10);
     }
 
     @Override
@@ -57,6 +54,7 @@ public class FancyProgressBar extends ProgressBar implements Tickable, IOwnedRen
     public double getRenderingPriority() {
         return renderingPriority;
     }
+
     @Override
     public void setVal(double i) {
         current = i;

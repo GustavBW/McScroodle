@@ -7,29 +7,30 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
+public class Enemy implements Clickable,Tickable,IEnemy{
 
     private final static double renderingPriority = 40D;
     private WayPoint latest;
     private WayPoint next;
     private double x,y;
-    private final double mvspeed = 5, minDistToPoint = 10, size = 40;
+    private double mvspeed = 15, minDistToPoint = 10, size = 40;
     private final Path path;
     private final ProgressBar hpBar;
-    private int maxHP = 5, id, hp = maxHP;
+    private int maxHP = 10, id, hp = maxHP;
     private double lengthTraveled = 0;
     private static int enemyCount = 0;
     private boolean alive = true,selected = false;
+    private final Color color;
 
     public Enemy(double x, double y, Path path){
         this.x = x;
         this.y = y;
         this.path = path;
+        this.color = new Color(Main.random.nextInt(1,255)/255.0,0,Main.random.nextInt(1,255) / 255.0,1);
         latest = path.getStartPoint();
         next = path.getNext(latest);
-        hpBar = new FancyProgressBar(100, 15,Main.canvasSize.multiply(0.5),
-                new Color(211 / 255.0,0,0,1),
-                new Color(0 / 255.0,0/255.0,0,0.8),this);
+        hpBar = new FancyProgressBar(size * 2, size * 0.2,new Point2D(x,y), color,
+                new Color(0 / 255.0,0/255.0,0,0.8));
 
         enemyCount++;
         this.id = enemyCount;
@@ -38,7 +39,7 @@ public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
     public void tick(){
         if(hp <= 0){
             alive = false;
-            Main.GOLD += maxHP;
+            Main.alterGoldAmount(maxHP);
             destroy();
         }
 
@@ -56,13 +57,18 @@ public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
             }
 
             hpBar.setVal((double) hp / maxHP);
-            hpBar.setPosition(new Point2D(x, y - size));
+            hpBar.setPosition(new Point2D(x - (size * 0.5),y - (size * 0.5)));
         }
     }
     @Override
     public void render(GraphicsContext gc){
-        gc.setFill(Color.RED);
-        gc.fillRect(x-10,y-10,size,size);
+        if(selected){
+            gc.setFill(Color.GOLD);
+            gc.fillRect(x-4,y-4,size+4,size+4);
+        }
+
+        gc.setFill(color);
+        gc.fillRect(x,y,size,size);
 
         hpBar.render(gc);
     }
@@ -83,6 +89,12 @@ public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
         }
 
         return new Point2D(next.x - x, next.y - y);
+    }
+
+    public void applyBuff(EnemyBuff buff){
+        hp += buff.getHealth();
+        maxHP += buff.getHealth();
+        mvspeed += buff.getBonusSpeed();
     }
 
     private void completedRun(){
@@ -112,7 +124,10 @@ public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
 
     @Override
     public void onInteraction() {
-        hp--;
+        selected = !selected;
+        if(!Main.onPause) {
+            hp--;
+        }
         System.out.println("OOF");
     }
 
@@ -138,7 +153,7 @@ public class Enemy implements Clickable,Tickable,IEnemy,IRenderableOwner{
     public double getSize(){return size;}
     @Override
     public void deselect(){
-
+        selected = false;
     }
 
     @Override

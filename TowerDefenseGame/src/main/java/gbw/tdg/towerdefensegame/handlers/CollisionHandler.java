@@ -1,8 +1,9 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.handlers;
 
+import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.UI.Collidable;
 
-public class CollisionHandler implements Tickable{
+public class CollisionHandler implements Tickable {
 
 
     @Override

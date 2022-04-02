@@ -1,7 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.Clickable;
-import gbw.tdg.towerdefensegame.UI.UIController;
+import gbw.tdg.towerdefensegame.handlers.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class Main extends Application {
 
@@ -38,21 +37,19 @@ public class Main extends Application {
     private Path path;
     private List<WayPoint> wayPoints;
 
-    private long lastCall = 0;
+    private long lastCall = 0,lastCall2 = 0;
     private final double fpsWanted = 60;
-    public static int HP = 10, MAXHP = 10, GOLD = 20;
+    private int frameCount;
+    public static int HP = 10, MAXHP = 10, FPS, totalGoldEarned, totalGoldSpend;
+    private static int GOLD = 20;
     public static boolean isRunning, onPause;
     public static GameState state = GameState.VOID;
-
-    private ArrayList<DummyBullet> projectiles;
-    public static ArrayList<DummyBullet> addProjectile = new ArrayList<>();
-    public static ArrayList<DummyBullet> removeProjectile = new ArrayList<>();
 
     @Override
     public void start(Stage stage) throws IOException {
 
         screenDim = Screen.getPrimary().getBounds();
-        canvasSize = new Point2D(screenDim.getWidth(),screenDim.getHeight());
+        canvasSize = new Point2D(screenDim.getWidth(),screenDim.getHeight() -50);
         mainStage = stage;
         BorderPane bp = new BorderPane();
 
@@ -60,7 +57,6 @@ public class Main extends Application {
         canvas.setScaleX(1);
         canvas.setScaleY(1);
         bp.setCenter(canvas);
-        projectiles = new ArrayList<>();
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -70,19 +66,19 @@ public class Main extends Application {
         };
         timer.start();
 
-        Scene scene = new Scene(bp, screenDim.getWidth(),screenDim.getHeight());
+        Scene scene = new Scene(bp, screenDim.getWidth(),screenDim.getHeight()-50);
 
         stage.setTitle("Σ Tower Defense Game");
         stage.setScene(scene);
         stage.show();
 
-        path = new Path(50);
+        path = new Path(11);
         wayPoints = path.getPoints();
 
         mouseHandler = new MouseHandler();
-        keyPressHandler = new KeyPressHandler();
-        waveManager = new WaveManager(path);
         uiController = new UIController(this);
+        keyPressHandler = new KeyPressHandler(uiController);
+        waveManager = new WaveManager(path);
         uiController.spawn();
         setState(GameState.START_MENU);
 
@@ -94,7 +90,6 @@ public class Main extends Application {
     }
 
     private void update(){
-
             if (HP <= 0) {
                 setState(GameState.GAME_OVER);
                 onPause = true;
@@ -108,9 +103,16 @@ public class Main extends Application {
                 if ((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()) {
                     lastCall = System.nanoTime();
                     tick();
+                    FPS++;
                 }
             }
+        frameCount++;
 
+        if (lastCall2 + 1_000_000_000 <= System.nanoTime()){
+            FPS = frameCount;
+            frameCount = 0;
+            lastCall2 = System.nanoTime();
+        }
 
         cleanUp();
     }
@@ -128,7 +130,6 @@ public class Main extends Application {
         Renderable.newborn.clear();
         Renderable.expended.addAll(Renderable.active);
         Renderable.expended.clear();
-
         
     }
 
@@ -174,10 +175,6 @@ public class Main extends Application {
         IEnemy.newborn.clear();
         IEnemy.expended.clear();
 
-        projectiles.removeAll(removeProjectile);
-        removeProjectile.clear();
-        projectiles.addAll(addProjectile);
-        addProjectile.clear();
     }
 
     private void resetGameParams(){
@@ -186,6 +183,19 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    public static void alterGoldAmount(int amount){
+        if(amount <= 0){
+            GOLD += amount;
+            totalGoldSpend += amount;
+        }else{
+            GOLD += amount;
+            totalGoldEarned += amount;
+        }
+    }
+    public static int getGold(){
+        return GOLD;
     }
 
     public static void onGameStart(){

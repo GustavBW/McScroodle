@@ -15,7 +15,6 @@ public class Tower implements Clickable, Tickable, ITower{
 
     private static final double renderingPriority = 55D;
     private double size, range, damage, atkSpeed, attackDelay;
-    private Main game;
     private boolean isSelected = false, isActive = true;
     private Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
@@ -29,7 +28,6 @@ public class Tower implements Clickable, Tickable, ITower{
         this.size = size;
         this.range = range;
         this.damage = damage;
-        this.game = game;
         attackDelay = 1_000_000_000 / atkSpeed;
         this.statDisplay = new TowerStatDisplay(this, position.add(Main.canvasSize.multiply(0.002)));
     }
@@ -60,10 +58,8 @@ public class Tower implements Clickable, Tickable, ITower{
         atkSpeed = Math.max(0.5,atkSpeed);
         range = Math.max(100,range);
 
-        this.statDisplay = new TowerStatDisplay(this, position.add(Main.canvasSize.multiply(0.002)));
-        this.game = Main.getInstance();
+        this.statDisplay = new TowerStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
         attackDelay = 1_000_000_000 / atkSpeed;
-        System.out.println("Tower made with " + "DMG: " + damage + " RNG: " + range + " SPD: " + atkSpeed + " Points remaining: " + points);
     }
 
     public void tick(){
@@ -97,7 +93,6 @@ public class Tower implements Clickable, Tickable, ITower{
     }
     public void setPosition(Point2D newPos){
         position = newPos;
-        statDisplay.setPosition(position.add(Main.canvasSize.multiply(0.002)));
     }
 
     @Override
@@ -210,10 +205,7 @@ public class Tower implements Clickable, Tickable, ITower{
     }
 
     private void shootAt(IEnemy target){
-        Point2D dirToTarget = target.getPosition().subtract(position);
-        dirToTarget = dirToTarget.normalize();
-
-        DummyBullet d = new DummyBullet(position,dirToTarget,target,damage);
+        DummyBullet d = new DummyBullet(position,target,damage);
         d.spawn();
     }
 

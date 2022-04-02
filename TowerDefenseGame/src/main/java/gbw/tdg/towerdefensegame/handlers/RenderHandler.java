@@ -1,5 +1,6 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.handlers;
 
+import gbw.tdg.towerdefensegame.Renderable;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.*;
@@ -28,26 +29,26 @@ public class RenderHandler {
         for(Renderable r : copyOfNewborn){
             currentFrameSize = currentFrame.size();
             double rPrio = r.getRenderingPriority();
-            int matchingIndex = (int) ((currentFrameSize) * (rPrio / 100.00));
+            int optimalIndex = (int) ((currentFrameSize) * (rPrio / 100.00));
 
-            if(currentFrameSize <= matchingIndex){
+            if(currentFrameSize <= optimalIndex){
                 currentFrame.add(r);
 
-            }else if(currentFrame.get(matchingIndex) != null){
-                double foundPrio = currentFrame.get(matchingIndex).getRenderingPriority();
+            }else if(currentFrame.get(optimalIndex) != null){
+                double foundPrio = currentFrame.get(optimalIndex).getRenderingPriority();
 
                 if(foundPrio <= rPrio){
-                    currentFrame.add(matchingIndex + 1, r);
+                    currentFrame.add(optimalIndex + 1, r);
                 }else{
 
-                    while(foundPrio > rPrio && matchingIndex > 0){
-                        matchingIndex--;
-                        foundPrio = currentFrame.get(matchingIndex).getRenderingPriority();
+                    while(foundPrio > rPrio && optimalIndex > 0){
+                        optimalIndex--;
+                        foundPrio = currentFrame.get(optimalIndex).getRenderingPriority();
                     }
-                    currentFrame.add(matchingIndex + 1, r);
+                    currentFrame.add(optimalIndex + 1, r);
                 }
             }else{
-                currentFrame.add(matchingIndex, r);
+                currentFrame.add(optimalIndex, r);
             }
         }
 

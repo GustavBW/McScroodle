@@ -11,9 +11,9 @@ public class DummyBullet implements Tickable,Renderable{
     private double speed = 20, lifeTime = 2 * 1_000_000_000, spawnTime, damage, size = 10;
     private IEnemy target;
 
-    public DummyBullet(Point2D position, Point2D velocity, IEnemy target, double damage){
+    public DummyBullet(Point2D position, IEnemy target, double damage){
         this.position = position;
-        this.velocity = velocity;
+        this.velocity = new Point2D(0,0);
         this.target = target;
         this.damage = damage;
         this.speed = target.getMvspeed() * 2;
@@ -21,9 +21,8 @@ public class DummyBullet implements Tickable,Renderable{
     }
 
     public void tick(){
-        position = position.add(velocity.multiply(speed));
-
         velocity = target.getPosition().subtract(position).normalize();
+        position = position.add(velocity.multiply(speed));
 
         if(System.nanoTime() > lifeTime + spawnTime){
             destroy();

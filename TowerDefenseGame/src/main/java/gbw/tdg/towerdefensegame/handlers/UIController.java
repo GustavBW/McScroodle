@@ -1,12 +1,16 @@
-package gbw.tdg.towerdefensegame.UI;
+package gbw.tdg.towerdefensegame.handlers;
 
 import gbw.tdg.towerdefensegame.GameState;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
+import gbw.tdg.towerdefensegame.UI.FancyProgressBar;
+import gbw.tdg.towerdefensegame.UI.Screens.DevInfoScreen;
+import gbw.tdg.towerdefensegame.UI.Screens.GameOverScreen;
+import gbw.tdg.towerdefensegame.UI.Screens.InGameScreen;
+import gbw.tdg.towerdefensegame.UI.Screens.StartMenuScreen;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
@@ -19,6 +23,8 @@ public class UIController implements Tickable{
     private StartMenuScreen startMenuScreen;
     private GameOverScreen gameOverScreen;
     private InGameScreen inGameScreen;
+    private DevInfoScreen devInfoScreen;
+    private boolean showInfo = false;
 
 
     public UIController(Main game){
@@ -33,6 +39,16 @@ public class UIController implements Tickable{
         screenToShow.render(gc);
     }
 
+    public void toggleInfo(){
+        showInfo = !showInfo;
+
+        if(showInfo){
+            devInfoScreen.spawn();
+        }else{
+            devInfoScreen.destroy();
+        }
+    }
+
     public Point2D getPosition() {
         return new Point2D(0,0);
     }
@@ -42,6 +58,7 @@ public class UIController implements Tickable{
         startMenuScreen = new StartMenuScreen();
         gameOverScreen = new GameOverScreen();
         inGameScreen = new InGameScreen();
+        devInfoScreen = new DevInfoScreen();
     }
 
     public void changeScene(GameState state){
