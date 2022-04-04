@@ -13,13 +13,10 @@ public class TowerBuyButton extends Button implements Tickable {
     private final IClickableOwner owner;
     private int clickCount;
     private int price;
-    private boolean disabled;
-    private final Color enabledColor = new Color(1,1,1,1);
-    private final Color disabledColor = new Color(0,0,0,0.5);
-    private Color backgroundColor = enabledColor;
 
     public TowerBuyButton(Point2D position, double sizeX, double sizeY, RText textUnit, Tower tower, IClickableOwner owner, int price) {
         super(position, sizeX, sizeY, textUnit);
+        renderingPriority = 99.9;
         this.tower = tower;
         this.owner = owner;
         this.price = price;
@@ -33,12 +30,13 @@ public class TowerBuyButton extends Button implements Tickable {
     public void render(GraphicsContext gc){
         gc.setFill(backgroundColor);
         gc.fillRect(position.getX(),position.getY(),sizeX,sizeY);
+
         text.render(gc);
     }
 
     @Override
     public void setPosition(Point2D p) {
-        this.position = p;
+        position = p;
         super.text.setPosition(p.add(30,20));
     }
 
@@ -60,16 +58,6 @@ public class TowerBuyButton extends Button implements Tickable {
             owner.childClicked(this);
         }else{
             new OnScreenWarning("Not enough gold!", Main.canvasSize.multiply(0.5), 3).spawn();
-        }
-    }
-
-    public void setDisabled(boolean disabled){
-        if(disabled){
-            Clickable.expended.add(this);
-            backgroundColor = disabledColor;
-        }else{
-            Clickable.newborn.add(this);
-            backgroundColor = enabledColor;
         }
     }
 }

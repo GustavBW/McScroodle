@@ -26,6 +26,10 @@ public class Path {
 
         gc.setFill(Color.GRAY);
 
+        for(WayPoint wP : points){
+            wP.render(gc);
+        }
+
         for(int i = 0; i < points.size() - 2; i++){
             gc.strokeLine(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y);
         }

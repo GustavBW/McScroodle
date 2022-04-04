@@ -38,7 +38,6 @@ public class Inventory<T extends IGameObject> {
         objects.add(newObject);
         slotObjMap.put(getIndexOf(newObject), newObject);
         objSlotMap.put(newObject,getIndexOf(newObject));
-        newObject.spawn();
         return true;
     }
 
@@ -49,7 +48,6 @@ public class Inventory<T extends IGameObject> {
         objects.set(slot, newObject);
         objSlotMap.put(newObject, slot);
         slotObjMap.put(slot,newObject);
-        newObject.spawn();
         return true;
     }
     public boolean replace(T obj1, T obj2){
@@ -84,12 +82,11 @@ public class Inventory<T extends IGameObject> {
     protected int getIndexOf(T obj){
         int size = objects.size();
 
-        for(int i = size - 1; i <= 0; i--){
+        for(int i = size - 1; i >= 0; i--){
             if(objects.get(i) == obj){
                 return i;
             }
         }
-
         return size;
     }
 }

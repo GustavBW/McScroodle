@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 public class ProgressBar implements Renderable {
 
-    private final static double renderingPriority = 45D;
+    private final double renderingPriority = 45D;
     protected final double min, max;
     protected double sizeX,sizeY;
     protected double current;

@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class Tower implements Clickable, Tickable, ITower{
 
-    private static final double renderingPriority = 55D;
+    private final double renderingPriority = 55D;
     private double sizeX, sizeY, range, damage, atkSpeed, attackDelay;
     private boolean isSelected = false, isActive = true;
     private Point2D position;

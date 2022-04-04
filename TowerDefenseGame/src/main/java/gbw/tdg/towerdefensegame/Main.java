@@ -40,7 +40,7 @@ public class Main extends Application {
     private long lastCall = 0,lastCall2 = 0;
     private final double fpsWanted = 60;
     private int frameCount;
-    public static int HP = 10, MAXHP = 10, FPS, totalGoldEarned, totalGoldSpend;
+    public static int MAXHP = -1, HP = MAXHP, FPS, totalGoldEarned, totalGoldSpend;
     private static int GOLD = 20;
     public static boolean isRunning, onPause;
     public static GameState state = GameState.VOID;

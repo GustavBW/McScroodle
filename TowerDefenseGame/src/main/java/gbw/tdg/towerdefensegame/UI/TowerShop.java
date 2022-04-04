@@ -18,7 +18,7 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
     private TowerBuyButton selectedTowerOffering;
 
     public TowerShop(){
-        this.shop = new GraphicalInventory<>(3, sizeX, sizeY, 10, position,90D);
+        this.shop = new GraphicalInventory<>(3, sizeX, sizeY, 10, position,87D);
         shop.add(getNewOffering());
         shop.add(getNewOffering());
         shop.add(getNewOffering());
@@ -31,7 +31,7 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
 
     @Override
     public void tick(){
-        
+
     }
 
     @Override
@@ -73,12 +73,12 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
 
     private void lockShop(){
         for(TowerBuyButton tBB : shop.getAllRaw()){
-            tBB.setDisabled(true);
+            tBB.setDisable(true);
         }
     }
     private void unlockShop(){
         for(TowerBuyButton tBB : shop.getAllRaw()){
-            tBB.setDisabled(false);
+            tBB.setDisable(false);
         }
     }
 

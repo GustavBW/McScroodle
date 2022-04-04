@@ -4,9 +4,22 @@ Render Priority
 11-20
 21-30 
 31-40 Enemies
+  -40 Enemy
+  -45 ProgressBar
 41-50 Tower Overlays
 51-60 Towers
+  -55 Tower, Tower Overlay, TowerStatDisplay
 61-70 Bullets
+  -65 DummyBullet
 71-80 UI
+  -75 GameOverScreen, InGameScreen, StartMenuScreen
+  -80 FancyProgressBar
 81-90 UI
+  -87 TowerShop graphical Inventory
+  -88 OnScreenWarning
 91-99 Function buttons
+  -99.9 Dev info screen
+
+
+ UNSORTED:
+ Path

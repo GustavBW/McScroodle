@@ -11,11 +11,15 @@ import javafx.scene.text.Font;
 
 public class Button implements Clickable, Renderable {
 
-    private static final double renderingPriority = 85D;
+    protected double renderingPriority = 85D;
     protected Point2D position;
     protected double sizeX, sizeY;
     protected final RText text;
-    private Color backGroundColor, rimColor;
+    protected boolean disabled;
+    protected Color rimColor;
+    protected Color enabledColor = new Color(1,1,1,1);
+    protected Color disabledColor = new Color(0,0,0,0.5);
+    protected Color backgroundColor = enabledColor;
 
     public Button(Point2D position, double sizeX, double sizeY, RText textUnit){
         this.position = position;
@@ -23,7 +27,6 @@ public class Button implements Clickable, Renderable {
         this.sizeY = sizeY;
         this.text = textUnit;
         rimColor = new Color(1,1,1,1);
-        backGroundColor = new Color(0,0,0,0.5);
     }
 
     public Button(Point2D position, double sizeX, double sizeY){
@@ -32,7 +35,7 @@ public class Button implements Clickable, Renderable {
 
     @Override
     public void render(GraphicsContext gc){
-        gc.setFill(backGroundColor);
+        gc.setFill(backgroundColor);
         gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
 
         gc.setFill(rimColor);
@@ -70,6 +73,7 @@ public class Button implements Clickable, Renderable {
 
     @Override
     public boolean isInBounds(Point2D pos) {
+        if(disabled){return false;}
         //System.out.println("Checking isInBounds() with pos " + pos.getX() + " " +pos.getY());
         return (pos.getX() < position.getX() + sizeX && pos.getX() > position.getX())
                 && (pos.getY() < position.getY() + sizeY && pos.getY() > position.getY());
@@ -95,6 +99,18 @@ public class Button implements Clickable, Renderable {
     @Override
     public void deselect(){
 
+    }
+
+    public void setDisable(boolean disabled){
+        if(disabled){
+            Clickable.expended.add(this);
+            backgroundColor = disabledColor;
+            this.disabled = true;
+        }else{
+            Clickable.newborn.add(this);
+            backgroundColor = enabledColor;
+            this.disabled = false;
+        }
     }
 
 }

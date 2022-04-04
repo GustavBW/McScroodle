@@ -20,10 +20,11 @@ public class GameOverScreen extends GScene {
         backgroundColor = new Color(0,0,0,0.5);
         Point2D buttonPos = new Point2D(Main.canvasSize.getX() * 0.5,Main.canvasSize.getY() * 0.83);
 
-        RText textUnit = new RText("MENU", buttonPos,3,new Color(1,1,1,1), Font.font("Impact", 86.00));
+        RText textUnit = new RText("MENU", buttonPos.subtract(0,10),3,new Color(1,1,1,1), Font.font("Impact", Main.canvasSize.getX() * 0.04));
         this.menuButton = new MenuButton(buttonPos, Main.canvasSize.getX() * 0.16,Main.canvasSize.getY() * 0.08, textUnit);
+        menuButton.setPosition(buttonPos.subtract(menuButton.getDimensions().multiply(0.5)));
 
-        youDiedText = new RText("YOU DIED", new Point2D(Main.canvasSize.getX() * 0.455,Main.canvasSize.getY() * 0.13), 5,new Color(1,0,0,1), Font.font("Impact", 140.0));
+        youDiedText = new RText("YOU DIED", new Point2D(Main.canvasSize.getX() * 0.455,Main.canvasSize.getY() * 0.13), 5,new Color(1,0,0,1), Font.font("Impact", Main.canvasSize.getX() * 0.1));
     }
 
     @Override

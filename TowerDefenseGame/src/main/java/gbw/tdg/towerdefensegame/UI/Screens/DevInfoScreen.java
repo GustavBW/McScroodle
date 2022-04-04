@@ -17,10 +17,10 @@ public class DevInfoScreen extends GScene implements Tickable {
     public DevInfoScreen(){
         super(99.9);
         attrText1 = new RText(
-            "FPS: ", new Point2D(50,50), 2, Color.GREENYELLOW, Font.font("Verdana",22)
+            "FPS: ", new Point2D(50,100), 2, Color.GREENYELLOW, Font.font("Verdana",22)
         );
         attrValText = new RText(
-                "", new Point2D(150,50), 2, Color.GREENYELLOW, Font.font("Verdana",22)
+                "", new Point2D(150,100), 2, Color.GREENYELLOW, Font.font("Verdana",22)
         );
     }
 
