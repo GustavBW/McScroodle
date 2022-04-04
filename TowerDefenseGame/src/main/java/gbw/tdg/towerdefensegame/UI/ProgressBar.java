@@ -11,7 +11,8 @@ import javafx.scene.paint.Color;
 public class ProgressBar implements Renderable {
 
     private final static double renderingPriority = 45D;
-    protected final double min, max, size;
+    protected final double min, max;
+    protected double sizeX,sizeY;
     protected double current;
     private final boolean backdrop;
     protected Point2D position;
@@ -19,7 +20,8 @@ public class ProgressBar implements Renderable {
     public ProgressBar(double min, double max, double size, boolean backdrop, Point2D position){
         this.min = min;
         this.max = max;
-        this.size = size;
+        this.sizeX = size;
+        this.sizeY = sizeX * 0.1;
         this.backdrop = backdrop;
         this.current = max;
         this.position = position;
@@ -33,11 +35,11 @@ public class ProgressBar implements Renderable {
     public void render(GraphicsContext gc){
         if(backdrop) {
             gc.setFill(Color.BLACK);    //Backdrop
-            gc.fillRect(position.getX() - size / 2, position.getY(), size, size * 0.1);
+            gc.fillRect(position.getX() - sizeX / 2, position.getY(), sizeX, sizeY);
         }
 
         gc.setFill(Color.RED);
-        gc.fillRect(position.getX() - size / 2, position.getY(), size * (current / max), size * 0.1);
+        gc.fillRect(position.getX() - sizeX / 2, position.getY(), sizeX * (current / max), sizeY);
 
     }
 
@@ -46,6 +48,13 @@ public class ProgressBar implements Renderable {
 
     public double getVal(){return current;}
     public void setPosition(Point2D p){this.position = p;}
+
+    @Override
+    public void setDimensions(Point2D dim) {
+        sizeX = dim.getX();
+        sizeY = dim.getY();
+    }
+
     public Point2D getPosition(){
         return position;
     }

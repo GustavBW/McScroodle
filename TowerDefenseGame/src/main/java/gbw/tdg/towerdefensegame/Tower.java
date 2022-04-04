@@ -14,7 +14,7 @@ import java.util.Set;
 public class Tower implements Clickable, Tickable, ITower{
 
     private static final double renderingPriority = 55D;
-    private double size, range, damage, atkSpeed, attackDelay;
+    private double sizeX, sizeY, range, damage, atkSpeed, attackDelay;
     private boolean isSelected = false, isActive = true;
     private Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
@@ -25,7 +25,8 @@ public class Tower implements Clickable, Tickable, ITower{
 
     public Tower(Point2D position, double size, double range, double damage, Main game){
         this.position = position;
-        this.size = size;
+        this.sizeX = size;
+        this.sizeY = size;
         this.range = range;
         this.damage = damage;
         attackDelay = 1_000_000_000 / atkSpeed;
@@ -33,7 +34,8 @@ public class Tower implements Clickable, Tickable, ITower{
     }
     public Tower(int points){
         this.position = new Point2D(0,0);
-        this.size = 40;
+        this.sizeX = 40;
+        this.sizeY = 40;
 
         while(points > 0) {
             if(Main.random.nextBoolean()) {
@@ -78,7 +80,7 @@ public class Tower implements Clickable, Tickable, ITower{
     public void render(GraphicsContext gc){
 
         gc.setFill(Color.BLUE);
-        gc.fillRect(position.getX() - size / 2, position.getY() - size / 2, size, size);
+        gc.fillRect(position.getX() - sizeX / 2, position.getY() - sizeY / 2, sizeX, sizeY);
 
         if(isSelected) {
             gc.setFill(rangeIndicatorColor);
@@ -96,13 +98,19 @@ public class Tower implements Clickable, Tickable, ITower{
     }
 
     @Override
+    public void setDimensions(Point2D dim) {
+        sizeX = dim.getX();
+        sizeY = dim.getY();
+    }
+
+    @Override
     public double getRenderingPriority() {
         return renderingPriority;
     }
 
 
     private ArrayList<IEnemy> findEnemies(){
-        Point2D origin = new Point2D(position.getX() - size / 2, position.getY() - size /2);
+        Point2D origin = new Point2D(position.getX() - sizeX / 2, position.getY() - sizeY /2);
         ArrayList<IEnemy> enemiesFound = new ArrayList<>();
 
         for(IEnemy e : IEnemy.active){
@@ -228,8 +236,8 @@ public class Tower implements Clickable, Tickable, ITower{
 
     @Override
     public boolean isInBounds(Point2D pos) {
-        return (pos.getX() > position.getX() && pos.getX() < position.getX() + size) &&
-                (pos.getY() > position.getY() && pos.getY() < position.getY() + size);
+        return (pos.getX() > position.getX() && pos.getX() < position.getX() + sizeX) &&
+                (pos.getY() > position.getY() && pos.getY() < position.getY() + sizeY);
     }
 
     @Override

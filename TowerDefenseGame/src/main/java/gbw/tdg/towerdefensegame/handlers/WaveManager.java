@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame.handlers;
 
 import gbw.tdg.towerdefensegame.*;
+import javafx.geometry.Point2D;
 
 public class WaveManager implements Tickable {
 
@@ -28,7 +29,7 @@ public class WaveManager implements Tickable {
     @Override
     public void tick() {
         if(lastCall2 + 500 < System.currentTimeMillis()){
-            Enemy newEnemy = new Enemy(path.getStartPoint().x,path.getStartPoint().y,path);
+            Enemy newEnemy = new Enemy(new Point2D(path.getStartPoint().x,path.getStartPoint().y),path);
             newEnemy.applyBuff(currentBuff);
             newEnemy.spawn();
             lastCall2 = System.currentTimeMillis();

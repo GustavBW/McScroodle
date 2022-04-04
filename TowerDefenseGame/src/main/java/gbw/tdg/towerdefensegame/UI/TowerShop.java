@@ -2,97 +2,64 @@ package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.buttons.TowerBuyButton;
+import gbw.tdg.towerdefensegame.handlers.ClickListener;
 import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class TowerShop implements Renderable, IClickableOwner, Tickable {
-    private final static double renderingPriority = 90D;
-    private final Point2D position = new Point2D(0, Main.canvasSize.getY() * 0.76);
+public class TowerShop implements IClickableOwner, Tickable, ClickListener {
+    private Point2D position = new Point2D(0, Main.canvasSize.getY() * 0.76);
     private final double sizeX = Main.canvasSize.getX()*0.6, sizeY = Main.canvasSize.getY() - position.getY();
-    private double tBBWidth = sizeX * 0.3;
-    private final Color backgroundColor = new Color(0,0,0,0.5);
-    private List<TowerBuyButton> currentOfferings;
+    private GraphicalInventory<TowerBuyButton> shop;
     private boolean shopLocked = false;
-    private int pointBuyPoints = 5, amountBought = 0,  reloadCost = 100, buyPhase = 0;
+    private int pointBuyPoints = 5, amountBought = 0,  reloadCost = 100;
     private TowerBuyButton selectedTowerOffering;
-    private Map<Integer, Point2D> slots;
 
     public TowerShop(){
-        this.slots = new HashMap<>();
-        this.currentOfferings = getOfferings();
-
+        this.shop = new GraphicalInventory<>(3, sizeX, sizeY, 10, position,90D);
+        shop.add(getNewOffering());
+        shop.add(getNewOffering());
+        shop.add(getNewOffering());
     }
 
-    private List<TowerBuyButton> getOfferings() {
-        Point2D slot1 = position.add(10,10);
-        Point2D slot2 = slot1.add(10 + tBBWidth,0);
-        Point2D slot3 = slot2.add(10 + tBBWidth,0);
-        int cost = pointBuyPoints * 2;
-
-        List<TowerBuyButton> offerings = new ArrayList<>(List.of(
-                new TowerBuyButton(slot1, tBBWidth, sizeY * 0.8, new RText(slot1.add(30, 20)), new Tower(pointBuyPoints), this, cost),
-                new TowerBuyButton(slot2, tBBWidth, sizeY * 0.8, new RText(slot2.add(30, 20)), new Tower(pointBuyPoints), this, cost),
-                new TowerBuyButton(slot3, tBBWidth, sizeY * 0.8, new RText(slot3.add(30, 20)), new Tower(pointBuyPoints), this, cost)
-        ));
-        slots.put(0,slot1);
-        slots.put(1,slot2);
-        slots.put(2,slot3);
-
-        return offerings;
+    private TowerBuyButton getNewOffering(){
+        int cost = pointBuyPoints * 2 + amountBought;
+        return new TowerBuyButton(new RText(), new Tower(pointBuyPoints), this, cost);
     }
 
     @Override
     public void tick(){
+        
+    }
+
+    @Override
+    public void trigger(MouseEvent event){
         if(selectedTowerOffering != null){
-            if(MouseHandler.nextClick){
-                setShopLock(false);
-                //MouseHandler.toggleLock();
-                selectedTowerOffering.getTower().setPosition(MouseHandler.mousePos);
-                selectedTowerOffering.getTower().spawn();
-                towerBought();
+            setShopLock(false);
 
-                selectedTowerOffering.destroy();
-                currentOfferings.remove(selectedTowerOffering);
+            selectedTowerOffering.getTower().setPosition(MouseHandler.mousePos);
+            selectedTowerOffering.getTower().spawn();
+            towerBought(selectedTowerOffering);
 
-                MouseHandler.someoneListening = false;
-                MouseHandler.nextClick = false;
-                selectedTowerOffering = null;
-            }
+            selectedTowerOffering = null;
+
         }
     }
 
     @Override
     public void spawn() {
-        Renderable.newborn.add(this);
         Tickable.newborn.add(this);
-        for(TowerBuyButton tBB : currentOfferings){
-            tBB.spawn();
-        }
+        ClickListener.newborn.add(this);
+        shop.spawn();
     }
 
     @Override
     public void destroy() {
-        Renderable.expended.add(this);
         Tickable.expended.add(this);
-        for(TowerBuyButton tBB : currentOfferings){
-            tBB.destroy();
-        }
-    }
-
-    @Override
-    public void render(GraphicsContext gc) {
-        gc.setFill(backgroundColor);
-        gc.fillRect(position.getX(), position.getY(), sizeX,sizeY);
-        for(TowerBuyButton tBB : currentOfferings){
-            tBB.render(gc);
-        }
+        ClickListener.expended.add(this);
+        shop.destroy();
     }
 
     private void setShopLock(boolean state){
@@ -105,48 +72,41 @@ public class TowerShop implements Renderable, IClickableOwner, Tickable {
     }
 
     private void lockShop(){
-        for(TowerBuyButton tBB : currentOfferings){
+        for(TowerBuyButton tBB : shop.getAllRaw()){
             tBB.setDisabled(true);
         }
     }
     private void unlockShop(){
-        for(TowerBuyButton tBB : currentOfferings){
+        for(TowerBuyButton tBB : shop.getAllRaw()){
             tBB.setDisabled(false);
         }
     }
 
-    @Override
     public Point2D getPosition() {
         return position;
     }
-    @Override
+
     public double getRenderingPriority() {
-        return renderingPriority;
+        return shop.getRenderingPriority();
+    }
+
+    public void setPosition(Point2D p) {
+        this.position = p;
+        shop.setPosition(p);
+    }
+
+    public GraphicalInventory<TowerBuyButton> getShop(){
+        return shop;
     }
 
     public void increasePointBuy(int amount){
         pointBuyPoints += amount;
     }
 
-    private void towerBought(){
-        int i;
-        for(i = 0; i < currentOfferings.size(); i++){
-            if(currentOfferings.get(i) == selectedTowerOffering){
-                break;
-            }
-        }
-        if(amountBought % 3 == 0) {
-            increasePointBuy(1);
-        }
-        fillNewOffering(i);
+    private void towerBought(TowerBuyButton tBB){
+        shop.remove(tBB);
+        shop.add(getNewOffering());
         amountBought++;
-    }
-
-    private void fillNewOffering(int index){
-        int cost = pointBuyPoints * 2;
-        currentOfferings.add(index, new TowerBuyButton(
-                slots.get(index), tBBWidth, sizeY * 0.8, new RText(slots.get(index).add(30, 20)), new Tower(pointBuyPoints), this, cost
-        ));
     }
 
     @Override
@@ -155,7 +115,6 @@ public class TowerShop implements Renderable, IClickableOwner, Tickable {
 
             setShopLock(true);
             selectedTowerOffering = (TowerBuyButton) child;
-            MouseHandler.someoneListening = true;
 
         }
         System.out.println("Child clicked " + child);

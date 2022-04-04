@@ -12,8 +12,8 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     private final static double renderingPriority = 40D;
     private WayPoint latest;
     private WayPoint next;
-    private double x,y;
-    private double mvspeed = 15, minDistToPoint = 10, size = 40;
+    private Point2D position;
+    private double mvspeed = 15, minDistToPoint = 10, sizeX = 40, sizeY;
     private final Path path;
     private final ProgressBar hpBar;
     private int maxHP = 10, id, hp = maxHP;
@@ -22,14 +22,13 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     private boolean alive = true,selected = false;
     private final Color color;
 
-    public Enemy(double x, double y, Path path){
-        this.x = x;
-        this.y = y;
+    public Enemy(Point2D position, Path path){
+    this.position = position;
         this.path = path;
         this.color = new Color(Main.random.nextInt(1,255)/255.0,0,Main.random.nextInt(1,255) / 255.0,1);
         latest = path.getStartPoint();
         next = path.getNext(latest);
-        hpBar = new FancyProgressBar(size * 2, size * 0.2,new Point2D(x,y), color,
+        hpBar = new FancyProgressBar(sizeX * 2, sizeY * 0.2,position, color,
                 new Color(0 / 255.0,0/255.0,0,0.8));
 
         enemyCount++;
@@ -51,31 +50,30 @@ public class Enemy implements Clickable,Tickable,IEnemy{
 
                 dir = dir.multiply(mvspeed);
 
-                x += dir.getX();
-                y += dir.getY();
+                position = position.add(dir);
                 lengthTraveled += new Point2D(dir.getX(), dir.getY()).magnitude();
             }
 
             hpBar.setVal((double) hp / maxHP);
-            hpBar.setPosition(new Point2D(x - (size * 0.5),y - (size * 0.5)));
+            hpBar.setPosition(new Point2D(position.getX() - (sizeX * 0.5),position.getY() - (sizeY * 0.5)));
         }
     }
     @Override
     public void render(GraphicsContext gc){
         if(selected){
             gc.setFill(Color.GOLD);
-            gc.fillRect(x-4,y-4,size+4,size+4);
+            gc.fillRect(position.getX()-4, position.getY() -4,sizeX+4,sizeY+4);
         }
 
         gc.setFill(color);
-        gc.fillRect(x,y,size,size);
+        gc.fillRect(position.getX(), position.getY(), sizeX,sizeY);
 
         hpBar.render(gc);
     }
 
     private Point2D checkDistanceToNext(){
-        double distX = (next.x - x) * (next.x - x);
-        double distY = (next.y - y) * (next.y - y);
+        double distX = (next.x - position.getX()) * (next.x - position.getX());
+        double distY = (next.y - position.getY()) * (next.y - position.getY());
         double distance = Math.sqrt(distX + distY);
 
         if(distance < minDistToPoint){
@@ -88,7 +86,7 @@ public class Enemy implements Clickable,Tickable,IEnemy{
             return null;
         }
 
-        return new Point2D(next.x - x, next.y - y);
+        return new Point2D(next.x - position.getX(), next.y - position.getY());
     }
 
     public void applyBuff(EnemyBuff buff){
@@ -119,7 +117,8 @@ public class Enemy implements Clickable,Tickable,IEnemy{
 
     @Override
     public boolean isInBounds(Point2D pos) {
-        return (pos.getX() < x + size && pos.getX() > x) && (pos.getY() < y + size && pos.getY() > y);
+        return (pos.getX() < position.getX() + sizeX && pos.getX() > position.getX())
+                && (pos.getY() < position.getY() + sizeY && pos.getY() > position.getY());
     }
 
     @Override
@@ -131,12 +130,24 @@ public class Enemy implements Clickable,Tickable,IEnemy{
         System.out.println("OOF");
     }
 
-    public Point2D getPosition(){return new Point2D(x,y);}
+    public Point2D getPosition(){return position;}
 
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
     }
+
+    @Override
+    public void setPosition(Point2D p) {
+        this.position = p;
+    }
+
+    @Override
+    public void setDimensions(Point2D dim) {
+        sizeX = dim.getX();
+        sizeY = dim.getY();
+    }
+
     @Override
     public double getProgress(){
         return lengthTraveled / path.getPathLength();
@@ -150,7 +161,7 @@ public class Enemy implements Clickable,Tickable,IEnemy{
         return mvspeed;
     }
     @Override
-    public double getSize(){return size;}
+    public double getSize(){return sizeX;}
     @Override
     public void deselect(){
         selected = false;

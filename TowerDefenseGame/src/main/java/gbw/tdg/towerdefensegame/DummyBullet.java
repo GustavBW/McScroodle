@@ -8,7 +8,7 @@ public class DummyBullet implements Tickable,Renderable{
 
     private static final double renderingPriority = 65D;
     private Point2D position, velocity;
-    private double speed = 20, lifeTime = 2 * 1_000_000_000, spawnTime, damage, size = 10;
+    private double speed = 20, lifeTime = 2 * 1_000_000_000, spawnTime, damage, sizeX = 10,sizeY = 10;
     private IEnemy target;
 
     public DummyBullet(Point2D position, IEnemy target, double damage){
@@ -33,7 +33,7 @@ public class DummyBullet implements Tickable,Renderable{
     @Override
     public void render(GraphicsContext gc){
         gc.setFill(Color.BLACK);
-        gc.fillRoundRect(position.getX() -size / 2,position.getY() -size / 2,size,size,size,size);
+        gc.fillRoundRect(position.getX() -sizeX / 2,position.getY() -sizeY / 2,sizeX,sizeY,sizeX,sizeY);
     }
 
     @Override
@@ -54,6 +54,17 @@ public class DummyBullet implements Tickable,Renderable{
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
+    }
+
+    @Override
+    public void setPosition(Point2D p) {
+        this.position = p;
+    }
+
+    @Override
+    public void setDimensions(Point2D dim) {
+        this.sizeX = dim.getX();
+        this.sizeY = dim.getY();
     }
 
     private void checkForCollision(){

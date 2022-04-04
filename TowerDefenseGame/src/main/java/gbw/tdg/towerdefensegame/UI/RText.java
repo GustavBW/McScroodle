@@ -30,6 +30,9 @@ public class RText {
     public RText(Point2D p){
         this("",p,1,Color.BLACK,Font.font("Verdana", 20));
     }
+    public RText(){
+        this(new Point2D(0,0));
+    }
 
     public void render(GraphicsContext gc){
         gc.setFont(font);

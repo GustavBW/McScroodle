@@ -7,13 +7,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import java.time.format.TextStyle;
-
 public class OnScreenWarning implements Renderable, Tickable {
 
     private final double renderingPriority = 95D;
     private final RText text;
-    private final Point2D pos;
+    private Point2D pos;
     private final int duration;
     private long spawnTimeStamp;
 
@@ -56,5 +54,16 @@ public class OnScreenWarning implements Renderable, Tickable {
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
+    }
+
+    @Override
+    public void setPosition(Point2D p) {
+        this.pos = p;
+        text.setPosition(p);
+    }
+
+    @Override
+    public void setDimensions(Point2D dim) {
+
     }
 }

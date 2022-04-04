@@ -44,7 +44,7 @@ public class FancyProgressBar extends ProgressBar implements Tickable{
         gc.fillRect(position.getX(), position.getY(), sizeX * (current / max), sizeY);
 
         double bar2Xpos = position.getX() + sizeX * (current / max);
-        double bar2Width = sizeX * (prevCurrent / max) - size * (current / max);
+        double bar2Width = sizeX * (prevCurrent / max) - sizeX * (current / max);
 
         gc.setFill(color2);
         gc.fillRect(bar2Xpos,position.getY(), bar2Width, sizeY);

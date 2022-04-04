@@ -25,12 +25,21 @@ public class TowerBuyButton extends Button implements Tickable {
         this.price = price;
         textUnit.setText(tower.toString() + "\nPrice: " + price);
     }
+    public TowerBuyButton(RText textUnit, Tower tower, IClickableOwner owner, int price){
+        this(new Point2D(0,0),0,0,textUnit,tower,owner,price);
+    }
 
     @Override
     public void render(GraphicsContext gc){
         gc.setFill(backgroundColor);
-        gc.fillRect(getPosition().getX(),getPosition().getY(),sizeX,sizeY);
+        gc.fillRect(position.getX(),position.getY(),sizeX,sizeY);
         text.render(gc);
+    }
+
+    @Override
+    public void setPosition(Point2D p) {
+        this.position = p;
+        super.text.setPosition(p.add(30,20));
     }
 
     @Override
