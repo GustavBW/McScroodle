@@ -40,8 +40,8 @@ public class Main extends Application {
     private long lastCall = 0,lastCall2 = 0;
     private final double fpsWanted = 60;
     private int frameCount;
-    public static int MAXHP = -1, HP = MAXHP, FPS, totalGoldEarned, totalGoldSpend;
-    private static int GOLD = 20;
+    public static int MAXHP = 10, HP = MAXHP, FPS, totalGoldEarned, totalGoldSpend;
+    private static double GOLD = 20;
     public static boolean isRunning, onPause;
     public static GameState state = GameState.VOID;
 
@@ -185,7 +185,7 @@ public class Main extends Application {
         launch();
     }
 
-    public static void alterGoldAmount(int amount){
+    public static void alterGoldAmount(double amount){
         if(amount <= 0){
             GOLD += amount;
             totalGoldSpend += amount;
@@ -194,7 +194,7 @@ public class Main extends Application {
             totalGoldEarned += amount;
         }
     }
-    public static int getGold(){
+    public static double getGold(){
         return GOLD;
     }
 

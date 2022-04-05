@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class GraphicalInventory<T extends Renderable> extends Inventory<T> implements Renderable{
 
@@ -38,10 +39,21 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         gc.setFill(backgroundColor);
         gc.fillRect(position.getX(),position.getY(),width,height);
 
-        for(T obj : super.objects){
+        for(T obj : getObjects()){
             obj.render(gc);
         }
     }
+
+    private List<T> getObjects(){
+        List<T> output = new ArrayList<>();
+        for(T obj : super.objects){
+            if(obj != null){
+                output.add(obj);
+            }
+        }
+        return output;
+    }
+
     public void setBackgroundColor(Color color){
         backgroundColor = color;
     }
@@ -51,7 +63,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
 
         if(success){
             int invSlot = objSlotMap.get(object);
-            object.setPosition(objOffsetMap.get(invSlot));
+            addObject(object,invSlot);
         }
 
         return success;
@@ -61,10 +73,16 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         boolean success = super.add(object, slot);
 
         if(success){
-            object.setPosition(objOffsetMap.get(slot));
+            addObject(object,slot);
         }
 
         return success;
+    }
+
+    private void addObject(T object, int slot){
+        System.out.println("Slot is " + slot);
+        object.setPosition(objOffsetMap.get(slot));
+        object.setDimensions(new Point2D(objWidth,objHeight));
     }
     @Override
     public boolean addAll(List<T> list){
@@ -83,23 +101,27 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     public boolean replace(T obj1, T obj2){
         boolean success = super.replace(obj1, obj2);
         if(success){
-            this.add(obj2);
+            this.addObject(obj2,super.getIndexOf(obj2));
         }
         return success;
     }
     @Override
     public void spawn() {
         Renderable.newborn.add(this);
-        for(T obj : super.objects){
+        for(T obj : getObjects()){
             obj.spawn();
         }
     }
     @Override
     public void destroy() {
         Renderable.expended.add(this);
-        for(T obj : super.objects){
+        for(T obj : getObjects()){
             obj.destroy();
         }
+    }
+    @Override
+    public List<T> getAllRaw(){
+        return getObjects();
     }
     @Override
     public Point2D getPosition() {

@@ -14,6 +14,7 @@ import java.util.Set;
 public class MouseHandler implements EventHandler<MouseEvent> {
 
     public static boolean locked;
+    private boolean foundClickable;
     public static Point2D mousePos = new Point2D(0,0);
     private Clickable selected;
     private static final List<Clickable> storedDuringLock = new ArrayList<>();
@@ -24,11 +25,12 @@ public class MouseHandler implements EventHandler<MouseEvent> {
 
     @Override
     public void handle(MouseEvent mouseEvent) {
+        foundClickable = false;
         Point2D clickPos = new Point2D(mouseEvent.getX(),mouseEvent.getY());
 
         for(ClickListener cL : ClickListener.active){
             cL.trigger(mouseEvent);
-            System.out.println("ClickListener: " + cL);
+            //System.out.println("ClickListener: " + cL);
         }
 
         for (Clickable c : Clickable.active) {
@@ -37,10 +39,15 @@ public class MouseHandler implements EventHandler<MouseEvent> {
                     selected.deselect();
                 }
                 selected = c;
+                foundClickable = true;
                 c.onInteraction();
-                System.out.println("You clicked on " + c);
+                //System.out.println("You clicked on " + c);
                 break;
             }
+        }
+
+        if(selected != null && !foundClickable){
+            selected.deselect();
         }
 
 

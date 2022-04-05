@@ -1,15 +1,12 @@
 package gbw.tdg.towerdefensegame;
 
-import gbw.tdg.towerdefensegame.UI.Clickable;
-import gbw.tdg.towerdefensegame.UI.TowerStatDisplay;
+import gbw.tdg.towerdefensegame.UI.*;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 public class Tower implements Clickable, Tickable, ITower{
 
@@ -20,8 +17,10 @@ public class Tower implements Clickable, Tickable, ITower{
     private TargetingType targetingType = TargetingType.FIRST;
     private long lastCall = 0;
     private final TowerStatDisplay statDisplay;
-
-    private static Color rangeIndicatorColor = new Color(0,0,0,0.28);
+    private final TowerRangeIndicator rangeIndicator;
+    private final List<Augment> augments = new ArrayList<>();
+    private final List<Invocation> invocations = new ArrayList<>();
+    private final double maxAugments = 3, maxInvocations = 3;
 
     public Tower(Point2D position, double size, double range, double damage, Main game){
         this.position = position;
@@ -31,6 +30,7 @@ public class Tower implements Clickable, Tickable, ITower{
         this.damage = damage;
         attackDelay = 1_000_000_000 / atkSpeed;
         this.statDisplay = new TowerStatDisplay(this, position.add(Main.canvasSize.multiply(0.002)));
+        this.rangeIndicator = new TowerRangeIndicator(this,position,range);
     }
     public Tower(int points){
         this.position = new Point2D(0,0);
@@ -61,54 +61,70 @@ public class Tower implements Clickable, Tickable, ITower{
         range = Math.max(100,range);
 
         this.statDisplay = new TowerStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
+        this.rangeIndicator = new TowerRangeIndicator(this,position,range);
         attackDelay = 1_000_000_000 / atkSpeed;
     }
-
     public void tick(){
-        if(isActive && lastCall + attackDelay < System.nanoTime()){
+        if(isActive){
+            if(lastCall + attackDelay < System.nanoTime()){
+                IEnemy target = findTarget(findEnemies());
 
-            IEnemy target = findTarget(findEnemies());
+                if (target != null) {
+                    attack(target);
+                }
 
-            if(target != null){
-                attack(target);
+                lastCall = System.nanoTime();
             }
 
-            lastCall = System.nanoTime();
+            for(Invocation i : invocations){
+                i.evalutate();
+            }
         }
     }
 
     public void render(GraphicsContext gc){
-
         gc.setFill(Color.BLUE);
         gc.fillRect(position.getX() - sizeX / 2, position.getY() - sizeY / 2, sizeX, sizeY);
-
-        if(isSelected) {
-            gc.setFill(rangeIndicatorColor);
-            gc.fillRoundRect(position.getX() - range, position.getY() - range, range * 2, range * 2, range * 2, range* 2);
-            statDisplay.render(gc);
-        }
     }
-
+    public boolean addAugment(Augment augment){
+        if(augments.size() < maxAugments){
+            augments.add(augment);
+            augment.setTower(this);
+            return true;
+        }
+        new OnScreenWarning("Augmentation Failed!", Main.canvasSize.multiply(0.4),3).spawn();
+        return false;
+    }
+    public boolean addInvocation(Invocation invocation){
+        if(invocations.size() < maxInvocations){
+            invocations.add(invocation);
+            invocation.setTower(this);
+            return true;
+        }
+        new OnScreenWarning("Invocation Failed!", Main.canvasSize.multiply(0.4),3).spawn();
+        return false;
+    }
+    public void setAtkSpeed(double newSpeed){
+        this.atkSpeed = newSpeed;
+        this.attackDelay = 1_000_000_000 / atkSpeed;
+    }
     @Override
     public Point2D getPosition() {
         return position;
     }
     public void setPosition(Point2D newPos){
         position = newPos;
+        rangeIndicator.setPosition(newPos);
     }
-
     @Override
     public void setDimensions(Point2D dim) {
         sizeX = dim.getX();
         sizeY = dim.getY();
     }
-
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
     }
-
-
     private ArrayList<IEnemy> findEnemies(){
         Point2D origin = new Point2D(position.getX() - sizeX / 2, position.getY() - sizeY /2);
         ArrayList<IEnemy> enemiesFound = new ArrayList<>();
@@ -126,7 +142,6 @@ public class Tower implements Clickable, Tickable, ITower{
 
         return enemiesFound;
     }
-
     private IEnemy findTarget(List<IEnemy> list){
 
         IEnemy target = null;
@@ -207,13 +222,11 @@ public class Tower implements Clickable, Tickable, ITower{
 
         return target;
     }
-
     private void attack(IEnemy target){
-        shootAt(target);
-    }
-
-    private void shootAt(IEnemy target){
-        DummyBullet d = new DummyBullet(position,target,damage);
+        AugmentedBullet d = new AugmentedBullet(position,target,damage);
+        for(Augment a : augments){
+            a.applyTo(d);
+        }
         d.spawn();
     }
 
@@ -224,7 +237,6 @@ public class Tower implements Clickable, Tickable, ITower{
         Renderable.newborn.add(this);
         ITower.newborn.add(this);
     }
-
     @Override
     public void destroy(){
         ITower.expended.add(this);
@@ -232,14 +244,11 @@ public class Tower implements Clickable, Tickable, ITower{
         Renderable.expended.add(this);
         Clickable.expended.add(this);
     }
-
-
     @Override
     public boolean isInBounds(Point2D pos) {
         return (pos.getX() > position.getX() && pos.getX() < position.getX() + sizeX) &&
                 (pos.getY() > position.getY() && pos.getY() < position.getY() + sizeY);
     }
-
     @Override
     public String toString(){
         return "DMG: " + damage + "\n" + "RNG: " + range + "\n" + "SPD " + atkSpeed;
@@ -247,11 +256,18 @@ public class Tower implements Clickable, Tickable, ITower{
 
     @Override
     public void onInteraction() {
+        if(!isSelected) {
+            statDisplay.spawn();
+            rangeIndicator.spawn();
+        }
         isSelected = true;
-        System.out.println("You clicked " + this);
     }
     @Override
     public void deselect(){
+        if(isSelected) {
+            statDisplay.destroy();
+            rangeIndicator.destroy();
+        }
         isSelected = false;
     }
 }

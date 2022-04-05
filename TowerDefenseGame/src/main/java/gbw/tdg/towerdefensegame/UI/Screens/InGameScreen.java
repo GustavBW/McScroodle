@@ -42,7 +42,7 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
     @Override
     public void tick(){
         mainHealthBar.setVal((double) Main.HP / Main.MAXHP);
-        goldDisplay.setText("" + Main.getGold());
+        goldDisplay.setText("" + (int) (Main.getGold()));
     }
 
     @Override

@@ -51,24 +51,23 @@ public class Inventory<T extends IGameObject> {
         return true;
     }
     public boolean replace(T obj1, T obj2){
-        for(int i = 0; i < objects.size(); i++){
-            if(objects.get(i) == obj1){
-                remove(obj1);
-                add(obj2, i);
-                return true;
-            }
+        if(objects.contains(obj1)){
+            int index = getIndexOf(obj1);
+            remove(obj1);
+            add(obj2, index);
+            return true;
         }
+
         return false;
     }
     public boolean remove(T obj){
-        for(int i = 0; i < objects.size(); i++){
-            if(objects.get(i) == obj){
-                objSlotMap.put(null,i);
-                slotObjMap.put(i, null);
-                objects.set(i, null);;
-                obj.destroy();
-                return true;
-            }
+        if(objects.contains(obj)){
+            int index = getIndexOf(obj);
+            objSlotMap.put(null,index);
+            slotObjMap.put(index, null);
+            objects.remove(obj);
+            obj.destroy();
+            return true;
         }
         return false;
     }
@@ -79,14 +78,19 @@ public class Inventory<T extends IGameObject> {
         return objects;
     }
 
+    private int timesCalled;
     protected int getIndexOf(T obj){
         int size = objects.size();
+        timesCalled++;
+        System.out.println("New call Inventory.getIndexOf()____________" + timesCalled);
 
         for(int i = size - 1; i >= 0; i--){
             if(objects.get(i) == obj){
+                System.out.println("Returning " + i);
                 return i;
             }
         }
+        System.out.println("Returning size " + size);
         return size;
     }
 }

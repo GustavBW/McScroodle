@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.Clickable;
+import gbw.tdg.towerdefensegame.UI.Coin;
 import gbw.tdg.towerdefensegame.UI.FancyProgressBar;
 import gbw.tdg.towerdefensegame.UI.ProgressBar;
 import javafx.geometry.Point2D;
@@ -13,10 +14,10 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     private WayPoint latest;
     private WayPoint next;
     private Point2D position;
-    private double mvspeed = 15, minDistToPoint = 10, sizeX = 40, sizeY;
+    private double mvspeed = 15, minDistToPoint = 10, sizeX = 40, sizeY = sizeX;
     private final Path path;
     private final ProgressBar hpBar;
-    private int maxHP = 10, id, hp = maxHP;
+    private int maxHP = 1, id, hp = maxHP;
     private double lengthTraveled = 0;
     private static int enemyCount = 0;
     private boolean alive = true,selected = false;
@@ -37,9 +38,7 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     @Override
     public void tick(){
         if(hp <= 0){
-            alive = false;
-            Main.alterGoldAmount(maxHP);
-            destroy();
+            onKilled();
         }
 
         if(alive) {
@@ -58,6 +57,15 @@ public class Enemy implements Clickable,Tickable,IEnemy{
             hpBar.setPosition(new Point2D(position.getX() - (sizeX * 0.5),position.getY() - (sizeY * 0.5)));
         }
     }
+
+    private void onKilled() {
+        alive = false;
+        for(int i = 0; i < 6; i++){
+            new Coin(maxHP * 0.1, position, 100, 58).spawn();
+        }
+        destroy();
+    }
+
     @Override
     public void render(GraphicsContext gc){
         if(selected){
@@ -88,13 +96,11 @@ public class Enemy implements Clickable,Tickable,IEnemy{
 
         return new Point2D(next.x - position.getX(), next.y - position.getY());
     }
-
     public void applyBuff(EnemyBuff buff){
         hp += buff.getHealth();
         maxHP += buff.getHealth();
         mvspeed += buff.getBonusSpeed();
     }
-
     private void completedRun(){
         Main.HP--;
         destroy();
@@ -107,20 +113,18 @@ public class Enemy implements Clickable,Tickable,IEnemy{
         Renderable.newborn.add(this);
         IEnemy.newborn.add(this);
     }
-
+    @Override
     public void destroy(){
         Clickable.expended.add(this);
         Tickable.expended.add(this);
         Renderable.expended.add(this);
         IEnemy.expended.add(this);
     }
-
     @Override
     public boolean isInBounds(Point2D pos) {
         return (pos.getX() < position.getX() + sizeX && pos.getX() > position.getX())
                 && (pos.getY() < position.getY() + sizeY && pos.getY() > position.getY());
     }
-
     @Override
     public void onInteraction() {
         selected = !selected;
@@ -129,25 +133,21 @@ public class Enemy implements Clickable,Tickable,IEnemy{
         }
         System.out.println("OOF");
     }
-
+    @Override
     public Point2D getPosition(){return position;}
-
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
     }
-
     @Override
     public void setPosition(Point2D p) {
         this.position = p;
     }
-
     @Override
     public void setDimensions(Point2D dim) {
         sizeX = dim.getX();
         sizeY = dim.getY();
     }
-
     @Override
     public double getProgress(){
         return lengthTraveled / path.getPathLength();
@@ -166,7 +166,6 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     public void deselect(){
         selected = false;
     }
-
     @Override
     public String toString(){return "Enemy " + id;}
 }

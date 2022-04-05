@@ -9,6 +9,8 @@ Render Priority
 41-50 Tower Overlays
 51-60 Towers
   -55 Tower, Tower Overlay, TowerStatDisplay
+  -56 TowerStatDisplay, TowerRangeIndicator
+  -58 Coin
 61-70 Bullets
   -65 DummyBullet
 71-80 UI
