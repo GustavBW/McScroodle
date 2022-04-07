@@ -9,4 +9,7 @@ public interface ITower extends Renderable {
     Set<ITower> expended = new HashSet<>();
     Set<ITower> newborn = new HashSet<>();
 
+    void applyDamageBuff(SupportTowerBuff buff);
+    void applyAtkSpeedBuff(SupportTowerBuff buff);
+
 }

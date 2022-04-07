@@ -1,25 +1,31 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.*;
+import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Tower implements Clickable, Tickable, ITower{
 
     private final double renderingPriority = 55D;
-    private double sizeX, sizeY, range, damage, atkSpeed, attackDelay;
-    private boolean isSelected = false, isActive = true;
-    private Point2D position;
+    private double sizeX, sizeY, damage, atkSpeed;
+    protected double range, attackDelay;
+    protected boolean isSelected = false, isActive = true;
+    protected Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
     private long lastCall = 0;
     private final TowerStatDisplay statDisplay;
     private final TowerRangeIndicator rangeIndicator;
     private final List<Augment> augments = new ArrayList<>();
     private final List<Invocation> invocations = new ArrayList<>();
+    private final Set<SupportTowerBuff> damageBuffs = new HashSet<>();
+    private final Set<SupportTowerBuff> atkSpeedBuffs = new HashSet<>();
     private final double maxAugments = 3, maxInvocations = 3;
 
     public Tower(Point2D position, double size, double range, double damage, Main game){
@@ -30,7 +36,7 @@ public class Tower implements Clickable, Tickable, ITower{
         this.damage = damage;
         attackDelay = 1_000_000_000 / atkSpeed;
         this.statDisplay = new TowerStatDisplay(this, position.add(Main.canvasSize.multiply(0.002)));
-        this.rangeIndicator = new TowerRangeIndicator(this,position,range);
+        this.rangeIndicator = new TowerRangeIndicator(this,position.add(sizeX * 0.5, sizeY * 0.5),range);
     }
     public Tower(int points){
         this.position = new Point2D(0,0);
@@ -61,7 +67,7 @@ public class Tower implements Clickable, Tickable, ITower{
         range = Math.max(100,range);
 
         this.statDisplay = new TowerStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
-        this.rangeIndicator = new TowerRangeIndicator(this,position,range);
+        this.rangeIndicator = new TowerRangeIndicator(this,position.add(sizeX * 0.5, sizeY * 0.5),range);
         attackDelay = 1_000_000_000 / atkSpeed;
     }
     public void tick(){
@@ -84,8 +90,18 @@ public class Tower implements Clickable, Tickable, ITower{
 
     public void render(GraphicsContext gc){
         gc.setFill(Color.BLUE);
-        gc.fillRect(position.getX() - sizeX / 2, position.getY() - sizeY / 2, sizeX, sizeY);
+        gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
     }
+    @Override
+    public void applyDamageBuff(SupportTowerBuff buff){
+        damageBuffs.add(buff);
+    }
+    @Override
+    public void applyAtkSpeedBuff(SupportTowerBuff buff){
+        atkSpeedBuffs.add(buff);
+    }
+    public double getDamage(){return damage;}
+    public double getAtkSpeed(){return atkSpeed;}
     public boolean addAugment(Augment augment){
         if(augments.size() < maxAugments){
             augments.add(augment);
@@ -112,9 +128,13 @@ public class Tower implements Clickable, Tickable, ITower{
     public Point2D getPosition() {
         return position;
     }
+    @Override
     public void setPosition(Point2D newPos){
         position = newPos;
-        rangeIndicator.setPosition(newPos);
+        rangeIndicator.setPosition(newPos.add(sizeX * 0.5, sizeY * 0.5));
+    }
+    public Point2D getDimensions(){
+        return new Point2D(sizeX, sizeY);
     }
     @Override
     public void setDimensions(Point2D dim) {
@@ -126,7 +146,7 @@ public class Tower implements Clickable, Tickable, ITower{
         return renderingPriority;
     }
     private ArrayList<IEnemy> findEnemies(){
-        Point2D origin = new Point2D(position.getX() - sizeX / 2, position.getY() - sizeY /2);
+        Point2D origin = new Point2D(position.getX() + (sizeX * 0.5), position.getY() + (sizeY * 0.5));
         ArrayList<IEnemy> enemiesFound = new ArrayList<>();
 
         for(IEnemy e : IEnemy.active){
@@ -223,11 +243,11 @@ public class Tower implements Clickable, Tickable, ITower{
         return target;
     }
     private void attack(IEnemy target){
-        AugmentedBullet d = new AugmentedBullet(position,target,damage);
+        Bullet b = new AugmentedBullet(position,target,damage,this);
         for(Augment a : augments){
-            a.applyTo(d);
+            a.applyTo(b);
         }
-        d.spawn();
+        b.spawn();
     }
 
     @Override

@@ -9,8 +9,8 @@ public class ExplosiveBullet extends Bullet{
 
     private double explosionRadius;
 
-    public ExplosiveBullet(Point2D position, IEnemy target, double damage, double explosionRadius) {
-        super(position, target, damage);
+    public ExplosiveBullet(Point2D position, IEnemy target, double damage, ITower owner, double explosionRadius) {
+        super(position, target, damage,owner);
         this.explosionRadius = explosionRadius;
     }
 
@@ -18,7 +18,7 @@ public class ExplosiveBullet extends Bullet{
     @Override
     protected void onCollision(){
         for(IEnemy e : searchForNearbyEnemies(super.target)){
-            e.changeHp(super.damage);
+            e.onHitByBullet(this);
         }
     }
     private List<IEnemy> searchForNearbyEnemies(IEnemy target){

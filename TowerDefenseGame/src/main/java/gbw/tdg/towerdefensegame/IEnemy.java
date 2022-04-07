@@ -15,5 +15,5 @@ public interface IEnemy extends Renderable {
     int getHp();
     double getMvspeed();
     double getSize();
-    void changeHp(double damage);
+    void onHitByBullet(Bullet b);
 }

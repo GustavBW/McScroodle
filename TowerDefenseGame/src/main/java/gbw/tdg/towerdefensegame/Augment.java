@@ -11,9 +11,10 @@ public abstract class Augment {
     public Augment(double value, AugmentIcon icon){
         this.value = value;
         this.icon = icon;
+
     }
 
-    public abstract void applyTo(AugmentedBullet bullet);
+    public abstract void applyTo(Bullet bullet);
     public void setTower(Tower newTower){
         this.tower = newTower;
     }

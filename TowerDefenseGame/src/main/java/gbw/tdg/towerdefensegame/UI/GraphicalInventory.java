@@ -46,7 +46,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
 
     private List<T> getObjects(){
         List<T> output = new ArrayList<>();
-        for(T obj : super.objects){
+        for(T obj : super.getAll()){
             if(obj != null){
                 output.add(obj);
             }
@@ -62,8 +62,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         boolean success = super.add(object);
 
         if(success){
-            int invSlot = objSlotMap.get(object);
-            addObject(object,invSlot);
+            addObject(object,super.getIndexOf(object));
         }
 
         return success;
@@ -80,22 +79,17 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
 
     private void addObject(T object, int slot){
-        System.out.println("Slot is " + slot);
+        object.spawn();
         object.setPosition(objOffsetMap.get(slot));
         object.setDimensions(new Point2D(objWidth,objHeight));
     }
     @Override
-    public boolean addAll(List<T> list){
-        int amountWhoSucceeded = 0;
-
-        for(T obj : list){
-            if(super.add(obj)){
-                obj.setPosition(objOffsetMap.get(objSlotMap.get(obj)));
-                amountWhoSucceeded++;
-            }
+    public List<T> addAll(List<T> list){
+        List<T> thoseWhoSucceeded = super.addAll(list);
+        for(T obj : thoseWhoSucceeded){
+            addObject(obj, super.getIndexOf(obj));
         }
-
-        return amountWhoSucceeded + 1 == list.size();
+        return thoseWhoSucceeded;
     }
     @Override
     public boolean replace(T obj1, T obj2){
@@ -104,6 +98,11 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
             this.addObject(obj2,super.getIndexOf(obj2));
         }
         return success;
+    }
+    @Override
+    public boolean remove(T obj){
+        obj.destroy();
+        return super.remove(obj);
     }
     @Override
     public void spawn() {
@@ -118,10 +117,6 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         for(T obj : getObjects()){
             obj.destroy();
         }
-    }
-    @Override
-    public List<T> getAllRaw(){
-        return getObjects();
     }
     @Override
     public Point2D getPosition() {
@@ -155,13 +150,15 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
 
     private void setObjectPositions(){
-        for(int i = 0; i < super.objects.size(); i++){
-            super.objects.get(i).setPosition(objOffsetMap.get(i));
+        for(int i = 0; i < super.slotCount; i++){
+            if(super.get(i) == null){continue;}
+            super.get(i).setPosition(objOffsetMap.get(i));
         }
     }
     private void setObjectDimensions(){
-        for(int i = 0; i < super.objects.size(); i++){
-            super.objects.get(i).setDimensions(new Point2D(objWidth,objHeight));
+        for(int i = 0; i < super.slotCount; i++){
+            if(super.get(i) == null){continue;}
+            super.get(i).setDimensions(new Point2D(objWidth,objHeight));
         }
     }
     private double getSlotWidth(){return width / slotCount;}

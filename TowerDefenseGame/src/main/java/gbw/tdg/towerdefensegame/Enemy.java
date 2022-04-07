@@ -22,6 +22,7 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     private static int enemyCount = 0;
     private boolean alive = true,selected = false;
     private final Color color;
+    private Bullet latestHit;
 
     public Enemy(Point2D position, Path path){
     this.position = position;
@@ -60,8 +61,19 @@ public class Enemy implements Clickable,Tickable,IEnemy{
 
     private void onKilled() {
         alive = false;
-        for(int i = 0; i < 6; i++){
-            new Coin(maxHP * 0.1, position, 100, 58).spawn();
+        if(latestHit != null){
+            for(int i = 0; i < 10; i++){
+                Point2D attackedDirection = position.subtract(latestHit.getPosition()).normalize();
+                Point2D velocity = new Point2D(
+                        attackedDirection.getX() + (1 * (Main.random.nextDouble() - 0.5)),
+                        attackedDirection.getY() + (1 * (Main.random.nextDouble() - 0.5))
+                ).normalize();
+                new Coin(maxHP * 0.1, position,velocity, 200, 58).spawn();
+            }
+        }else {
+            for (int i = 0; i < 6; i++) {
+                new Coin(maxHP * 0.1, position, 100, 58).spawn();
+            }
         }
         destroy();
     }
@@ -105,7 +117,6 @@ public class Enemy implements Clickable,Tickable,IEnemy{
         Main.HP--;
         destroy();
     }
-
     @Override
     public void spawn() {
         Clickable.newborn.add(this);
@@ -155,7 +166,13 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     @Override
     public int getHp(){return hp;}
     @Override
-    public void changeHp(double amount){hp += amount;}
+    public void onHitByBullet(Bullet bullet){
+        hp -= bullet.damage;
+        latestHit = bullet;
+        if(hp <= 0){
+            onKilled();
+        }
+    }
     @Override
     public double getMvspeed(){
         return mvspeed;

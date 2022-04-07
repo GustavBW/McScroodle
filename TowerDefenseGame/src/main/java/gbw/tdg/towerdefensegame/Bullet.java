@@ -11,13 +11,15 @@ public class Bullet implements Tickable,Renderable{
     private double lifeTime = 2 * 1_000_000_000, spawnTime, sizeX = 10,sizeY = 10;
     protected double speed = 20, damage;
     protected IEnemy target;
+    protected ITower owner;
 
-    public Bullet(Point2D position, IEnemy target, double damage){
+    public Bullet(Point2D position, IEnemy target, double damage, ITower owner){
         this.position = position;
         this.velocity = new Point2D(0,0);
         this.target = target;
         this.damage = damage;
         this.speed = target.getMvspeed() * 2;
+        this.owner = owner;
         spawnTime = System.nanoTime();
     }
 
@@ -31,6 +33,7 @@ public class Bullet implements Tickable,Renderable{
 
         checkForCollision();
     }
+
     @Override
     public void render(GraphicsContext gc){
         gc.setFill(Color.BLACK);
@@ -70,8 +73,9 @@ public class Bullet implements Tickable,Renderable{
             onCollision();
         }
     }
+    public ITower getOwner(){return owner;}
     protected void onCollision(){
-        target.changeHp(-damage);
+        target.onHitByBullet(this);
         destroy();
     }
 

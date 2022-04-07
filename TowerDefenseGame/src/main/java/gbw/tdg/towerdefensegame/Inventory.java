@@ -10,87 +10,79 @@ public class Inventory<T extends IGameObject> {
 
     protected int slotCount;
     protected List<T> objects;
-    protected final HashMap<Integer, T> slotObjMap;
-    protected final HashMap<T, Integer> objSlotMap;
-
 
     public Inventory(int slotCount){
         this.slotCount = slotCount;
-        this.slotObjMap = new HashMap<>();
-        this.objSlotMap = new HashMap<>();
-        this.objects = new LinkedList<T>();
+        this.objects = new ArrayList<>(slotCount);
+        for(int i = 0; i < slotCount; i++){
+            objects.add(null);
+        }
     }
 
-    public boolean addAll(List<T> list){
-        boolean success = true;
+    public List<T> addAll(List<T> list){
+        List<T> thoseWhoSucceeded = new ArrayList<>();
+
         for(T obj : list){
-            if(!add(obj)){
-                success = false;
+            if(this.add(obj)){
+                thoseWhoSucceeded.add(obj);
             }
         }
-        return success;
+        return thoseWhoSucceeded;
     }
     public boolean add(T newObject){
-        if(objects.size() >= slotCount){
-            return false;
+        for(int i = 0; i < slotCount; i++){
+            if(objects.get(i) == null){
+                objects.set(i,newObject);
+                return true;
+            }
         }
-
-        objects.add(newObject);
-        slotObjMap.put(getIndexOf(newObject), newObject);
-        objSlotMap.put(newObject,getIndexOf(newObject));
-        return true;
+        return false;
     }
 
     public boolean add(T newObject, int slot){
-        if(slot > slotCount || slot < 0 || objects.get(slot) != null){
-            return false;
+        if(slot < slotCount && slot >= 0){
+            if(objects.get(slot) == null){
+                objects.set(slot,newObject);
+                return true;
+            }
         }
-        objects.set(slot, newObject);
-        objSlotMap.put(newObject, slot);
-        slotObjMap.put(slot,newObject);
-        return true;
+        return false;
     }
     public boolean replace(T obj1, T obj2){
-        if(objects.contains(obj1)){
-            int index = getIndexOf(obj1);
+        int index = getIndexOf(obj1);
+        if(index != -1){
             remove(obj1);
-            add(obj2, index);
-            return true;
+            add(obj2,index);
         }
-
         return false;
     }
     public boolean remove(T obj){
-        if(objects.contains(obj)){
-            int index = getIndexOf(obj);
-            objSlotMap.put(null,index);
-            slotObjMap.put(index, null);
-            objects.remove(obj);
-            obj.destroy();
-            return true;
+        for(int i = 0; i < slotCount; i++){
+            if(objects.get(i) == obj){
+                objects.set(i,null);
+                return true;
+            }
         }
         return false;
     }
     public List<T> getAll(){
-        return new LinkedList<T>(objects);
-    }
-    public List<T> getAllRaw(){
         return objects;
     }
-
-    private int timesCalled;
-    protected int getIndexOf(T obj){
-        int size = objects.size();
-        timesCalled++;
-        System.out.println("New call Inventory.getIndexOf()____________" + timesCalled);
-
-        for(int i = size - 1; i >= 0; i--){
+    public T get(int slot){
+        if(slot < slotCount && slot >= 0) {
+            return objects.get(slot);
+        }
+        return null;
+    }
+    public int get(T obj){
+        return getIndexOf(obj);
+    }
+    public int getIndexOf(T obj){
+        for(int i = 0; i < slotCount; i++){
             if(objects.get(i) == obj){
-                System.out.println("Returning " + i);
                 return i;
             }
         }
-        System.out.println("Returning size " + size);
-        return size;
+        return -1;
     }
 }

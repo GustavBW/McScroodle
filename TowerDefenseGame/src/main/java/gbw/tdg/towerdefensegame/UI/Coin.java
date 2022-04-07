@@ -22,15 +22,15 @@ public class Coin implements Renderable, Tickable {
     private long killTimestamp;
 
     public Coin(double value, Point2D p, double maxRollLength, double renderPrio){
+        this(value,p,getRandomVelocity(),maxRollLength,renderPrio);
+    }
+    public Coin(double value, Point2D p, Point2D velocity, double maxRollLength, double renderPrio){
         this.value = value;
         this.rollLength = maxRollLength * Main.random.nextDouble();
         this.renderingPriority = renderPrio;
         this.position = p;
         this.rollSpeed = rollLength * 0.1;
-        this.velocity = new Point2D(
-                Main.random.nextDouble() - 0.5,
-                Main.random.nextDouble() - 0.5
-        ).normalize();
+        this.velocity = velocity;
         killTimestamp = (long) (System.currentTimeMillis() + 3000 + (1000 * Main.random.nextDouble()));
     }
 
@@ -44,6 +44,13 @@ public class Coin implements Renderable, Tickable {
     public void destroy() {
         Renderable.expended.add(this);
         Tickable.expended.add(this);
+    }
+
+    private static Point2D getRandomVelocity(){
+        return new Point2D(
+                Main.random.nextDouble() - 0.5,
+                Main.random.nextDouble() - 0.5
+        ).normalize();
     }
 
     @Override
@@ -62,7 +69,7 @@ public class Coin implements Renderable, Tickable {
             onCollected(1);
         }
         if(System.currentTimeMillis() >= killTimestamp){
-            onCollected(0.5);
+            onCollected(0.7);
         }
     }
     private boolean checkMousePosition() {
