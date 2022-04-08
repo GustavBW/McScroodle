@@ -1,9 +1,10 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.enemies;
 
-import java.util.HashSet;
+import gbw.tdg.towerdefensegame.Bullet;
+import gbw.tdg.towerdefensegame.Renderable;
+
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public interface IEnemy extends Renderable {
 

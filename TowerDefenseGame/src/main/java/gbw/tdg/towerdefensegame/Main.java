@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.Clickable;
+import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import gbw.tdg.towerdefensegame.handlers.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -15,7 +16,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -76,15 +76,16 @@ public class Main extends Application {
         wayPoints = path.getPoints();
 
         mouseHandler = new MouseHandler();
-        uiController = new UIController(this);
-        keyPressHandler = new KeyPressHandler(uiController);
         waveManager = new WaveManager(path);
+        uiController = new UIController(this,waveManager);
+        keyPressHandler = new KeyPressHandler(uiController);
         uiController.spawn();
         setState(GameState.START_MENU);
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
         scene.setOnMouseMoved(e -> mouseHandler.updateMousePos(e));
-        scene.setOnKeyPressed(e -> keyPressHandler.handle(e));
+        scene.setOnKeyPressed(e -> keyPressHandler.press(e));
+        scene.setOnKeyReleased(e -> keyPressHandler.release(e));
         isRunning = true;
         instance = this;
     }

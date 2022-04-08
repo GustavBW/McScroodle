@@ -15,6 +15,7 @@ Render Priority
   -65 DummyBullet
 71-80 UI
   -75 GameOverScreen, InGameScreen, StartMenuScreen
+  -79 WaveRoundDisplay
   -80 FancyProgressBar
 81-90 UI
   -87 TowerShop graphical Inventory

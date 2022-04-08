@@ -39,7 +39,9 @@ public class Path {
     }
 
     public WayPoint getStartPoint(){return startPoint;}
+    public Point2D getStartAsPoint2D(){return new Point2D(startPoint.x,startPoint.y);}
     public WayPoint getEndPoint(){return endPoint;}
+    public Point2D getEndAsPoint2D(){return new Point2D(endPoint.x,endPoint.y);}
     public WayPoint getNext(WayPoint current){
         return current.getId() + 1 >= endPoint.getId() ? endPoint : points.get(current.getId());
     }

@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -74,6 +75,7 @@ public class Bullet implements Tickable,Renderable{
         }
     }
     public ITower getOwner(){return owner;}
+    public double getDamage(){return damage;}
     protected void onCollision(){
         target.onHitByBullet(this);
         destroy();

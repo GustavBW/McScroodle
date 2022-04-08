@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;

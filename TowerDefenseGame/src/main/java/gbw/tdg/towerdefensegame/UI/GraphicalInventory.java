@@ -14,13 +14,21 @@ import java.util.Objects;
 public class GraphicalInventory<T extends Renderable> extends Inventory<T> implements Renderable{
 
     private Color backgroundColor = new Color(0,0,0,0.5);
-    private double width, height, margin, slotWidth, slotHeight, objWidth, objHeight, renderingPriority;
+    private double width, height, margin, slotWidth, slotHeight, objWidth, objHeight, renderingPriority,coloumns;
     private HashMap<Integer, Point2D> slotOffsetMap;
     private HashMap<Integer, Point2D> objOffsetMap;
     private Point2D position;
+    private int rows;
+    private boolean enableAutoSpawn;
 
     public GraphicalInventory(int slotCount, double width, double height, double margin, Point2D position, double renderingPrio) {
-        super(slotCount);
+        this(slotCount, width,height,margin,position,renderingPrio,1);
+    }
+
+    public GraphicalInventory(int coloumns, double width, double height, double margin, Point2D position, double renderingPrio, int rows) {
+        super(rows * coloumns);
+        this.rows = rows;
+        this.coloumns = coloumns;
         this.width = width;
         this.height = height;
         this.margin = margin;
@@ -42,6 +50,39 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         for(T obj : getObjects()){
             obj.render(gc);
         }
+    }
+
+    private HashMap<Integer, Point2D> calcSlotOffsets() {
+        HashMap<Integer, Point2D> slotOffsets = new HashMap<>();
+        double slotRawWidth = getSlotWidth();
+        double slotRawHeight = height / rows;
+        int currentOffsetNr = 0;
+
+        for(int j = 0; j < rows; j++){
+            for(int i = 0; i < coloumns; i++) {
+                Point2D offset = new Point2D(
+                        position.getX() + (i * slotRawWidth),
+                        position.getY() + (j * slotRawHeight)
+                );
+                slotOffsets.put(currentOffsetNr, offset);
+                currentOffsetNr++;
+            }
+        }
+
+        return slotOffsets;
+    }
+    private HashMap<Integer, Point2D> calcObjOffsets(){
+        HashMap<Integer, Point2D> objOffsets = new HashMap<>();
+
+        for(int i = 0; i < slotCount; i++){
+            Point2D slotOffset = slotOffsetMap.get(i);
+            objOffsets.put(i, new Point2D(
+                    slotOffset.getX() + margin,
+                    slotOffset.getY() + margin
+            ));
+        }
+
+        return objOffsets;
     }
 
     private List<T> getObjects(){
@@ -79,7 +120,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
 
     private void addObject(T object, int slot){
-        object.spawn();
+        if(enableAutoSpawn){object.spawn();}
         object.setPosition(objOffsetMap.get(slot));
         object.setDimensions(new Point2D(objWidth,objHeight));
     }
@@ -106,6 +147,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
     @Override
     public void spawn() {
+        enableAutoSpawn = true;
         Renderable.newborn.add(this);
         for(T obj : getObjects()){
             obj.spawn();
@@ -113,6 +155,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
     @Override
     public void destroy() {
+        enableAutoSpawn = false;
         Renderable.expended.add(this);
         for(T obj : getObjects()){
             obj.destroy();
@@ -148,6 +191,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         setObjectPositions();
         setObjectDimensions();
     }
+    public void setAutoSpawn(boolean val){enableAutoSpawn = val;}
 
     private void setObjectPositions(){
         for(int i = 0; i < super.slotCount; i++){
@@ -161,37 +205,11 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
             super.get(i).setDimensions(new Point2D(objWidth,objHeight));
         }
     }
-    private double getSlotWidth(){return width / slotCount;}
-    private double getSlotHeight(){return height;}
+    private double getSlotWidth(){return width / (slotCount / rows);}
+    private double getSlotHeight(){return height / rows;}
     private double getObjWidth(){
         return slotWidth - (margin * 2);
     }
     private double getObjHeight(){return slotHeight - (margin * 2);}
-    private HashMap<Integer, Point2D> calcSlotOffsets() {
-        HashMap<Integer, Point2D> slotOffsets = new HashMap<>();
-        double slotRawWidth = width / slotCount;
 
-        for(int i = 0; i < slotCount; i++){
-            Point2D offset = new Point2D(
-                    position.getX() + (i * slotRawWidth),
-                    position.getY()
-            );
-            slotOffsets.put(i,offset);
-        }
-
-        return slotOffsets;
-    }
-    private HashMap<Integer, Point2D> calcObjOffsets(){
-        HashMap<Integer, Point2D> objOffsets = new HashMap<>();
-
-        for(int i = 0; i < slotCount; i++){
-            Point2D slotOffset = slotOffsetMap.get(i);
-            objOffsets.put(i, new Point2D(
-                    slotOffset.getX() + margin,
-                    slotOffset.getY() + margin
-            ));
-        }
-
-        return objOffsets;
-    }
 }

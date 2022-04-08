@@ -21,11 +21,12 @@ public class UIController implements Tickable{
     private InGameScreen inGameScreen;
     private DevInfoScreen devInfoScreen;
     private boolean showInfo = false;
+    private WaveManager waveManager;
 
 
-    public UIController(Main game){
+    public UIController(Main game, WaveManager waveManager){
         this.game = game;
-
+        this.waveManager = waveManager;
         createUI();
     }
 
@@ -42,7 +43,7 @@ public class UIController implements Tickable{
     private void createUI(){
         startMenuScreen = new StartMenuScreen();
         gameOverScreen = new GameOverScreen();
-        inGameScreen = new InGameScreen();
+        inGameScreen = new InGameScreen(waveManager);
         devInfoScreen = new DevInfoScreen();
     }
 

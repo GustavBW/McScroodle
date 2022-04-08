@@ -19,9 +19,7 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
 
     public TowerShop(){
         this.shop = new GraphicalInventory<>(3, sizeX, sizeY, 10, position,87D);
-        shop.add(getNewOffering());
-        shop.add(getNewOffering());
-        shop.add(getNewOffering());
+        shop.addAll(List.of(getNewOffering(),getNewOffering(),getNewOffering()));
     }
 
     private TowerBuyButton getNewOffering(){

@@ -1,14 +1,17 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.enemies;
 
-import gbw.tdg.towerdefensegame.UI.Clickable;
-import gbw.tdg.towerdefensegame.UI.Coin;
-import gbw.tdg.towerdefensegame.UI.FancyProgressBar;
-import gbw.tdg.towerdefensegame.UI.ProgressBar;
+import gbw.tdg.towerdefensegame.*;
+import gbw.tdg.towerdefensegame.UI.*;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Enemy implements Clickable,Tickable,IEnemy{
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class Enemy implements Clickable, Tickable,IEnemy{
 
     private final static double renderingPriority = 40D;
     private WayPoint latest;
@@ -23,6 +26,9 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     private boolean alive = true,selected = false;
     private final Color color;
     private Bullet latestHit;
+    private EnemyStatDisplay statDisplay;
+    private Set<ITower> provokers = new HashSet<>();
+    private Map<ITower, Double> provokerDamageMap = new HashMap<>();
 
     public Enemy(Point2D position, Path path){
     this.position = position;
@@ -35,6 +41,7 @@ public class Enemy implements Clickable,Tickable,IEnemy{
 
         enemyCount++;
         this.id = enemyCount;
+        this.statDisplay = new EnemyStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
     }
     @Override
     public void tick(){
@@ -138,7 +145,8 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     }
     @Override
     public void onInteraction() {
-        selected = !selected;
+        selected = true;
+        statDisplay.spawn();
         if(!Main.onPause) {
             hp--;
         }
@@ -165,9 +173,12 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     }
     @Override
     public int getHp(){return hp;}
+    public int getMaxHP(){return maxHP;}
     @Override
     public void onHitByBullet(Bullet bullet){
-        hp -= bullet.damage;
+        provokers.add(bullet.getOwner());
+        provokerDamageMap.put(bullet.getOwner(), provokerDamageMap.getOrDefault(bullet.getOwner(), 0D) + bullet.getDamage());
+        hp -= bullet.getDamage();
         latestHit = bullet;
         if(hp <= 0){
             onKilled();
@@ -182,7 +193,11 @@ public class Enemy implements Clickable,Tickable,IEnemy{
     @Override
     public void deselect(){
         selected = false;
+        statDisplay.destroy();
     }
     @Override
     public String toString(){return "Enemy " + id;}
+    public Enemy clone(){
+        return new Enemy(position,path);
+    }
 }
