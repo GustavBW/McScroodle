@@ -92,6 +92,9 @@ public class Tower implements Clickable, Tickable, ITower{
         gc.setFill(Color.BLUE);
         gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
     }
+    public void setActive(boolean newState){
+        this.isActive = newState;
+    }
     @Override
     public void applyDamageBuff(SupportTowerBuff buff){
         damageBuffs.add(buff);
@@ -243,7 +246,7 @@ public class Tower implements Clickable, Tickable, ITower{
         return target;
     }
     private void attack(IEnemy target){
-        Bullet b = new AugmentedBullet(position,target,damage,this);
+        Bullet b = new AugmentedBullet(position.add(sizeX*0.5,sizeY*0.5),target,damage,this);
         for(Augment a : augments){
             a.applyTo(b);
         }

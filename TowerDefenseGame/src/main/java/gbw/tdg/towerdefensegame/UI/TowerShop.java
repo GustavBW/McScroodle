@@ -29,7 +29,9 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
 
     @Override
     public void tick(){
-
+        if(selectedTowerOffering != null){
+            selectedTowerOffering.getTower().setPosition(MouseHandler.mousePos.subtract(selectedTowerOffering.getTower().getDimensions().multiply(0.5)));
+        }
     }
 
     @Override
@@ -38,7 +40,7 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
             setShopLock(false);
             Point2D newTowPos = MouseHandler.mousePos.subtract(selectedTowerOffering.getTower().getDimensions().multiply(0.5));
             selectedTowerOffering.getTower().setPosition(newTowPos);
-            selectedTowerOffering.getTower().spawn();
+            selectedTowerOffering.getTower().setActive(true);
             towerBought(selectedTowerOffering);
             selectedTowerOffering = null;
 
@@ -51,51 +53,32 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
         ClickListener.newborn.add(this);
         shop.spawn();
     }
-
     @Override
     public void destroy() {
         Tickable.expended.add(this);
         ClickListener.expended.add(this);
         shop.destroy();
     }
-
     private void setShopLock(boolean state){
         shopLocked = !shopLocked;
-        if(state){
-            lockShop();
-        }else{
-            unlockShop();
-        }
-    }
-
-    private void lockShop(){
         for(TowerBuyButton tBB : shop.getAll()){
-            tBB.setDisable(true);
-        }
-    }
-    private void unlockShop(){
-        for(TowerBuyButton tBB : shop.getAll()){
-            tBB.setDisable(false);
+            tBB.setDisable(state);
         }
     }
 
     public Point2D getPosition() {
         return position;
     }
-
     public double getRenderingPriority() {
         return shop.getRenderingPriority();
     }
-
     public void setPosition(Point2D p) {
         this.position = p;
         shop.setPosition(p);
     }
-
     public Inventory<TowerBuyButton> getShop(){
         return shop;
     }
-
     public void increasePointBuy(int amount){
         pointBuyPoints += amount;
     }
@@ -114,7 +97,10 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
         if(child instanceof TowerBuyButton) {
             setShopLock(true);
             selectedTowerOffering = (TowerBuyButton) child;
-
+            Tower tower = selectedTowerOffering.getTower();
+            tower.setActive(false);
+            tower.spawn();
+            tower.onInteraction();
         }
     }
 }

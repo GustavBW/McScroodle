@@ -25,14 +25,14 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
     public InGameScreen(WaveManager waveManager){
         super(75);
         mainHealthBar = new FancyProgressBar(
-                Main.canvasSize.getX() - 10, 50,
+                Main.canvasSize.getX() - 10, Main.canvasSize.getY() * 0.02629,
                 new Point2D(0,0), new Color(31 / 255.0,122 / 255.0,4 / 255.0,1),
                 new Color(255 / 255.0,69 / 255.0,0,1));
         roundDisplay = new WaveRoundDisplay(waveManager,
                 new Point2D(Main.canvasSize.getX() * 0.5 - (roundDisplayDim.getX() * 0.5), 0),
                 roundDisplayDim);
         goldDisplay = new RText("" + Main.getGold(),
-                new Point2D(Main.canvasSize.getX() * 0.5, Main.canvasSize.getY()*0.06),
+                new Point2D(Main.canvasSize.getX() * 0.5, Main.canvasSize.getY()*0.07),
                 3, goldColor,
                 Font.font("Impact", 55));
         Point2D towerShopPos = new Point2D(Main.canvasSize.getX() * 0.90,Main.canvasSize.getY() * 0.95);

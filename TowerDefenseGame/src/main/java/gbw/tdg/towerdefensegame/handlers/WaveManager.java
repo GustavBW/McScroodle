@@ -12,12 +12,12 @@ public class WaveManager implements Tickable {
     //window between each wave.
 
     private static final int secondsBetweenWaves = 25;
-    private long lastCall2;
     private Path path;
     private EnemyBuff currentBuff;
     private int spawnCount;
     private int waveCounter = 0;
-    private boolean waitingBetweenWaves;
+    private boolean hasSetTimeOfWaveEnd;
+    private long timeOfWaveEnd;
     private EnemyWave currentWave;
 
     public WaveManager(Path path){
@@ -53,13 +53,37 @@ public class WaveManager implements Tickable {
 
     }
     public void onNewRoundStart(){
-
+        new OnScreenWarning("ROUND " + getRoundNumber() + " START",Main.canvasSize.multiply(0.3),3).spawn();
+    }
+    public void onCurrentRoundEnd(){
+        new OnScreenWarning("ROUND " + getRoundNumber() + " WON...kinda",Main.canvasSize.multiply(0.4),3).spawn();
+    }
+    public void onNewWaveStart(){
+        new OnScreenWarning("WAVE " + (waveCounter +1) + " INCOMMING",Main.canvasSize.multiply(0.5),3).spawn();
     }
     public void onWaveEnd(){
-        waveCounter++;
-        currentWave = new EnemyWave(waveCounter, path,this);
-
+        new OnScreenWarning("WAVE " + (waveCounter +1) + " WON", Main.canvasSize.multiply(0.6),3).spawn();
+        if(isDoneWaiting()) {
+            waveCounter++;
+            currentWave = new EnemyWave(waveCounter, path, this);
+            onNewWaveStart();
+        }
     }
+    private boolean isDoneWaiting(){
+        if(!hasSetTimeOfWaveEnd) {
+            timeOfWaveEnd = System.currentTimeMillis();
+            hasSetTimeOfWaveEnd = true;
+        }
+        boolean done = System.currentTimeMillis() >= timeOfWaveEnd + (secondsBetweenWaves * 1000);
+        if(done){
+            hasSetTimeOfWaveEnd = false;
+        }
+        return done;
+    }
+
     public int getWaveNumber(){return waveCounter +1;}
-    public int getRoundNumber(){return currentWave.getRound() +1;}
+    public int getRoundNumber(){return currentWave.getRound();}
+    public void sendNextRound(){
+        currentWave.sendNextRoundImmediatly();
+    }
 }

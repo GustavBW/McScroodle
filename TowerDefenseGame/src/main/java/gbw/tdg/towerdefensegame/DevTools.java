@@ -1,7 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.OnScreenWarning;
-import gbw.tdg.towerdefensegame.handlers.KeyPressHandler;
+import gbw.tdg.towerdefensegame.handlers.KeyHandler;
 import javafx.scene.input.KeyCode;
 
 public class DevTools implements Tickable{
@@ -32,7 +32,7 @@ public class DevTools implements Tickable{
 
     @Override
     public void tick() {
-        if(KeyPressHandler.currentInputs.contains(KeyCode.M) && KeyPressHandler.currentInputs.contains(KeyCode.L)){
+        if(KeyHandler.currentInputs.contains(KeyCode.M) && KeyHandler.currentInputs.contains(KeyCode.L)){
             Main.alterGoldAmount(100);
         }
     }

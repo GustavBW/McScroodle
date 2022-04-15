@@ -14,16 +14,19 @@ public class EnemyWave {
     private final int secondsBetweenRounds = 15;
     private int enemiesEachRound = 10;
     private boolean waitingBetweenRounds = false;
-    private int currentRound, previousRound = -1;
+    private int currentRound = 1, previousRound = -1;
     private long lastCall;
     private Enemy next;
     private Map<Integer, List<Enemy>> roundMap = new HashMap<>();
     private int enemyCounter;
     private final int waveNumber;
     private final long spawnTimeStamp;
+    private long startOfRoundWait;
     private long timeOfRoundEnd;
+    private boolean hasSetTimeOfRoundEnd;
     private Path path;
     private WaveManager manager;
+    private int waveState;
 
     public EnemyWave(int waveNumber, Path path, WaveManager manager){
         this.path = path;
@@ -31,9 +34,9 @@ public class EnemyWave {
         this.waveNumber = waveNumber;
         this.enemiesEachRound = 10 + waveNumber;
         this.spawnTimeStamp = System.currentTimeMillis();
-        roundMap.put(0,calcRoundOne());
-        roundMap.put(1,calcRoundTwo());
-        roundMap.put(2,calcRoundThree());
+        roundMap.put(1,calcRoundOne());
+        roundMap.put(2,calcRoundTwo());
+        roundMap.put(3,calcRoundThree());
     }
 
     private List<Enemy> calcRoundThree() {
@@ -79,25 +82,45 @@ public class EnemyWave {
     }
 
     public void evaluate(){
-        currentRound = (enemyCounter / enemiesEachRound);
-        if(previousRound != currentRound){
-            manager.onNewRoundStart();
-            previousRound = currentRound;
-        }
-
-        if(enemyCounter % enemiesEachRound == 0) {
-            timeOfRoundEnd = waitingBetweenRounds ? timeOfRoundEnd : System.currentTimeMillis();
-            waitingBetweenRounds = timeOfRoundEnd + (secondsBetweenRounds * 1_000) > System.currentTimeMillis();
-        }
-
-        if(!waitingBetweenRounds && System.currentTimeMillis() > lastCall + (10_000 / enemiesEachRound)) {
-            if(enemyCounter >= enemiesEachRound * 3){
-                manager.onWaveEnd();
-            }else {
-                next = roundMap.get(currentRound).get(enemyCounter - (currentRound * enemiesEachRound));
+        next = null;
+        switch (waveState){
+            case 0,3,6 -> { //Round 1,2,3
+                if(isCurrentRoundDone()) {
+                    waveState++;
+                }
+                if(System.currentTimeMillis() > lastCall + (10_000 / enemiesEachRound)) {
+                    next = roundMap.get(currentRound).get(enemyCounter % enemiesEachRound);
+                }
             }
-        }else{
-            next = null;
+            case 1,4 -> { //Notify
+                manager.onCurrentRoundEnd();
+                waveState++;
+            }
+            case 2,5 -> { //Wait
+                if(isDoneWaiting()){
+                    currentRound++;
+                    waveState++;
+                    manager.onNewRoundStart();
+                }
+            }
+            case 7 -> manager.onWaveEnd();
         }
+    }
+    private boolean isCurrentRoundDone(){
+        return enemyCounter % enemiesEachRound == 0 && enemyCounter - (currentRound * enemiesEachRound) > 0;
+    }
+    private boolean isDoneWaiting(){
+        if(!hasSetTimeOfRoundEnd) {
+            startOfRoundWait = System.currentTimeMillis();
+            hasSetTimeOfRoundEnd = true;
+        }
+        boolean done = System.currentTimeMillis() >= startOfRoundWait + (secondsBetweenRounds * 1000);
+        if(done){
+            hasSetTimeOfRoundEnd = false;
+        }
+        return done;
+    }
+    public void sendNextRoundImmediatly(){
+        startOfRoundWait = 0;
     }
 }

@@ -30,7 +30,7 @@ public class Main extends Application {
     private Rectangle2D screenDim;
     private GraphicsContext gc;
     private MouseHandler mouseHandler;
-    private KeyPressHandler keyPressHandler;
+    private KeyHandler keyHandler;
     private static WaveManager waveManager;
     private static UIController uiController;
 
@@ -49,6 +49,7 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
 
         screenDim = Screen.getPrimary().getBounds();
+        System.out.println("Screen dim is: " + screenDim.getWidth() + " | " + screenDim.getHeight());
         canvasSize = new Point2D(screenDim.getWidth(),screenDim.getHeight() -50);
         mainStage = stage;
         BorderPane bp = new BorderPane();
@@ -72,20 +73,20 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
-        path = new Path(11);
+        path = new Path(1);
         wayPoints = path.getPoints();
 
         mouseHandler = new MouseHandler();
         waveManager = new WaveManager(path);
         uiController = new UIController(this,waveManager);
-        keyPressHandler = new KeyPressHandler(uiController);
+        keyHandler = new KeyHandler(uiController,waveManager);
         uiController.spawn();
         setState(GameState.START_MENU);
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
         scene.setOnMouseMoved(e -> mouseHandler.updateMousePos(e));
-        scene.setOnKeyPressed(e -> keyPressHandler.press(e));
-        scene.setOnKeyReleased(e -> keyPressHandler.release(e));
+        scene.setOnKeyPressed(e -> keyHandler.press(e));
+        scene.setOnKeyReleased(e -> keyHandler.release(e));
         isRunning = true;
         instance = this;
     }
