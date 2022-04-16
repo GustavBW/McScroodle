@@ -13,9 +13,9 @@ public class TowerRangeIndicator implements Renderable {
     private final Tower tower;
     private Color color = new Color(0,0,0,0.28);
 
-    public TowerRangeIndicator(Tower tower, Point2D position, double range){
+    public TowerRangeIndicator(Tower tower, Point2D position){
         this.position = position;
-        this.range = range;
+        this.range = tower.getRange();
         this.tower = tower;
     }
 

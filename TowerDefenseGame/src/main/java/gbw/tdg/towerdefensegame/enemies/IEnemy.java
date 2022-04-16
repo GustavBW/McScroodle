@@ -13,7 +13,7 @@ public interface IEnemy extends Renderable {
     List<IEnemy> newborn = new LinkedList<>();
 
     double getProgress();
-    int getHp();
+    double getHp();
     double getMvspeed();
     double getSize();
     void onHitByBullet(Bullet b);

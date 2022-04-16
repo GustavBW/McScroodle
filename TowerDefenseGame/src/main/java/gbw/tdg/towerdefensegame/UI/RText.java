@@ -48,6 +48,8 @@ public class RText {
     public String getText(){return text;}
     public Point2D getPosition(){return position;}
     public void setPosition(Point2D pos){position = pos;}
-
+    public double getSize(){
+        return font.getSize();
+    }
 
 }

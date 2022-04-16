@@ -20,7 +20,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     private double mvspeed = 15, minDistToPoint = 10, sizeX = 40, sizeY = sizeX;
     private final Path path;
     private final ProgressBar hpBar;
-    private int maxHP = 1, id, hp = maxHP;
+    private double maxHP = 1, id, hp = maxHP;
     private double lengthTraveled = 0;
     private static int enemyCount = 0;
     private boolean alive = true,selected = false;
@@ -172,8 +172,8 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         return lengthTraveled / path.getPathLength();
     }
     @Override
-    public int getHp(){return hp;}
-    public int getMaxHP(){return maxHP;}
+    public double getHp(){return hp;}
+    public double getMaxHP(){return maxHP;}
     @Override
     public void onHitByBullet(Bullet bullet){
         provokers.add(bullet.getOwner());

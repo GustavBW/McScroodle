@@ -17,7 +17,7 @@ public class StartMenuScreen extends GScene {
     public StartMenuScreen(){
         super(75);
         Point2D sGBPos = new Point2D(Main.canvasSize.getX() * 0.5,Main.canvasSize.getY() * 0.65);
-        RText sGBText = new RText("PLAY", sGBPos,5, Color.WHITE, Font.font("Impact", 140.0));
+        RText sGBText = new RText("PLAY", Point2D.ZERO,5, Color.WHITE, Font.font("Impact", 140.0));
 
         Point2D titlePos = new Point2D(Main.canvasSize.getX() * 0.42, Main.canvasSize.getY() * 0.15);
         titleText = new RText("\t\t Σ\nTOWER DEFENCE", titlePos, 5, Color.WHITE, Font.font("Impact", 180));

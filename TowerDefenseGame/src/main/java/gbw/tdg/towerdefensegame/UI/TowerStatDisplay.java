@@ -55,4 +55,11 @@ public class TowerStatDisplay implements Renderable {
     public void destroy() {
         Renderable.expended.add(this);
     }
+
+    public Point2D getExtremeties() {
+        return new Point2D(
+                position.getX() + sizeX,
+                position.getY() + sizeY
+        );
+    }
 }

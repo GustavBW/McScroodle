@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 
 public class Button implements Clickable, Renderable {
 
+    public static final Point2D STANDARD_TEXT_OFFSET = new Point2D(1,1);
     protected double renderingPriority = 85D;
     protected Point2D position;
     protected double sizeX, sizeY;
@@ -60,6 +61,7 @@ public class Button implements Clickable, Renderable {
     @Override
     public void setPosition(Point2D p) {
         this.position = p;
+        text.setPosition(p.add(STANDARD_TEXT_OFFSET.multiply(text.getSize())));
     }
 
     @Override

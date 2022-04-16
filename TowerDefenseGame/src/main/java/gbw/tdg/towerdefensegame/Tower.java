@@ -13,61 +13,47 @@ import java.util.Set;
 
 public class Tower implements Clickable, Tickable, ITower{
 
-    private final double renderingPriority = 55D;
-    private double sizeX, sizeY, damage, atkSpeed;
-    protected double range, attackDelay;
+    private final double renderingPriority = 55D, rangeMultiplier = 100;
+    private double sizeX, sizeY, damage = 0.1, atkSpeed = 0.1;
+    protected double range = 0.5, attackDelay;
     protected boolean isSelected = false, isActive = true;
     protected Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
     private long lastCall = 0;
     private final TowerStatDisplay statDisplay;
     private final TowerRangeIndicator rangeIndicator;
+    private final TowerFunctionsDisplay functionsDisplay;
     private final List<Augment> augments = new ArrayList<>();
     private final List<Invocation> invocations = new ArrayList<>();
     private final Set<SupportTowerBuff> damageBuffs = new HashSet<>();
     private final Set<SupportTowerBuff> atkSpeedBuffs = new HashSet<>();
     private final double maxAugments = 3, maxInvocations = 3;
 
-    public Tower(Point2D position, double size, double range, double damage, Main game){
-        this.position = position;
-        this.sizeX = size;
-        this.sizeY = size;
-        this.range = range;
-        this.damage = damage;
-        attackDelay = 1_000_000_000 / atkSpeed;
-        this.statDisplay = new TowerStatDisplay(this, position.add(Main.canvasSize.multiply(0.002)));
-        this.rangeIndicator = new TowerRangeIndicator(this,position.add(sizeX * 0.5, sizeY * 0.5),range);
-    }
     public Tower(int points){
+        double subDivider = 0.01;
+        double pointsSubbed = points / subDivider;
+
         this.position = new Point2D(0,0);
         this.sizeX = 40;
         this.sizeY = 40;
 
-        while(points > 0) {
-            if(Main.random.nextBoolean()) {
-                damage++;
-                points--;
-            }
+        double allocPoints;
 
-            if(points <= 0){break;}
+        damage += (int) ((allocPoints = Main.random.nextDouble() * pointsSubbed) * subDivider * 100);
+        damage *= 0.01;
+        pointsSubbed -= allocPoints;
 
-            if(Main.random.nextBoolean()) {
-                range += 100;
-                points--;
-            }
+        range += (int) ((allocPoints = Main.random.nextDouble() * pointsSubbed) * subDivider * 100);
+        range *= 0.01;
+        pointsSubbed -= allocPoints;
 
-            if(points <= 0){break;}
-
-            if(Main.random.nextBoolean()) {
-                atkSpeed++;
-                points--;
-            }
-        }
-        atkSpeed = Math.max(0.5,atkSpeed);
-        range = Math.max(100,range);
+        atkSpeed += (int) ((allocPoints = Main.random.nextDouble() * pointsSubbed) * subDivider * 100);
+        atkSpeed *= 0.01;
+        pointsSubbed -= allocPoints;
 
         this.statDisplay = new TowerStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
-        this.rangeIndicator = new TowerRangeIndicator(this,position.add(sizeX * 0.5, sizeY * 0.5),range);
+        this.rangeIndicator = new TowerRangeIndicator(this,position.add(sizeX * 0.5, sizeY * 0.5));
+        this.functionsDisplay = new TowerFunctionsDisplay(this,new Point2D(Main.canvasSize.getX()*.01,statDisplay.getExtremeties().getY()));
         attackDelay = 1_000_000_000 / atkSpeed;
     }
     public void tick(){
@@ -86,6 +72,10 @@ public class Tower implements Clickable, Tickable, ITower{
                 i.evalutate();
             }
         }
+    }
+
+    public double getRange(){
+        return range * rangeMultiplier;
     }
 
     public void render(GraphicsContext gc){
@@ -157,7 +147,7 @@ public class Tower implements Clickable, Tickable, ITower{
             double distY = Math.pow(e.getPosition().getY() - origin.getY(), 2);
             double distance = Math.sqrt(distX + distY);
 
-            if(distance <= range){
+            if(distance <= range * rangeMultiplier){
                 enemiesFound.add(e);
             }
 
@@ -282,6 +272,7 @@ public class Tower implements Clickable, Tickable, ITower{
         if(!isSelected) {
             statDisplay.spawn();
             rangeIndicator.spawn();
+            functionsDisplay.spawn();
         }
         isSelected = true;
     }
@@ -290,7 +281,17 @@ public class Tower implements Clickable, Tickable, ITower{
         if(isSelected) {
             statDisplay.destroy();
             rangeIndicator.destroy();
+            functionsDisplay.destroy();
         }
         isSelected = false;
+    }
+
+    public void sell() {
+        destroy();
+        Main.alterGoldAmount(getWorth());
+    }
+
+    public double getWorth(){
+        return damage + range + atkSpeed;
     }
 }
