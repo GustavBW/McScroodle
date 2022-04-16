@@ -12,7 +12,6 @@ public class StartGameButton extends Button{
     }
     @Override
     public void onInteraction(){
-        Main.setState(GameState.IN_GAME);
         Main.onGameStart();
     }
 }

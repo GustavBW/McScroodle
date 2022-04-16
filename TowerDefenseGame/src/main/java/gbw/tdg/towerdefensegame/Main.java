@@ -73,7 +73,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
-        path = new Path(1);
+        path = new Path(0);
         wayPoints = path.getPoints();
 
         mouseHandler = new MouseHandler();
@@ -92,22 +92,22 @@ public class Main extends Application {
     }
 
     private void update(){
-            if (HP <= 0) {
-                setState(GameState.GAME_OVER);
-                onPause = true;
-                //resetGameParams();
-                isRunning = false;
-            }
+        if (isGameLost() && isRunning) {
+            setState(GameState.GAME_OVER);
+            onPause = true;
+            isRunning = false;
+        }
 
-            render();
+        render();
 
-            if (!onPause) {
-                if ((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()) {
-                    lastCall = System.nanoTime();
-                    tick();
-                    FPS++;
-                }
+        if (!onPause) {
+            if ((lastCall + (1_000_000_000 / fpsWanted)) <= System.nanoTime()) {
+                lastCall = System.nanoTime();
+                tick();
+                FPS++;
             }
+        }
+
         frameCount++;
 
         if (lastCall2 + 1_000_000_000 <= System.nanoTime()){
@@ -117,6 +117,10 @@ public class Main extends Application {
         }
 
         cleanUp();
+    }
+
+    public static boolean isGameLost(){
+        return HP <= 0;
     }
 
     public static void onGameOver() {
@@ -179,7 +183,7 @@ public class Main extends Application {
 
     }
 
-    private void resetGameParams(){
+    private static void resetGameParams(){
         HP = 10;
     }
 
@@ -201,15 +205,21 @@ public class Main extends Application {
     }
 
     public static void onGameStart(){
+        resetGameParams();
         waveManager.spawn();
+        isRunning = true;
+        setState(GameState.IN_GAME);
+    }
+    public static void onStartMenu(){
+        setState(GameState.START_MENU);
     }
     public static Main getInstance(){
         return instance;
     }
 
-    public static void setState(GameState newState){
+    private static void setState(GameState newState){
         if(state != newState) {
-            System.out.println("Main.state changed to: " + state);
+            System.out.println("Main.state changed to: " + newState + " from " + state);
             state = newState;
             uiController.changeScene(state);
         }

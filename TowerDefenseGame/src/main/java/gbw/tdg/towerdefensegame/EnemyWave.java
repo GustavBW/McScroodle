@@ -107,7 +107,7 @@ public class EnemyWave {
         }
     }
     private boolean isCurrentRoundDone(){
-        return enemyCounter % enemiesEachRound == 0 && enemyCounter - (currentRound * enemiesEachRound) > 0;
+        return enemyCounter % enemiesEachRound == 0 && enemyCounter - ((currentRound - 1) * enemiesEachRound) > 0;
     }
     private boolean isDoneWaiting(){
         if(!hasSetTimeOfRoundEnd) {

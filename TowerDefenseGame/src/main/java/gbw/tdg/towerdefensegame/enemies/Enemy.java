@@ -180,9 +180,6 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         provokerDamageMap.put(bullet.getOwner(), provokerDamageMap.getOrDefault(bullet.getOwner(), 0D) + bullet.getDamage());
         hp -= bullet.getDamage();
         latestHit = bullet;
-        if(hp <= 0){
-            onKilled();
-        }
     }
     @Override
     public double getMvspeed(){

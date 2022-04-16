@@ -16,7 +16,7 @@ public class WaveManager implements Tickable {
     private EnemyBuff currentBuff;
     private int spawnCount;
     private int waveCounter = 0;
-    private boolean hasSetTimeOfWaveEnd;
+    private boolean hasSetTimeOfWaveEnd,isFirstWave;
     private long timeOfWaveEnd;
     private EnemyWave currentWave;
 
@@ -28,6 +28,7 @@ public class WaveManager implements Tickable {
 
     @Override
     public void spawn() {
+        isFirstWave = true;
         Tickable.newborn.add(this);
     }
 
@@ -38,6 +39,13 @@ public class WaveManager implements Tickable {
 
     @Override
     public void tick() {
+        if(spawnCount == 0){   //On first wave it needs to wait
+            if(!isDoneWaiting()) {
+                return;
+            }
+            onNewWaveStart();
+        }
+
         currentWave.evaluate();
 
         if(currentWave.hasNext()){
@@ -45,10 +53,6 @@ public class WaveManager implements Tickable {
             newEnemy.applyBuff(currentBuff);
             newEnemy.spawn();
             spawnCount++;
-
-            if(spawnCount % 20 == 0){
-                currentBuff.increment(Main.totalGoldEarned / 500.0,Main.totalGoldEarned / 5000.0 );
-            }
         }
 
     }
@@ -65,6 +69,7 @@ public class WaveManager implements Tickable {
         new OnScreenWarning("WAVE " + (waveCounter +1) + " WON", Main.canvasSize.multiply(0.6),3).spawn();
         if(isDoneWaiting()) {
             waveCounter++;
+            currentBuff.increment((Main.totalGoldEarned / 500.0) + 1,(Main.totalGoldEarned / 5000.0) + 0.1);
             currentWave = new EnemyWave(waveCounter, path, this);
             onNewWaveStart();
         }
