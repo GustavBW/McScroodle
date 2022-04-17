@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame.enemies;
 
+import gbw.tdg.towerdefensegame.Augment;
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Renderable;
 
@@ -17,4 +18,6 @@ public interface IEnemy extends Renderable {
     double getMvspeed();
     double getSize();
     void onHitByBullet(Bullet b);
+
+    void applyAugmentEffect(Augment a);
 }

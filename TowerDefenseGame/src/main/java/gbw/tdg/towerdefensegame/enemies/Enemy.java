@@ -184,6 +184,10 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         latestHit = bullet;
     }
     @Override
+    public void applyAugmentEffect(Augment aug){
+
+    }
+    @Override
     public double getMvspeed(){
         return mvspeed;
     }

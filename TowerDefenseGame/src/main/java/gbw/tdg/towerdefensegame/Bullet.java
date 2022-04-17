@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,6 +18,9 @@ public class Bullet implements Tickable,Renderable{
     protected double speed = 40, damage;
     protected IEnemy target;
     protected List<IEnemy> hasAlreadyHit = new ArrayList<>();
+    private List<Augment> onHitAugments = new ArrayList<>();
+    private List<Augment> inFlightAugments = new ArrayList<>();
+    private List<Augment> onSpawnAugments = new ArrayList<>();
     protected ITower owner;
     private boolean targeted;
     private int piercingLevel = 1;
@@ -88,11 +92,23 @@ public class Bullet implements Tickable,Renderable{
         enemyHit.onHitByBullet(this);
         hasAlreadyHit.add(enemyHit);
         piercingLevel--;
+        for(Augment a : onHitAugments){
+            a.applyToEnemy((Enemy) enemyHit, this);
+        }
 
         if(piercingLevel == 0) {
             destroy();
         }
         targeted = false;
+    }
+    public void addOnHitAug(Augment aug){
+        onHitAugments.add(aug);
+    }
+    public void addInFlightAug(Augment aug){
+        inFlightAugments.add(aug);
+    }
+    public void addOnSpawnAug(Augment aug){
+        onSpawnAugments.add(aug);
     }
     @Override
     public void render(GraphicsContext gc){

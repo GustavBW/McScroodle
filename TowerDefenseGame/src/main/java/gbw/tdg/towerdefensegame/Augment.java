@@ -1,25 +1,45 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.AugmentIcon;
+import gbw.tdg.towerdefensegame.enemies.Enemy;
 
-public abstract class Augment {
+public class Augment {
 
+    //This class is both a wrapper class for itself and the super class of actual augments.
+    //When this class is instantiated with any parameters, it will create an object that creates the actual augment e.g. ExplosiveAugment, which will make its
+    //own parent Augment object and then call setChild on this, first object.
+    //That child now has it's own parent Augment object using the no-args constructor, which is not the first one, and this parent object holds the associated
+    //info like value and icon.
+    //In short: For 1 actual augment (e.g. ExplosiveAugment) there is 2 Augment objects: The wrapper object, and the actual parent object.
+    //When methods are called, the wrapper is called, which calls the child, which calls it's parent depending on the call.
+
+    protected int level;
     protected Tower tower;
-    protected final double value;
-    protected final AugmentIcon icon;
+    protected double value;
+    protected AugmentIcon icon;
     protected Augment requirement = null;
     private boolean needsToNotHaveRequirement = false;
-    protected final Augment child;
+    protected Augment child;
 
-    public Augment(double value, AugmentIcon icon){
-        this(value,icon,-1);
+    public Augment(double value){
+        this(value,-1);
     }
-    public Augment(double value, AugmentIcon icon, int id){
+    public Augment(double value,int id){
         this.value = value;
-        this.icon = icon;
         this.child = whatAmI(id);
+        this.icon = child.icon;
+    }
+    protected Augment(){
+
     }
 
+    protected void setValue(double val){this.value = val;}
+    protected void setChild(Augment child){
+        this.child = child;
+        setValue(child.value);
+        setIcon(child.icon);
+    }
+    protected void setIcon(AugmentIcon icon){this.icon = icon;}
     private Augment whatAmI(int id){
         if(id <= -1){
             return getRandomAugment();
@@ -43,8 +63,8 @@ public abstract class Augment {
         return null;
     }
 
-    public void applyTo(Bullet bullet){
-        child.applyTo(bullet);
+    public void applyToBullet(Bullet bullet){
+        child.applyToBullet(bullet);
     }
 
     public boolean applyToTower(Tower tower){
@@ -73,5 +93,9 @@ public abstract class Augment {
             return true;
         }
         return false;
+    }
+
+    public void applyToEnemy(Enemy enemyHit,Bullet bullet) {
+        child.applyToEnemy(enemyHit,bullet);
     }
 }

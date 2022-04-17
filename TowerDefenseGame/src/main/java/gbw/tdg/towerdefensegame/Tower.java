@@ -211,7 +211,7 @@ public class Tower implements Clickable, Tickable, ITower{
     private void attack(IEnemy target){
         Bullet b = new AugmentedBullet(position.add(sizeX*0.5,sizeY*0.5),target,this);
         for(Augment a : augments){
-            a.applyTo(b);
+            a.applyToBullet(b);
         }
         b.spawn();
     }
