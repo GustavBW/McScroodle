@@ -6,15 +6,13 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Tower implements Clickable, Tickable, ITower{
 
     private final double renderingPriority = 55D, rangeMultiplier = 100;
     private double sizeX, sizeY, damage = 0.1, atkSpeed = 0.1;
+    private int multishot = 1;
     protected double range = 0.5, attackDelay;
     protected boolean isSelected = false, isActive = true;
     protected Point2D position;
@@ -56,13 +54,28 @@ public class Tower implements Clickable, Tickable, ITower{
         this.functionsDisplay = new TowerFunctionsDisplay(this,new Point2D(Main.canvasSize.getX()*.01,statDisplay.getExtremeties().getY()));
         attackDelay = 1_000_000_000 / atkSpeed;
     }
+    public Tower(Point2D pos, double dmg, double atkspd, double range, int multishot){
+        this(1);
+        setPosition(pos);
+        setAtkSpeed(atkspd);
+        damage = dmg;
+        this.range = range;
+        this.multishot = multishot;
+        rangeIndicator.setDimensions(new Point2D(range,0));
+        statDisplay.setText(this.toString());
+
+    }
+
     public void tick(){
         if(isActive){
-            if(lastCall + attackDelay < System.nanoTime()){
-                IEnemy target = findTarget(findEnemies());
+            Set<IEnemy> targets = findEnemiesInRange();
 
-                if (target != null) {
-                    attack(target);
+            if(lastCall + attackDelay < System.nanoTime() && !targets.isEmpty()){
+
+                List<IEnemy> targetsPrioritized = findTargets(targets);
+
+                for (int i = 0; i < multishot && i < targetsPrioritized.size(); i++) {
+                    attack(targetsPrioritized.get(i));
                 }
 
                 lastCall = System.nanoTime();
@@ -138,16 +151,17 @@ public class Tower implements Clickable, Tickable, ITower{
     public double getRenderingPriority() {
         return renderingPriority;
     }
-    private ArrayList<IEnemy> findEnemies(){
+
+    private Set<IEnemy> findEnemiesInRange(){
         Point2D origin = new Point2D(position.getX() + (sizeX * 0.5), position.getY() + (sizeY * 0.5));
-        ArrayList<IEnemy> enemiesFound = new ArrayList<>();
+        Set<IEnemy> enemiesFound = new HashSet<>();
 
         for(IEnemy e : IEnemy.active){
             double distX = Math.pow(e.getPosition().getX() - origin.getX(), 2);
             double distY = Math.pow(e.getPosition().getY() - origin.getY(), 2);
             double distance = Math.sqrt(distX + distY);
 
-            if(distance <= range * rangeMultiplier){
+            if(distance <= getRange()){
                 enemiesFound.add(e);
             }
 
@@ -155,86 +169,35 @@ public class Tower implements Clickable, Tickable, ITower{
 
         return enemiesFound;
     }
-    private IEnemy findTarget(List<IEnemy> list){
 
-        IEnemy target = null;
+    private List<IEnemy> findTargets(Set<IEnemy> set){
+
+        List<IEnemy> list = new LinkedList<>(set);
 
         if(!list.isEmpty()) {
+
             switch (targetingType) {
-                case FIRST -> {
-                    IEnemy first = list.get(0);
+                case LAST -> list.sort(Comparator.comparingDouble(IEnemy::getProgress));
 
-                    for (IEnemy e : list) {
-                        if (e.getProgress() > first.getProgress()) {
-                            first = e;
-                        }
-                    }
+                case RANDOM -> list.sort(Comparator.comparingInt(o -> Main.random.nextInt(-1, 1)));
 
-                    target = first;
-                }
+                case FIRST -> list.sort(Comparator.comparingDouble(IEnemy::getProgress).reversed());
 
-                case RANDOM -> {
-                    int index = Math.max(Main.random.nextInt(list.size()) - 1,0);
+                case WEAKEST -> list.sort(Comparator.comparingDouble(IEnemy::getHp));
 
-                    target = list.get(index);
-                }
+                case BEEFIEST -> list.sort(Comparator.comparingDouble(IEnemy::getHp).reversed());
 
-                case LAST -> {
-                    IEnemy last = list.get(0);
-
-                    for (IEnemy e : list) {
-                        if (e.getProgress() < last.getProgress()) {
-                            last = e;
-                        }
-                    }
-
-                    target = last;
-                }
-
-                case BEEFIEST -> {
-
-                    IEnemy beefiest = list.get(0);
-
-                    for (IEnemy e : list) {
-                        if (e.getHp() > beefiest.getHp()) {
-                            beefiest = e;
-                        }
-                    }
-
-                    target = beefiest;
-                }
-
-                case WEAKEST -> {
-
-                    IEnemy weakest = list.get(0);
-
-                    for (IEnemy e : list) {
-                        if (e.getHp() < weakest.getHp()) {
-                            weakest = e;
-                        }
-                    }
-
-                    target = weakest;
-                }
-
-                case FASTEST -> {
-
-                    IEnemy fastest = list.get(0);
-
-                    for (IEnemy e : list) {
-                        if (e.getMvspeed() > fastest.getMvspeed()) {
-                            fastest = e;
-                        }
-                    }
-
-                    target = fastest;
-
-                }
+                case FASTEST -> list.sort(Comparator.comparingDouble(IEnemy::getMvspeed));
             }
         }
 
-        return target;
+        return list;
     }
+
+    public void setTargetingType(TargetingType type){
+        this.targetingType = type;
+    }
+
     private void attack(IEnemy target){
         Bullet b = new AugmentedBullet(position.add(sizeX*0.5,sizeY*0.5),target,damage,this);
         for(Augment a : augments){
@@ -256,6 +219,9 @@ public class Tower implements Clickable, Tickable, ITower{
         Tickable.expended.add(this);
         Renderable.expended.add(this);
         Clickable.expended.add(this);
+        rangeIndicator.destroy();
+        functionsDisplay.destroy();
+        statDisplay.destroy();
     }
     @Override
     public boolean isInBounds(Point2D pos) {
@@ -264,12 +230,13 @@ public class Tower implements Clickable, Tickable, ITower{
     }
     @Override
     public String toString(){
-        return "DMG: " + damage + "\n" + "RNG: " + range + "\n" + "SPD " + atkSpeed;
+        return "DMG: " + damage + "\n" + "RNG: " + range + "\n" + "SPD " + atkSpeed + "\n" + "Target: " + targetingType.asString;
     }
 
     @Override
     public void onInteraction() {
         if(!isSelected) {
+
             statDisplay.spawn();
             rangeIndicator.spawn();
             functionsDisplay.spawn();
@@ -279,6 +246,7 @@ public class Tower implements Clickable, Tickable, ITower{
     @Override
     public void deselect(){
         if(isSelected) {
+            statDisplay.setText(this.toString());
             statDisplay.destroy();
             rangeIndicator.destroy();
             functionsDisplay.destroy();

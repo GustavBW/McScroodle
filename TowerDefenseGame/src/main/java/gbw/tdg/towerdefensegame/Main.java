@@ -73,7 +73,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
-        path = new Path(0);
+        path = new Path(15);
         wayPoints = path.getPoints();
 
         mouseHandler = new MouseHandler();
@@ -82,6 +82,8 @@ public class Main extends Application {
         keyHandler = new KeyHandler(uiController,waveManager);
         uiController.spawn();
         setState(GameState.START_MENU);
+
+        new Tower(canvasSize.multiply(0.5),0.05,10,1000,10).spawn();
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
         scene.setOnMouseMoved(e -> mouseHandler.updateMousePos(e));

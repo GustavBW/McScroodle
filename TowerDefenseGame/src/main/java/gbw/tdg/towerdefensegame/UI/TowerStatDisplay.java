@@ -62,4 +62,8 @@ public class TowerStatDisplay implements Renderable {
                 position.getY() + sizeY
         );
     }
+
+    public void setText(String newText) {
+        text.setText(newText);
+    }
 }

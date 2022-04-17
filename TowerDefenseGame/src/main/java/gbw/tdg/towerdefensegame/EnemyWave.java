@@ -88,7 +88,7 @@ public class EnemyWave {
                 if(isCurrentRoundDone()) {
                     waveState++;
                 }
-                if(System.currentTimeMillis() > lastCall + (10_000 / enemiesEachRound)) {
+                if(System.currentTimeMillis() > lastCall + (5_000 / enemiesEachRound)) {
                     next = roundMap.get(currentRound).get(enemyCounter % enemiesEachRound);
                 }
             }

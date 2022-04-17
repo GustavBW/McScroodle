@@ -39,11 +39,6 @@ public class TowerFunctionsDisplay implements Renderable {
 
     public void onTowerDelete(){
         tower.sell();
-        System.out.println("Deleting a tower is not hooked up yet");
-    }
-
-    public void showTargetingOptions() {
-        System.out.println("Changing targeting types is not hooked up yet");
     }
 
     public Tower getTower(){

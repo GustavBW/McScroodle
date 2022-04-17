@@ -17,7 +17,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     private WayPoint latest;
     private WayPoint next;
     private Point2D position;
-    private double mvspeed = 15, minDistToPoint = 10, sizeX = 40, sizeY = sizeX;
+    private double mvspeed = 5, minDistToPoint = 10, sizeX = 40, sizeY = sizeX;
     private final Path path;
     private final ProgressBar hpBar;
     private double maxHP = 1, id, hp = maxHP;
@@ -147,9 +147,6 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     public void onInteraction() {
         selected = true;
         statDisplay.spawn();
-        if(!Main.onPause) {
-            hp--;
-        }
         System.out.println("OOF");
     }
     @Override

@@ -9,8 +9,8 @@ public class Bullet implements Tickable,Renderable{
 
     private static final double renderingPriority = 65D;
     private Point2D position, velocity;
-    private double lifeTime = 2 * 1_000_000_000, spawnTime, sizeX = 10,sizeY = 10;
-    protected double speed = 20, damage;
+    private double lifeTime = 10 * 1_000, spawnTime, sizeX = 10,sizeY = 10;
+    protected double speed = 40, damage;
     protected IEnemy target;
     protected ITower owner;
 
@@ -19,16 +19,16 @@ public class Bullet implements Tickable,Renderable{
         this.velocity = new Point2D(0,0);
         this.target = target;
         this.damage = damage;
-        this.speed = target.getMvspeed() * 2;
+        //this.speed = target.getMvspeed() * 2;
         this.owner = owner;
-        spawnTime = System.nanoTime();
+        spawnTime = System.currentTimeMillis();
     }
 
     public void tick(){
         velocity = target.getPosition().subtract(position).normalize();
         position = position.add(velocity.multiply(speed));
 
-        if(System.nanoTime() > lifeTime + spawnTime){
+        if(System.currentTimeMillis() > lifeTime + spawnTime){
             destroy();
         }
 
