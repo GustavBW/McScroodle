@@ -12,8 +12,8 @@ public class ExplosiveBullet extends Bullet{
 
     private double explosionRadius;
 
-    public ExplosiveBullet(Point2D position, IEnemy target, double damage, ITower owner, double explosionRadius) {
-        super(position, target, damage,owner);
+    public ExplosiveBullet(Point2D position, IEnemy target, ITower owner, double explosionRadius) {
+        super(position, target,owner);
         this.explosionRadius = explosionRadius;
     }
 

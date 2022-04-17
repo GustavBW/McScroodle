@@ -105,6 +105,7 @@ public class Tower implements Clickable, Tickable, ITower{
     public void applyAtkSpeedBuff(SupportTowerBuff buff){
         atkSpeedBuffs.add(buff);
     }
+    @Override
     public double getDamage(){return damage;}
     public double getAtkSpeed(){return atkSpeed;}
     public boolean addAugment(Augment augment){
@@ -208,7 +209,7 @@ public class Tower implements Clickable, Tickable, ITower{
     }
 
     private void attack(IEnemy target){
-        Bullet b = new AugmentedBullet(position.add(sizeX*0.5,sizeY*0.5),target,damage,this);
+        Bullet b = new AugmentedBullet(position.add(sizeX*0.5,sizeY*0.5),target,this);
         for(Augment a : augments){
             a.applyTo(b);
         }

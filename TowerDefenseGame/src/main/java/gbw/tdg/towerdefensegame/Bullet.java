@@ -16,23 +16,24 @@ public class Bullet implements Tickable,Renderable{
     private double lifeTime = 10 * 1_000, spawnTime, sizeX = 10,sizeY = 10;
     protected double speed = 40, damage;
     protected IEnemy target;
+    protected List<IEnemy> hasAlreadyHit = new ArrayList<>();
     protected ITower owner;
     private boolean targeted;
     private int piercingLevel = 1;
 
-    public Bullet(Point2D position, IEnemy target, double damage, ITower owner){
+    public Bullet(Point2D position, IEnemy target, ITower owner){
         this.position = position;
         this.velocity = new Point2D(0,0);
         this.target = target;
-        this.damage = damage;
         //this.speed = target.getMvspeed() * 2;
         this.owner = owner;
         spawnTime = System.currentTimeMillis();
         targeted = target != null;
     }
 
-    public Bullet(Point2D position, Point2D velocity, double damage, ITower owner){
-
+    public Bullet(Point2D position, Point2D velocity, ITower owner){
+        this(position, (IEnemy) null,owner);
+        this.velocity = velocity;
     }
 
     public void tick(){
@@ -61,8 +62,10 @@ public class Bullet implements Tickable,Renderable{
                 collisionsFound.add(e);
             }
         }
+
         if(!collisionsFound.isEmpty()) {
 
+            collisionsFound.remove(hasAlreadyHit);
             collisionsFound.sort(Comparator.comparingDouble(o -> o.getPosition().distance(position)));
             for(IEnemy e : collisionsFound){
                 onCollision(e);
@@ -80,9 +83,10 @@ public class Bullet implements Tickable,Renderable{
     }
     public void setPiercingLevel(int lvl){this.piercingLevel = lvl;}
     public ITower getOwner(){return owner;}
-    public double getDamage(){return damage;}
+    public double getDamage(){return owner.getDamage();}
     protected void onCollision(IEnemy enemyHit){
         enemyHit.onHitByBullet(this);
+        hasAlreadyHit.add(enemyHit);
         piercingLevel--;
 
         if(piercingLevel == 0) {

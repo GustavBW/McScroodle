@@ -12,4 +12,5 @@ public interface ITower extends Renderable {
     void applyDamageBuff(SupportTowerBuff buff);
     void applyAtkSpeedBuff(SupportTowerBuff buff);
 
+    double getDamage();
 }
