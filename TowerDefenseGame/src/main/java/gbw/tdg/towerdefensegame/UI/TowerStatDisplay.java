@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 
 public class TowerStatDisplay implements Renderable {
 
+    private double renderingPriority = 57;
     private final RText text;
     private final Tower tower;
     private Color background = new Color(0,0,0,0.5);
@@ -37,8 +38,10 @@ public class TowerStatDisplay implements Renderable {
     }
     @Override
     public double getRenderingPriority() {
-        return 56;
+        return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio){this.renderingPriority = newPrio;}
     public void setPosition(Point2D p){
         text.setPosition(p);
     }

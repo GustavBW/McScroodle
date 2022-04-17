@@ -8,7 +8,7 @@ import javafx.geometry.Point2D;
 public class StartGameButton extends Button{
 
     public StartGameButton(Point2D position, double sizeX, double sizeY, RText textUnit) {
-        super(position, sizeX, sizeY, textUnit);
+        super(position, sizeX, sizeY, textUnit,true);
     }
     @Override
     public void onInteraction(){

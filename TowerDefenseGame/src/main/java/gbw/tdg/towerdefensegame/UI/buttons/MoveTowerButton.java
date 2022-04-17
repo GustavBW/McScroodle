@@ -1,7 +1,7 @@
 package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.TowerFunctionsDisplay;
+import gbw.tdg.towerdefensegame.UI.TowerFunctionsDisplay;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
@@ -15,8 +15,9 @@ public class MoveTowerButton extends Button {
     public MoveTowerButton(TowerFunctionsDisplay towerFunctionsDisplay) {
         super(Point2D.ZERO, 0,0,new RText(
              "Move",Point2D.ZERO,3, Color.WHITE, Font.font("Impact", Main.canvasSize.getX() * 0.01)
-        ));
+        ),true);
         display = towerFunctionsDisplay;
+        super.setRimColor(Color.TRANSPARENT);
     }
 
     @Override

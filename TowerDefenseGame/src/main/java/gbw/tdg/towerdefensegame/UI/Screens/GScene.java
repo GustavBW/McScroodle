@@ -41,6 +41,10 @@ public class GScene implements Renderable {
     public double getRenderingPriority() {
         return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
 
     @Override
     public void setPosition(Point2D p) {

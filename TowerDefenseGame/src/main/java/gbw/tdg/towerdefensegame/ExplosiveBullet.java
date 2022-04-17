@@ -4,7 +4,9 @@ import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ExplosiveBullet extends Bullet{
 
@@ -17,14 +19,17 @@ public class ExplosiveBullet extends Bullet{
 
 
     @Override
-    protected void onCollision(){
-        for(IEnemy e : searchForNearbyEnemies(super.target)){
+    protected void onCollision(IEnemy enemyHit){
+        super.onCollision(enemyHit);
+
+        for(IEnemy e : searchForNearbyEnemies(enemyHit)){
             e.onHitByBullet(this);
         }
     }
-    private List<IEnemy> searchForNearbyEnemies(IEnemy target){
-        List<IEnemy> enemiesFound = new ArrayList<>();
-        Point2D tPos = target.getPosition();
+
+    private Set<IEnemy> searchForNearbyEnemies(IEnemy enemyHit){
+        Set<IEnemy> enemiesFound = new HashSet<>();
+        Point2D tPos = enemyHit.getPosition();
 
         for(IEnemy e : IEnemy.active){
             if(tPos.distance(e.getPosition()) <= explosionRadius){
@@ -32,6 +37,7 @@ public class ExplosiveBullet extends Bullet{
             }
         }
 
+        enemiesFound.remove(enemyHit);
         return enemiesFound;
     }
 }

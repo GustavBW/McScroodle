@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 
 public class EnemyStatDisplay implements Renderable, Tickable {
 
+    private double renderingPriority = 56;
     private final RText nameText;
     private final RText hpText;
     private final RText spdText;
@@ -44,8 +45,13 @@ public class EnemyStatDisplay implements Renderable, Tickable {
     }
     @Override
     public double getRenderingPriority() {
-        return 56;
+        return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
+
     public void setPosition(Point2D p){
         nameText.setPosition(p);
     }

@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 
 public class TowerRangeIndicator implements Renderable {
 
+    private double renderingPriority = 56;
     private Point2D position;
     private double range;
     private final Tower tower;
@@ -41,8 +42,13 @@ public class TowerRangeIndicator implements Renderable {
 
     @Override
     public double getRenderingPriority() {
-        return 56;
+        return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
+
 
     @Override
     public void setPosition(Point2D p) {

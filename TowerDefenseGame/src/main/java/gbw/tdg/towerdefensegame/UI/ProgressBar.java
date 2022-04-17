@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 public class ProgressBar implements Renderable {
 
-    private final double renderingPriority = 45D;
+    private double renderingPriority = 45D;
     protected final double min, max;
     protected double sizeX,sizeY;
     protected double current;
@@ -63,6 +63,12 @@ public class ProgressBar implements Renderable {
     public double getRenderingPriority() {
         return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
+
+
 
     @Override
     public void spawn() {

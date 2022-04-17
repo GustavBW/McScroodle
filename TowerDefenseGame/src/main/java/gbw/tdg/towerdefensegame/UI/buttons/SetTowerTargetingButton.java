@@ -2,7 +2,7 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.TargetingType;
-import gbw.tdg.towerdefensegame.TowerFunctionsDisplay;
+import gbw.tdg.towerdefensegame.UI.TowerFunctionsDisplay;
 import gbw.tdg.towerdefensegame.UI.GraphicalInventory;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
@@ -21,14 +21,16 @@ public class SetTowerTargetingButton extends Button{
     public SetTowerTargetingButton(TowerFunctionsDisplay towerFunctionsDisplay) {
         super(Point2D.ZERO,0,0,new RText(
                 "Change Targeting",Point2D.ZERO,3, Color.WHITE, Font.font("Impact", Main.canvasSize.getX() * 0.01)
-        ));
+        ),true);
         this.display = towerFunctionsDisplay;
+        super.setRimColor(Color.TRANSPARENT);
 
         for(TargetingType type : TargetingType.values()){
             buttons.add(new SetTargetingButton(display.getTower(),type));
         }
 
-        this.menu = new GraphicalInventory<>(1,sizeX,Main.canvasSize.getY()*0.15,2,position.add(sizeX,0),56,buttons.size());
+        this.menu = new GraphicalInventory<>(1,sizeX,Main.canvasSize.getY()*0.15,2,position.add(sizeX,0),57,buttons.size());
+        menu.setBackgroundColor(Color.TRANSPARENT);
         menu.addAll(buttons);
     }
 

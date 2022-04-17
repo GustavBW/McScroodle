@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 
 public class WaveRoundDisplay implements Renderable, Tickable {
 
+    private double renderingPriority = 79;
     private int wave, round;
     private Point2D position;
     private Point2D dimensions;
@@ -56,8 +57,13 @@ public class WaveRoundDisplay implements Renderable, Tickable {
 
     @Override
     public double getRenderingPriority() {
-        return 79D;
+        return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
+
 
     @Override
     public void setPosition(Point2D p) {

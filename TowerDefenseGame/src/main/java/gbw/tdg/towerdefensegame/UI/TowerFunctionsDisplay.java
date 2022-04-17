@@ -1,5 +1,8 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.UI;
 
+import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.Renderable;
+import gbw.tdg.towerdefensegame.Tower;
 import gbw.tdg.towerdefensegame.UI.GraphicalInventory;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.UI.buttons.DeleteTowerButton;
@@ -7,11 +10,13 @@ import gbw.tdg.towerdefensegame.UI.buttons.MoveTowerButton;
 import gbw.tdg.towerdefensegame.UI.buttons.SetTowerTargetingButton;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
 public class TowerFunctionsDisplay implements Renderable {
 
+    private double renderingPriority = 57;
     private final Tower tower;
     private Point2D position,
             moveButtonOffset = new Point2D(0,0),
@@ -22,7 +27,7 @@ public class TowerFunctionsDisplay implements Renderable {
     public TowerFunctionsDisplay(Tower t,Point2D pos){
         this.sizeX = Main.canvasSize.getX() * 0.1;
         this.sizeY = Main.canvasSize.getY() * 0.1;
-        this.menu = new GraphicalInventory<>(1,sizeX,sizeY,5,pos,55,3);
+        this.menu = new GraphicalInventory<>(1,sizeX,sizeY,5,pos,renderingPriority,3);
         this.tower = t;
         this.position = pos;
         menu.addAll(List.of(
@@ -30,6 +35,7 @@ public class TowerFunctionsDisplay implements Renderable {
                 new DeleteTowerButton(this),
                 new SetTowerTargetingButton(this)
         ));
+        menu.setBackgroundColor(Color.TRANSPARENT);
     }
 
 
@@ -67,7 +73,11 @@ public class TowerFunctionsDisplay implements Renderable {
 
     @Override
     public double getRenderingPriority() {
-        return 55;
+        return renderingPriority;
+    }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
     }
 
     @Override

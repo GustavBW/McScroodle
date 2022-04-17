@@ -10,7 +10,7 @@ public class TowerShopButton extends Button{
     private final TowerShop shop;
 
     public TowerShopButton(Point2D position, double sizeX, double sizeY, RText textUnit) {
-        super(position, sizeX, sizeY, textUnit);
+        super(position, sizeX, sizeY, textUnit,true);
         shop = new TowerShop();
     }
 

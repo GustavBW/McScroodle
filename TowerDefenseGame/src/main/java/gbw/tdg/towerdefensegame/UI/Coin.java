@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 public class Coin implements Renderable, Tickable {
 
-    private final double renderingPriority;
+    private double renderingPriority;
     private final Color color = Color.GOLD;
     private final Color colorInner = Color.GOLDENROD;
     private final double value;
@@ -90,6 +90,10 @@ public class Coin implements Renderable, Tickable {
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
+    }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
     }
     @Override
     public void setPosition(Point2D p) {

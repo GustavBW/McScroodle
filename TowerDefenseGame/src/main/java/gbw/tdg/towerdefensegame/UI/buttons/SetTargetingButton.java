@@ -16,9 +16,10 @@ public class SetTargetingButton extends Button {
     public SetTargetingButton(Tower tower, TargetingType type) {
         super(Point2D.ZERO,0,0, new RText(
                 type.asString,Point2D.ZERO,0, Color.WHITE, Font.font("Impact", Main.canvasSize.getX() * 0.01)
-        ));
+        ),true);
         this.tower = tower;
         this.type = type;
+        super.setRimColor(Color.TRANSPARENT);
     }
 
     @Override

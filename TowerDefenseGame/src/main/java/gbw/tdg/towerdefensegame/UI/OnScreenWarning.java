@@ -9,7 +9,7 @@ import javafx.scene.text.Font;
 
 public class OnScreenWarning implements Renderable, Tickable {
 
-    private final double renderingPriority = 88D;
+    private double renderingPriority = 88D;
     private final RText text;
     private Point2D pos;
     private final int duration;
@@ -55,6 +55,11 @@ public class OnScreenWarning implements Renderable, Tickable {
     public double getRenderingPriority() {
         return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
+
 
     @Override
     public void setPosition(Point2D p) {

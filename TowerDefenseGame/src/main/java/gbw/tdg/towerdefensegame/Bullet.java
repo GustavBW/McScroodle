@@ -5,14 +5,20 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 public class Bullet implements Tickable,Renderable{
 
-    private static final double renderingPriority = 65D;
+    private double renderingPriority = 65D;
     private Point2D position, velocity;
     private double lifeTime = 10 * 1_000, spawnTime, sizeX = 10,sizeY = 10;
     protected double speed = 40, damage;
     protected IEnemy target;
     protected ITower owner;
+    private boolean targeted;
+    private int piercingLevel = 1;
 
     public Bullet(Point2D position, IEnemy target, double damage, ITower owner){
         this.position = position;
@@ -22,19 +28,68 @@ public class Bullet implements Tickable,Renderable{
         //this.speed = target.getMvspeed() * 2;
         this.owner = owner;
         spawnTime = System.currentTimeMillis();
+        targeted = target != null;
+    }
+
+    public Bullet(Point2D position, Point2D velocity, double damage, ITower owner){
+
     }
 
     public void tick(){
-        velocity = target.getPosition().subtract(position).normalize();
+        if(targeted) {
+            velocity = target.getPosition().subtract(position).normalize();
+        }
+
         position = position.add(velocity.multiply(speed));
 
         if(System.currentTimeMillis() > lifeTime + spawnTime){
             destroy();
         }
 
-        checkForCollision();
+        if(targeted) {
+            checkForTargetedCollision();
+        }else{
+            checkForCollision();
+        }
     }
 
+    private void checkForCollision() {
+        List<IEnemy> collisionsFound = new ArrayList<>();
+
+        for(IEnemy e : IEnemy.active){
+            if(e.getPosition().distance(position) < e.getSize()){
+                collisionsFound.add(e);
+            }
+        }
+        if(!collisionsFound.isEmpty()) {
+
+            collisionsFound.sort(Comparator.comparingDouble(o -> o.getPosition().distance(position)));
+            for(IEnemy e : collisionsFound){
+                onCollision(e);
+            }
+
+        }
+    }
+
+    private void checkForTargetedCollision(){
+        double dist = target.getPosition().subtract(position).magnitude();
+
+        if (dist < target.getSize()) {
+            onCollision(target);
+        }
+    }
+    public void setPiercingLevel(int lvl){this.piercingLevel = lvl;}
+    public ITower getOwner(){return owner;}
+    public double getDamage(){return damage;}
+    protected void onCollision(IEnemy enemyHit){
+        enemyHit.onHitByBullet(this);
+        piercingLevel--;
+
+        if(piercingLevel == 0) {
+            destroy();
+        }
+        targeted = false;
+    }
     @Override
     public void render(GraphicsContext gc){
         gc.setFill(Color.BLACK);
@@ -59,6 +114,10 @@ public class Bullet implements Tickable,Renderable{
         return renderingPriority;
     }
     @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
+    @Override
     public void setPosition(Point2D p) {
         this.position = p;
     }
@@ -66,19 +125,6 @@ public class Bullet implements Tickable,Renderable{
     public void setDimensions(Point2D dim) {
         this.sizeX = dim.getX();
         this.sizeY = dim.getY();
-    }
-    private void checkForCollision(){
-        double dist = target.getPosition().subtract(position).magnitude();
-
-        if(dist < target.getSize()){
-            onCollision();
-        }
-    }
-    public ITower getOwner(){return owner;}
-    public double getDamage(){return damage;}
-    protected void onCollision(){
-        target.onHitByBullet(this);
-        destroy();
     }
 
 }

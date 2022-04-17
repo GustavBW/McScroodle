@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Tower implements Clickable, Tickable, ITower{
 
-    private final double renderingPriority = 55D, rangeMultiplier = 100;
+    private double renderingPriority = 55D, rangeMultiplier = 100;
     private double sizeX, sizeY, damage = 0.1, atkSpeed = 0.1;
     private int multishot = 1;
     protected double range = 0.5, attackDelay;
@@ -63,7 +63,6 @@ public class Tower implements Clickable, Tickable, ITower{
         this.multishot = multishot;
         rangeIndicator.setDimensions(new Point2D(range,0));
         statDisplay.setText(this.toString());
-
     }
 
     public void tick(){
@@ -110,9 +109,12 @@ public class Tower implements Clickable, Tickable, ITower{
     public double getAtkSpeed(){return atkSpeed;}
     public boolean addAugment(Augment augment){
         if(augments.size() < maxAugments){
-            augments.add(augment);
-            augment.setTower(this);
-            return true;
+            if(augment.applyToTower(this)) {
+                augments.add(augment);
+                return true;
+            }else{
+                new OnScreenWarning("Augmentation Failed! - Requirements Not Met", Main.canvasSize.multiply(0.4),3).spawn();
+            }
         }
         new OnScreenWarning("Augmentation Failed!", Main.canvasSize.multiply(0.4),3).spawn();
         return false;
@@ -126,6 +128,8 @@ public class Tower implements Clickable, Tickable, ITower{
         new OnScreenWarning("Invocation Failed!", Main.canvasSize.multiply(0.4),3).spawn();
         return false;
     }
+    public List<Augment> getAugments(){return augments;}
+    public List<Invocation> getInvocations(){return invocations;}
     public void setAtkSpeed(double newSpeed){
         this.atkSpeed = newSpeed;
         this.attackDelay = 1_000_000_000 / atkSpeed;
@@ -151,6 +155,11 @@ public class Tower implements Clickable, Tickable, ITower{
     public double getRenderingPriority() {
         return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
+
 
     private Set<IEnemy> findEnemiesInRange(){
         Point2D origin = new Point2D(position.getX() + (sizeX * 0.5), position.getY() + (sizeY * 0.5));

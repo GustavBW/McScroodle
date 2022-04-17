@@ -16,34 +16,40 @@ public class Button implements Clickable, Renderable {
     protected Point2D position;
     protected double sizeX, sizeY;
     protected final RText text;
-    protected boolean disabled;
+    protected boolean disabled, shouldRenderBackground;
     protected Color rimColor;
     protected Color enabledColor = new Color(1,1,1,1);
     protected Color disabledColor = new Color(0,0,0,0.5);
     protected Color backgroundColor = enabledColor;
 
-    public Button(Point2D position, double sizeX, double sizeY, RText textUnit){
+    public Button(Point2D position, double sizeX, double sizeY, RText textUnit, boolean shouldRenderBackground){
         this.position = position;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.text = textUnit;
+        this.shouldRenderBackground = shouldRenderBackground;
         rimColor = new Color(1,1,1,1);
     }
 
     public Button(Point2D position, double sizeX, double sizeY){
-        this(position,sizeX,sizeY,new RText("",new Point2D(0,0), 0, Color.BLACK, Font.font("Impact")));
+        this(position,sizeX,sizeY,RText.EMPTY,true);
+    }
+    public Button(Point2D position, double sizeX, double sizeY, RText textUnit){
+        this(position,sizeX,sizeY,textUnit,false);
     }
 
     @Override
     public void render(GraphicsContext gc){
-        gc.setFill(backgroundColor);
-        gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
+        if(shouldRenderBackground) {
+            gc.setFill(backgroundColor);
+            gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
 
-        gc.setFill(rimColor);
-        gc.fillRect(position.getX()-5, position.getY()-5, sizeX +10, sizeY +10);
+            gc.setFill(rimColor);
+            gc.fillRect(position.getX() - 5, position.getY() - 5, sizeX + 10, sizeY + 10);
 
-        gc.setFill(Color.BLACK);
-        gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
+            gc.setFill(Color.BLACK);
+            gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
+        }
 
         text.render(gc);
     }
@@ -53,10 +59,19 @@ public class Button implements Clickable, Renderable {
         return position;
     }
 
+    public void setBackgroundColor(Color color){
+        backgroundColor = color;
+    }
+    public void setRimColor(Color color){
+        rimColor = color;
+    }
+
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio){this.renderingPriority = newPrio;}
 
     @Override
     public void setPosition(Point2D p) {

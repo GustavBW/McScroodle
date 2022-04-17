@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class Enemy implements Clickable, Tickable,IEnemy{
 
-    private final static double renderingPriority = 40D;
+    private double renderingPriority = 40D;
     private WayPoint latest;
     private WayPoint next;
     private Point2D position;
@@ -155,6 +155,11 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     public double getRenderingPriority() {
         return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+    }
+
     @Override
     public void setPosition(Point2D p) {
         this.position = p;

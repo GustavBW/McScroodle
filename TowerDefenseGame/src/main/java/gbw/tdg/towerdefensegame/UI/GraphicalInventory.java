@@ -46,10 +46,6 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     public void render(GraphicsContext gc) {
         gc.setFill(backgroundColor);
         gc.fillRect(position.getX(),position.getY(),width,height);
-
-        for(T obj : getObjects()){
-            obj.render(gc);
-        }
     }
 
     private HashMap<Integer, Point2D> calcSlotOffsets() {
@@ -123,6 +119,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         if(enableAutoSpawn){object.spawn();}
         object.setPosition(objOffsetMap.get(slot));
         object.setDimensions(new Point2D(objWidth,objHeight));
+        object.setRenderingPriority(renderingPriority + 0.01);
     }
     @Override
     public List<T> addAll(List<T> list){
@@ -169,6 +166,14 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     public double getRenderingPriority() {
         return renderingPriority;
     }
+    @Override
+    public void setRenderingPriority(double newPrio) {
+        this.renderingPriority = newPrio;
+        for(T obj : getObjects()){
+            obj.setRenderingPriority(newPrio);
+        }
+    }
+
     @Override
     public void setPosition(Point2D p) {
         this.position = p;
