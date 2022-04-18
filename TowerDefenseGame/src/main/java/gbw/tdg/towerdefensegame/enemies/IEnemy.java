@@ -1,6 +1,6 @@
 package gbw.tdg.towerdefensegame.enemies;
 
-import gbw.tdg.towerdefensegame.Augment;
+import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Renderable;
 

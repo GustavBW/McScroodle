@@ -1,4 +1,6 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.tower;
+
+import gbw.tdg.towerdefensegame.Renderable;
 
 import java.util.HashSet;
 import java.util.Set;

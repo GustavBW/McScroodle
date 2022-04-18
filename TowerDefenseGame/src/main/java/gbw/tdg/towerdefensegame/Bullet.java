@@ -1,7 +1,9 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
+import gbw.tdg.towerdefensegame.tower.ITower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -14,13 +16,14 @@ public class Bullet implements Tickable,Renderable{
 
     private double renderingPriority = 65D;
     private Point2D position, velocity;
-    private double lifeTime = 10 * 1_000, spawnTime, sizeX = 10,sizeY = 10;
+    private double sizeX = 10,sizeY = 10;
+    private final double spawnTime, lifeTime = 10 * 1_000;
     protected double speed = 40, damage;
     protected IEnemy target;
     protected List<IEnemy> hasAlreadyHit = new ArrayList<>();
-    private List<Augment> onHitAugments = new ArrayList<>();
-    private List<Augment> inFlightAugments = new ArrayList<>();
-    private List<Augment> onSpawnAugments = new ArrayList<>();
+    private final List<Augment> onHitAugments = new ArrayList<>();
+    private final List<Augment> inFlightAugments = new ArrayList<>();
+    private final List<Augment> onSpawnAugments = new ArrayList<>();
     protected ITower owner;
     private boolean targeted;
     private int piercingLevel = 1;
@@ -56,6 +59,10 @@ public class Bullet implements Tickable,Renderable{
         }else{
             checkForCollision();
         }
+
+        for(Augment a : inFlightAugments){
+            a.triggerEffects(null,this);
+        }
     }
 
     private void checkForCollision() {
@@ -69,7 +76,7 @@ public class Bullet implements Tickable,Renderable{
 
         if(!collisionsFound.isEmpty()) {
 
-            collisionsFound.remove(hasAlreadyHit);
+            collisionsFound.removeAll(hasAlreadyHit);
             collisionsFound.sort(Comparator.comparingDouble(o -> o.getPosition().distance(position)));
             for(IEnemy e : collisionsFound){
                 onCollision(e);
@@ -88,12 +95,13 @@ public class Bullet implements Tickable,Renderable{
     public void setPiercingLevel(int lvl){this.piercingLevel = lvl;}
     public ITower getOwner(){return owner;}
     public double getDamage(){return owner.getDamage();}
+    public void setDamage(double value){this.damage = value;}
     protected void onCollision(IEnemy enemyHit){
         enemyHit.onHitByBullet(this);
         hasAlreadyHit.add(enemyHit);
         piercingLevel--;
         for(Augment a : onHitAugments){
-            a.applyToEnemy((Enemy) enemyHit, this);
+            a.triggerEffects((Enemy) enemyHit, this);
         }
 
         if(piercingLevel == 0) {
@@ -124,6 +132,9 @@ public class Bullet implements Tickable,Renderable{
     public void spawn(){
         Tickable.newborn.add(this);
         Renderable.newborn.add(this);
+        for(Augment a : onSpawnAugments){
+            a.triggerEffects(null,this);
+        }
     }
     @Override
     public Point2D getPosition(){

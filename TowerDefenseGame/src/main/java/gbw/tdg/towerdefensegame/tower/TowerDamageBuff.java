@@ -1,4 +1,6 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.tower;
+
+import gbw.tdg.towerdefensegame.Bullet;
 
 public class TowerDamageBuff extends SupportTowerBuff{
 
@@ -11,7 +13,7 @@ public class TowerDamageBuff extends SupportTowerBuff{
 
     @Override
     public void applyBuff(Bullet bullet) {
-        bullet.damage += value;
+        bullet.setDamage(bullet.getDamage() + value);
     }
 
 }

@@ -2,7 +2,7 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.TargetingType;
-import gbw.tdg.towerdefensegame.Tower;
+import gbw.tdg.towerdefensegame.tower.Tower;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;

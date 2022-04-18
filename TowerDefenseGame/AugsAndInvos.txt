@@ -12,7 +12,7 @@ Names are derived as to be able to be combined. Augs first then Invo's for the t
 
 Possible Augments:
 G - Piercing 1,2,3, bullets will penetrate the first target and hit up to x more enemies in a straight line behind the target
-N - Hellfire 1,2,3, targets hit will take 20 * x % of dmg over tbd seconds on top of original bullet damage
+N - Hellfire 1,2,3, targets hit will take 20 * x % of dmg over 3 seconds on top of original bullet damage
 N - Icicle 1,2,3, targets hit have their mvmtspd reduced by 20 * x % for tbd,tbd,tbd seconds. Does not stack with itself on the same target.
 G - Explosive 1,2,3, the bullet explodes hitting all enemies in a tbd * x range around the initial target.
 

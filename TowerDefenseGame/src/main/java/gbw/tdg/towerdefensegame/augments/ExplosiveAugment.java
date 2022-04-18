@@ -1,5 +1,8 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.augments;
 
+import gbw.tdg.towerdefensegame.Bullet;
+import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 
@@ -10,15 +13,13 @@ public class ExplosiveAugment extends Augment{
 
     private double explosionRadius;
 
-    public ExplosiveAugment(int level) {
-        super();
-        this.explosionRadius = level * 100;
-        super.level = level;
-        super.setChild(this);
-        value = 10 * level;
+    public ExplosiveAugment(double value, int type, int level){
+        super(value,type,level);
+        this.explosionRadius = 100 * level * (Main.canvasSize.getX() * (1.00 / 1920));
     }
 
-    public void applyToEnemy(IEnemy enemyHit,Bullet bullet){
+    @Override
+    public void triggerEffects(Enemy enemyHit, Bullet bullet){
         Set<IEnemy> enemiesFound = findEnemiesInRange(enemyHit);
         for(IEnemy e : enemiesFound){
             e.onHitByBullet(bullet);
@@ -36,5 +37,10 @@ public class ExplosiveAugment extends Augment{
         }
         enemiesFound.remove(enemyHit);
         return enemiesFound;
+    }
+
+    @Override
+    public String getDesc(){
+        return "Bullets explode on impact! KAPOW!";
     }
 }

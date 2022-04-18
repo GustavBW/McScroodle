@@ -2,8 +2,7 @@ package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
-import gbw.tdg.towerdefensegame.Tower;
-import gbw.tdg.towerdefensegame.UI.GraphicalInventory;
+import gbw.tdg.towerdefensegame.tower.Tower;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.UI.buttons.DeleteTowerButton;
 import gbw.tdg.towerdefensegame.UI.buttons.MoveTowerButton;

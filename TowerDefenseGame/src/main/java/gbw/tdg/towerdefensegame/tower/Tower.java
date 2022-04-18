@@ -1,6 +1,8 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.tower;
 
+import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
+import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;

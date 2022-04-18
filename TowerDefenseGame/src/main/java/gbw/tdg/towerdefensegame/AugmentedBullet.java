@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
+import gbw.tdg.towerdefensegame.tower.ITower;
 import javafx.geometry.Point2D;
 
 public class AugmentedBullet extends Bullet {

@@ -1,5 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.tower.Tower;
+
 public abstract class Invocation {
 
     protected Tower tower;

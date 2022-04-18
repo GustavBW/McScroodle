@@ -1,4 +1,6 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.tower;
+
+import gbw.tdg.towerdefensegame.Bullet;
 
 public abstract class SupportTowerBuff {
 

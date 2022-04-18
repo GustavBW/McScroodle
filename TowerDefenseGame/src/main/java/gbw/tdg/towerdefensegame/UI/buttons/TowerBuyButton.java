@@ -3,9 +3,9 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
 import gbw.tdg.towerdefensegame.handlers.MouseHandler;
+import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public class TowerBuyButton extends Button implements Tickable {
 

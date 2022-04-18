@@ -1,4 +1,4 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.tower;
 
 import java.util.ArrayList;
 import java.util.List;
