@@ -60,8 +60,10 @@ public class Button implements Clickable, Renderable {
     }
 
     public void setBackgroundColor(Color color){
+        enabledColor = color;
         backgroundColor = color;
     }
+    public void setDisabledColor(Color color){disabledColor = color;}
     public void setRimColor(Color color){
         rimColor = color;
     }

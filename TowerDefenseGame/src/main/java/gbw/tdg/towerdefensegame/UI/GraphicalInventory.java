@@ -81,6 +81,20 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         return objOffsets;
     }
 
+    public List<T> setInventory(List<T> list){
+        if(list == null || list.isEmpty()){
+            return null;
+        }
+        clear();
+        return this.addAll(list);
+    }
+
+    public boolean clear(){
+        removeAll(getObjects());
+        return super.objects.size() == 0;
+    }
+
+
     private List<T> getObjects(){
         List<T> output = new ArrayList<>();
         for(T obj : super.getAll()){
@@ -142,6 +156,15 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         obj.destroy();
         return super.remove(obj);
     }
+
+    public List<T> removeAll(List<T> list){
+        List<T> thoseWhomWhereRemoved = super.removeAll(list);
+        for(T obj : thoseWhomWhereRemoved){
+            remove(obj);
+        }
+        return thoseWhomWhereRemoved;
+    }
+
     @Override
     public void spawn() {
         enableAutoSpawn = true;

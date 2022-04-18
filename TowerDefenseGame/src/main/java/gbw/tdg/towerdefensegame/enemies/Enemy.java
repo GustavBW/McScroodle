@@ -8,10 +8,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Enemy implements Clickable, Tickable,IEnemy{
 
@@ -19,7 +16,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     private WayPoint latest;
     private WayPoint next;
     private Point2D position;
-    private double mvspeed = 5, minDistToPoint = 10, sizeX = 40, sizeY = sizeX;
+    private double ogmvspeed = 5,mvspeedToUse = ogmvspeed, minDistToPoint = 10, sizeX = 40, sizeY = sizeX;
     private final Path path;
     private final ProgressBar hpBar;
     private double maxHP = 1, id, hp = maxHP;
@@ -29,6 +26,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     private final Color color;
     private Bullet latestHit;
     private EnemyStatDisplay statDisplay;
+    private Set<LifetimeEffect> lifetimeEffects = new HashSet<>();
     private Set<ITower> provokers = new HashSet<>();
     private Map<ITower, Double> provokerDamageMap = new HashMap<>();
 
@@ -52,12 +50,16 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         }
 
         if(alive) {
+            for(LifetimeEffect lE : lifetimeEffects){
+                lE.evaluateOn(this);
+            }
+
             Point2D dir = checkDistanceToNext();
 
             if (dir != null) {
                 dir = dir.normalize();
 
-                dir = dir.multiply(mvspeed);
+                dir = dir.multiply(mvspeedToUse);
 
                 position = position.add(dir);
                 lengthTraveled += new Point2D(dir.getX(), dir.getY()).magnitude();
@@ -65,6 +67,8 @@ public class Enemy implements Clickable, Tickable,IEnemy{
 
             hpBar.setVal((double) hp / maxHP);
             hpBar.setPosition(new Point2D(position.getX() - (sizeX * 0.5),position.getY() - (sizeY * 0.5)));
+
+            mvspeedToUse = ogmvspeed;
         }
     }
 
@@ -120,7 +124,19 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     public void applyBuff(EnemyBuff buff){
         hp += buff.getHealth();
         maxHP += buff.getHealth();
-        mvspeed += buff.getBonusSpeed();
+        ogmvspeed += buff.getBonusSpeed();
+    }
+    public void addLifetimeEffect(LifetimeEffect lE){
+        lifetimeEffects.add(lE);
+    }
+    public void removeLifetimeEffect(LifetimeEffect lE){
+        lifetimeEffects.remove(lE);
+    }
+    public List<LifetimeEffect> getLifetimeEffects(){
+        return new ArrayList<>(lifetimeEffects);
+    }
+    public void applyDamage(double amount){
+        this.hp -= amount;
     }
     private void completedRun(){
         Main.HP--;
@@ -191,7 +207,10 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     }
     @Override
     public double getMvspeed(){
-        return mvspeed;
+        return mvspeedToUse;
+    }
+    public void setMvspeed(double newSpeed){
+        this.mvspeedToUse = newSpeed;
     }
     @Override
     public double getSize(){return sizeX;}

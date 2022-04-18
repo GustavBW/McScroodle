@@ -7,6 +7,8 @@ import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.List;
 
@@ -25,7 +27,9 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
 
     private TowerBuyButton getNewOffering(){
         int cost = pointBuyPoints * 2 + amountBought;
-        return new TowerBuyButton(new RText(), new Tower(pointBuyPoints), this, cost);
+        return new TowerBuyButton(new RText(
+                "",Point2D.ZERO,4, Color.WHITE, Font.font("Verdana",Main.canvasSize.getX()*0.01)),
+                new Tower(pointBuyPoints), this, cost);
     }
 
     @Override

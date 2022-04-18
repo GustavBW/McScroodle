@@ -6,12 +6,12 @@ import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class TowerBuyButton extends Button implements Tickable {
 
     private final Tower tower;
     private final IClickableOwner owner;
-    private int clickCount;
     private int price;
 
     public TowerBuyButton(Point2D position, double sizeX, double sizeY, RText textUnit, Tower tower, IClickableOwner owner, int price) {
@@ -20,6 +20,8 @@ public class TowerBuyButton extends Button implements Tickable {
         this.tower = tower;
         this.owner = owner;
         this.price = price;
+        super.setBackgroundColor(new Color(0,0,0,0.5));
+        super.setDisabledColor(Color.BLACK);
         textUnit.setText(tower.getStats() + "\nPrice: " + price);
     }
     public TowerBuyButton(RText textUnit, Tower tower, IClickableOwner owner, int price){
@@ -37,14 +39,11 @@ public class TowerBuyButton extends Button implements Tickable {
     @Override
     public void setPosition(Point2D p) {
         position = p;
-        super.text.setPosition(p.add(30,20));
+        super.text.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.025)));
     }
 
     @Override
     public void tick(){
-        if(clickCount == 1){
-            position = MouseHandler.mousePos;
-        }
     }
 
     public Tower getTower(){

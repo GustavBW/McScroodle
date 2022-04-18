@@ -19,7 +19,9 @@ public class TowerStatDisplay implements Renderable, Tickable {
     private double sizeX,sizeY, cornerWidth = 15;
 
     public TowerStatDisplay(Tower t, Point2D position){
-        this.text = new RText(t.getStats(), position.add(30,15),1, Color.WHITESMOKE, Font.font("Impact", 20));
+        this.text = new RText(t.getStats(),
+                position.add(Main.canvasSize.getX() * 0.015,Main.canvasSize.getX() * 0.007),
+                1, Color.WHITESMOKE, Font.font("Impact", Main.canvasSize.getX() * 0.0104));
         this.tower = t;
         this.position = position;
         this.sizeX = Main.canvasSize.getX() * 0.1;

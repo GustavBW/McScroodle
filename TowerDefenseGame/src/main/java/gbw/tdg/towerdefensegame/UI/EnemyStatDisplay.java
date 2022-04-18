@@ -19,6 +19,7 @@ public class EnemyStatDisplay implements Renderable, Tickable {
     private Color background = new Color(0,0,0,0.5);
     private Point2D position;
     private double sizeX,sizeY, cornerWidth = 15;
+    private final EnemyCurrentEffectsDisplay currentEffectsDisplay;
 
     public EnemyStatDisplay(Enemy e, Point2D position){
         this.nameText = new RText(e.toString(), position.add(60,30),1, Color.RED, Font.font("Impact", 30));
@@ -28,6 +29,10 @@ public class EnemyStatDisplay implements Renderable, Tickable {
         this.position = position;
         this.sizeX = Main.canvasSize.getX() * 0.1;
         this.sizeY = Main.canvasSize.getY() * 0.1;
+
+        this.currentEffectsDisplay = new EnemyCurrentEffectsDisplay(
+                new Point2D(position.getX(), position.getY() + sizeY),
+                renderingPriority,e);
     }
 
     public void render(GraphicsContext gc){
@@ -64,11 +69,13 @@ public class EnemyStatDisplay implements Renderable, Tickable {
     public void spawn() {
         Renderable.newborn.add(this);
         Tickable.newborn.add(this);
+        currentEffectsDisplay.spawn();
     }
     @Override
     public void destroy() {
         Renderable.expended.add(this);
         Tickable.expended.add(this);
+        currentEffectsDisplay.destroy();
     }
 
 

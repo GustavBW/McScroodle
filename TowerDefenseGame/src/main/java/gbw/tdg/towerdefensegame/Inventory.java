@@ -29,6 +29,18 @@ public class Inventory<T extends IGameObject> {
         }
         return thoseWhoSucceeded;
     }
+
+    public List<T> removeAll(List<T> list){
+        List<T> thoseWhomWhereRemoved = new ArrayList<>();
+
+        for(T obj : list){
+            if(this.remove(obj)){
+                thoseWhomWhereRemoved.add(obj);
+            }
+        }
+        return thoseWhomWhereRemoved;
+    }
+
     public boolean add(T newObject){
         for(int i = 0; i < slotCount; i++){
             if(objects.get(i) == null){

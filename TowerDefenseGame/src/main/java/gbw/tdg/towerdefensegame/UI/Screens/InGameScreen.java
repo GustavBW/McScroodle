@@ -38,7 +38,7 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
         Point2D towerShopPos = new Point2D(Main.canvasSize.getX() * 0.90,Main.canvasSize.getY() * 0.95);
         towerShopButton = new TowerShopButton(towerShopPos, Main.canvasSize.getX() *0.1,
                 Main.canvasSize.getY() *0.05,
-                new RText("Towers",towerShopPos.subtract(10,0),3,goldColor,Font.font("Impact",35)));
+                new RText("Towers",towerShopPos.subtract(10,0),3,goldColor,Font.font("Impact",Main.canvasSize.getX() * 0.0182)));
         towerShopButton.setPosition(towerShopButton.getPosition().subtract(towerShopButton.getDimensions().multiply(0.5)));
     }
 
