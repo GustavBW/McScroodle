@@ -19,6 +19,14 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
     private static final Point2D textOffset = new Point2D(0,0);
     private final TowerFunctionsDisplay display;
     private Tower towerToMove = null;
+    private boolean moveStarted = false;
+    private Point2D moveAlongVector = null;
+    private Point2D ogTowerPosition;
+    private Point2D whereToPosition;
+    private Point2D singleMoveStep;
+    private double lengthToMove;
+    private long moveStartTime;
+    private int moveLengthMS = 5_000;
 
     public MoveTowerButton(TowerFunctionsDisplay towerFunctionsDisplay) {
         super(Point2D.ZERO, 0,0,new RText(
@@ -32,13 +40,20 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
     public void onInteraction(){
         towerToMove = display.getTower();
         towerToMove.setActive(false);
+        ogTowerPosition = towerToMove.getPosition();
         ClickListener.newborn.add(this);
         display.onTowerMove();
     }
 
     @Override
     public void tick() {
+        if(moveStarted){
+            towerToMove.setPosition(towerToMove.getPosition().add(singleMoveStep));
 
+            if(moveStartTime + moveLengthMS <= System.currentTimeMillis()){
+                onMoveFinished();
+            }
+        }
     }
 
     @Override
@@ -52,11 +67,24 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
         }
     }
 
-    @Override
-    public void trigger(MouseEvent event) {
-        towerToMove.setPosition(MouseHandler.mousePos.subtract(towerToMove.getDimensions().multiply(0.5)));
+    private void onMoveFinished(){
         towerToMove.setActive(true);
         towerToMove = null;
+        moveStarted = false;
+    }
+
+    @Override
+    public void trigger(MouseEvent event) {
+        whereToPosition = MouseHandler.mousePos.subtract(towerToMove.getDimensions().multiply(0.5));
+        moveAlongVector = whereToPosition.subtract(ogTowerPosition);
+        lengthToMove = moveAlongVector.magnitude();
+        moveAlongVector = moveAlongVector.normalize();
+        double howMuchToMoveATick = lengthToMove / moveLengthMS;
+        singleMoveStep = moveAlongVector.multiply(howMuchToMoveATick);
+
+
+        moveStartTime = System.currentTimeMillis();
+        moveStarted = true;
         ClickListener.expended.add(this);
     }
 

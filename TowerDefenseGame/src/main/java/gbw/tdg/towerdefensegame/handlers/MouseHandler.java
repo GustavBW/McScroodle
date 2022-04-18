@@ -35,8 +35,7 @@ public class MouseHandler implements EventHandler<MouseEvent> {
 
         for (Clickable c : Clickable.active) {
             if (c.isInBounds(clickPos)) {
-                if(selected != null && selected != c.getRoot()){
-                    System.out.println("selected is: " + selected + " clicked is: " + c);
+                if(selected != null && selected.getRoot() != c.getRoot()){
                     selected.deselect();
                 }
                 selected = c;

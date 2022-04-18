@@ -123,4 +123,7 @@ public class EnemyWave {
     public void sendNextRoundImmediatly(){
         startOfRoundWait = 0;
     }
+    public int getWaveState(){
+        return waveState;
+    }
 }

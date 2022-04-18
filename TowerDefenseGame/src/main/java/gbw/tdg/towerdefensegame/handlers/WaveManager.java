@@ -90,5 +90,8 @@ public class WaveManager implements Tickable {
     public int getRoundNumber(){return currentWave.getRound();}
     public void sendNextRound(){
         currentWave.sendNextRoundImmediatly();
+        if(hasSetTimeOfWaveEnd){
+            timeOfWaveEnd = 0;
+        }
     }
 }
