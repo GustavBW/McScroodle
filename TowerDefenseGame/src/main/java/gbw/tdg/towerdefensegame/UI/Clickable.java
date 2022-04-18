@@ -16,4 +16,5 @@ public interface Clickable extends IGameObject {
     boolean isInBounds(Point2D pos);
     void onInteraction();
     void deselect();
+    Clickable getRoot();
 }

@@ -97,9 +97,7 @@ public class Button implements Clickable, Renderable {
     }
 
     @Override
-    public void onInteraction() {
-
-    }
+    public void onInteraction() {}
 
     @Override
     public void spawn() {
@@ -114,9 +112,10 @@ public class Button implements Clickable, Renderable {
     }
 
     @Override
-    public void deselect(){
+    public void deselect(){}
 
-    }
+    @Override
+    public Clickable getRoot(){return this;}
 
     public void setDisable(boolean disabled){
         if(disabled){

@@ -20,7 +20,7 @@ public class TowerBuyButton extends Button implements Tickable {
         this.tower = tower;
         this.owner = owner;
         this.price = price;
-        textUnit.setText(tower.toString() + "\nPrice: " + price);
+        textUnit.setText(tower.getStats() + "\nPrice: " + price);
     }
     public TowerBuyButton(RText textUnit, Tower tower, IClickableOwner owner, int price){
         this(new Point2D(0,0),0,0,textUnit,tower,owner,price);

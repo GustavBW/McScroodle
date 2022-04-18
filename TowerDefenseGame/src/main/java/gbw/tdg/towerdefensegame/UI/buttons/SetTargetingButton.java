@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.TargetingType;
+import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
@@ -25,5 +26,10 @@ public class SetTargetingButton extends Button {
     @Override
     public void onInteraction(){
         tower.setTargetingType(type);
+    }
+
+    @Override
+    public Clickable getRoot(){
+        return tower;
     }
 }

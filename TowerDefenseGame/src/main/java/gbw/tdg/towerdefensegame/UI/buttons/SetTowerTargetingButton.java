@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.TargetingType;
+import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.UI.TowerFunctionsDisplay;
 import gbw.tdg.towerdefensegame.UI.GraphicalInventory;
 import gbw.tdg.towerdefensegame.UI.RText;
@@ -54,5 +55,9 @@ public class SetTowerTargetingButton extends Button{
     public void setDimensions(Point2D dim){
         super.setDimensions(dim);
         menu.setDimensions(new Point2D(dim.getX(), Main.canvasSize.getY()*0.15));
+    }
+    @Override
+    public Clickable getRoot(){
+        return display.getTower();
     }
 }

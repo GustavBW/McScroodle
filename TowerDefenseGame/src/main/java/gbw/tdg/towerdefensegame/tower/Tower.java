@@ -240,10 +240,6 @@ public class Tower implements Clickable, Tickable, ITower{
         return (pos.getX() > position.getX() && pos.getX() < position.getX() + sizeX) &&
                 (pos.getY() > position.getY() && pos.getY() < position.getY() + sizeY);
     }
-    @Override
-    public String toString(){
-        return "DMG: " + damage + "\n" + "RNG: " + range + "\n" + "SPD " + atkSpeed + "\n" + "Target: " + targetingType.asString;
-    }
 
     @Override
     public void onInteraction() {
@@ -269,6 +265,18 @@ public class Tower implements Clickable, Tickable, ITower{
     public void sell() {
         destroy();
         Main.alterGoldAmount(getWorth());
+    }
+
+    @Override
+    public Clickable getRoot(){
+        return this;
+    }
+
+    public String getStats(){
+        return "DMG: " + getDamage() + "\n" +
+                "RNG " + getRange() + "\n" +
+                "SPD " + getAtkSpeed() + "\n" +
+                "Targets: " + targetingType.asString;
     }
 
     public double getWorth(){

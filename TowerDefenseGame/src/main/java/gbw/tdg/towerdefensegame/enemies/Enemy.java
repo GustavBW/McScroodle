@@ -202,6 +202,10 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     }
     @Override
     public String toString(){return "Enemy " + id;}
+    @Override
+    public Clickable getRoot(){
+        return this;
+    }
     public Enemy clone(){
         return new Enemy(position,path);
     }
