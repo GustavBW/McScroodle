@@ -36,8 +36,8 @@ public abstract class Augment implements Cloneable{
     public static Augment getRandom(double value){
         return getRandomAugment(value);
     }
-    public static Augment getSpecific(int id){
-        return getSpecificAugment(id);
+    public static Augment getSpecific(int type, int level){
+        return getSpecificAugment(type,level);
     }
 
     private static Augment getRandomAugment(double value){
@@ -51,7 +51,17 @@ public abstract class Augment implements Cloneable{
         System.out.println("Trying to get Augment at Augment.37 - not implimented");
         return null;
     }
-    private static Augment getSpecificAugment(int id){
+    private static Augment getSpecificAugment(int type, int level){
+
+        try {
+            for(Augment a : getAugs()){
+                if(a.getType() == type){
+                    return a.getModified(level);
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         System.out.println("Trying to get Augment at Augment.37 - not implimented");
         return null;
     }
@@ -132,8 +142,8 @@ public abstract class Augment implements Cloneable{
         this.level = newLevel;
     }
 
-    public Augment getModified(Augment a, int level){
-        Augment newAug = a.clone();
+    public Augment getModified(int level){
+        Augment newAug = this.clone();
         newAug.setLevel(level);
         return newAug;
     }
