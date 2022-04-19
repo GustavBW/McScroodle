@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Augment {
+public abstract class Augment implements Cloneable{
 
     //Creating new augments (read: instantiating) is done through calling Augment.getRandom(double) or Augment.getSpecific(int).
     //this will return one of the static Augments which itself uses the protected constructor below.
@@ -95,7 +95,7 @@ public abstract class Augment {
         if(requirement != null){
             if(!needsToNotHaveRequirement) {
                 for (Augment a : tower.getAugments()) {
-                    if (a == requirement) {
+                    if (a.getType() == requirement.getType()) {
                         this.tower = tower;
                         return true;
                     }
@@ -103,7 +103,7 @@ public abstract class Augment {
             }else{
                 boolean hasIt = false;
                 for(Augment a : tower.getAugments()){
-                    if(a == requirement){
+                    if(a.getType() == requirement.getType()){
                         hasIt = true;
                     }
                 }
@@ -123,5 +123,31 @@ public abstract class Augment {
 
     public String getDesc(){
         return "Unkown Augment which powers may become the subject of legend";
+    }
+
+    public int getType(){
+        return type;
+    }
+    private void setLevel(int newLevel){
+        this.level = newLevel;
+    }
+
+    public Augment getModified(Augment a, int level){
+        Augment newAug = a.clone();
+        newAug.setLevel(level);
+        return newAug;
+    }
+
+    public double getWorth(){
+        return level * value;
+    }
+
+    public double getValue(){
+        return value;
+    }
+
+    @Override
+    public Augment clone(){
+        return this.clone();
     }
 }
