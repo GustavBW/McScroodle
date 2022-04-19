@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.Clickable;
+import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import gbw.tdg.towerdefensegame.handlers.*;
 import gbw.tdg.towerdefensegame.tower.ITower;
@@ -85,7 +86,7 @@ public class Main extends Application {
         uiController.spawn();
         setState(GameState.START_MENU);
 
-        new Tower(canvasSize.multiply(0.5),10,0.5,1000,1).spawn();
+        new Tower(canvasSize.multiply(0.5),0.1,10,1000,10).spawn();
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
         scene.setOnMouseMoved(e -> mouseHandler.updateMousePos(e));

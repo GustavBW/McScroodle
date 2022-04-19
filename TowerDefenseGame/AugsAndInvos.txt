@@ -13,7 +13,7 @@ Names are derived as to be able to be combined. Augs first then Invo's for the t
 Possible Augments:
 G - Piercing 1,2,3, bullets will penetrate the first target and hit up to x more enemies in a straight line behind the target
 G - Hellfire 1,2,3, targets hit will take 20 * x % of dmg over 3 seconds on top of original bullet damage
-N - Icicle 1,2,3, targets hit have their mvmtspd reduced by 20 * x % for tbd,tbd,tbd seconds. Does not stack with itself on the same target.
+G - Icicle 1,2,3, targets hit have their mvmtspd reduced by 20 * x % for 3,3,3 seconds. Does not stack with itself on the same target.
 G - Explosive 1,2,3, the bullet explodes hitting all enemies in a tbd * x range around the initial target.
 
 
@@ -25,4 +25,4 @@ N - Ray 1,2,3, tower no longer shoots bullets but a long continous ray.**
 N - Doom Ray , no levels requires Ray N, Ray damage ramps up by 10% each 5/atkspd seconds.
 N - Burster 1,2,3 the tower, when firing the main bullet, follows up with x extra during atkDelay * 0.5 seconds. Each extra bullet deals 60 - (x * 10) % damage
 *All towers have, functionally, multishot 1.
-**In terms of implimentation, this is done through setting setting the tower's atkspd to 10, reducing dmg to 1/10th and using the "Ray" bullet with a lifetime of 1/10
+**In terms of implimentation, this is done through setting the tower's atkspd to 10, reducing dmg to 1/10th and using the "Ray" bullet with a lifetime of 1/10

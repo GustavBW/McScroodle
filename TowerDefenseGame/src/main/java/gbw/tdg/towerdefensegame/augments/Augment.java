@@ -1,15 +1,20 @@
 package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
+import gbw.tdg.towerdefensegame.TargetingType;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import gbw.tdg.towerdefensegame.UI.AugmentIcon;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Augment {
 
     //Creating new augments (read: instantiating) is done through calling Augment.getRandom(double) or Augment.getSpecific(int).
     //this will return one of the static Augments which itself uses the protected constructor below.
-    //The way these specific augments are stored and accessed are subject to change. The way they're retrieved are not.
+    //These Augments below are loaded through the Augment.getAugs() method.
 
     private final static Augment EXPLOSIVE_I = new ExplosiveAugment(10,0,1);
     private final static Augment EXPLOSIVE_II = new ExplosiveAugment(10,0,2);
@@ -36,12 +41,38 @@ public abstract class Augment {
     }
 
     private static Augment getRandomAugment(double value){
+        try {
+            for(Augment aug : getAugs()){
+
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         System.out.println("Trying to get Augment at Augment.37 - not implimented");
         return null;
     }
     private static Augment getSpecificAugment(int id){
         System.out.println("Trying to get Augment at Augment.37 - not implimented");
         return null;
+    }
+
+    public static List<Augment> getAugs() throws IllegalAccessException {
+        List<Augment> augsFound = new ArrayList<>();
+        Field[] declaredFields = Augment.class.getDeclaredFields();
+        List<Field> staticFields = new ArrayList<>();
+
+        for (Field field : declaredFields) {
+            if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                staticFields.add(field);
+            }
+        }
+        for(Field field : staticFields){
+            Object obj = field.get(new Object());
+            if(obj instanceof Augment){
+                augsFound.add((Augment) obj);
+            }
+        }
+        return augsFound;
     }
 
     private Augment(double value){

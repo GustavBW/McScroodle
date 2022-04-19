@@ -24,8 +24,9 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
     private Point2D ogTowerPosition;
     private Point2D whereToPosition;
     private Point2D singleMoveStep;
+    private Point2D lineToPos;
     private double lengthToMove;
-    private long moveStartTime;
+    private long moveStartTime,lastCall;
     private int moveLengthMS = 5_000;
 
     public MoveTowerButton(TowerFunctionsDisplay towerFunctionsDisplay) {
@@ -47,13 +48,17 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
 
     @Override
     public void tick() {
+        lineToPos = MouseHandler.mousePos;
+
         if(moveStarted){
-            towerToMove.setPosition(towerToMove.getPosition().add(singleMoveStep));
+            lineToPos = whereToPosition;
+            towerToMove.setPosition(towerToMove.getPosition().add(singleMoveStep.multiply(System.currentTimeMillis() - lastCall)));
 
             if(moveStartTime + moveLengthMS <= System.currentTimeMillis()){
                 onMoveFinished();
             }
         }
+        lastCall = System.currentTimeMillis();
     }
 
     @Override
@@ -63,11 +68,12 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
         if(towerToMove != null) {
             Point2D tPos = towerToMove.getPosition().add(towerToMove.getDimensions().multiply(0.5));
             gc.setFill(Color.BLACK);
-            gc.strokeLine(tPos.getX(), tPos.getY(), MouseHandler.mousePos.getX(),MouseHandler.mousePos.getY());
+            gc.strokeLine(tPos.getX(), tPos.getY(), lineToPos.getX(),lineToPos.getY());
         }
     }
 
     private void onMoveFinished(){
+        towerToMove.setPosition(whereToPosition);
         towerToMove.setActive(true);
         towerToMove = null;
         moveStarted = false;
@@ -75,12 +81,12 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
 
     @Override
     public void trigger(MouseEvent event) {
-        whereToPosition = MouseHandler.mousePos.subtract(towerToMove.getDimensions().multiply(0.5));
+        whereToPosition = MouseHandler.mousePos.add(towerToMove.getDimensions().multiply(0.5));
         moveAlongVector = whereToPosition.subtract(ogTowerPosition);
         lengthToMove = moveAlongVector.magnitude();
-        moveAlongVector = moveAlongVector.normalize();
-        double howMuchToMoveATick = lengthToMove / moveLengthMS;
-        singleMoveStep = moveAlongVector.multiply(howMuchToMoveATick);
+        Point2D moveAlongVectorNorm = moveAlongVector.normalize();
+        double howMuchToMoveAMS = lengthToMove / moveLengthMS;
+        singleMoveStep = moveAlongVectorNorm.multiply(howMuchToMoveAMS);
 
 
         moveStartTime = System.currentTimeMillis();
