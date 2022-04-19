@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 public class TowerShop implements IClickableOwner, Tickable, ClickListener {
-    private Point2D position = new Point2D(0, Main.canvasSize.getY() * 0.76);
+    private Point2D position = new Point2D(0, Main.canvasSize.getY() * 0.8);
     private final double sizeX = Main.canvasSize.getX()*0.6, sizeY = Main.canvasSize.getY() - position.getY();
     private GraphicalInventory<TowerBuyButton> shop;
     private boolean shopLocked = false;
@@ -48,42 +48,27 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
             selectedTowerOffering.getTower().setActive(true);
             towerBought(selectedTowerOffering);
             selectedTowerOffering = null;
-
         }
+        ClickListener.expended.add(this);
     }
 
     @Override
     public void spawn() {
         Tickable.newborn.add(this);
-        ClickListener.newborn.add(this);
         shop.spawn();
     }
     @Override
     public void destroy() {
         Tickable.expended.add(this);
-        ClickListener.expended.add(this);
         shop.destroy();
     }
     private void setShopLock(boolean state){
-        shopLocked = !shopLocked;
+        shopLocked = state;
         for(TowerBuyButton tBB : shop.getAll()){
             tBB.setDisable(state);
         }
     }
 
-    public Point2D getPosition() {
-        return position;
-    }
-    public double getRenderingPriority() {
-        return shop.getRenderingPriority();
-    }
-    public void setPosition(Point2D p) {
-        this.position = p;
-        shop.setPosition(p);
-    }
-    public Inventory<TowerBuyButton> getShop(){
-        return shop;
-    }
     public void increasePointBuy(int amount){
         pointBuyPoints += amount;
     }
@@ -104,6 +89,7 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
             selectedTowerOffering = (TowerBuyButton) child;
             Tower tower = selectedTowerOffering.getTower();
             tower.setActive(false);
+            ClickListener.newborn.add(this);
             tower.spawn();
             tower.onInteraction();
         }

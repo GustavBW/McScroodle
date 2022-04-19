@@ -32,7 +32,6 @@ public class Bullet implements Tickable,Renderable{
         this.position = position;
         this.velocity = new Point2D(0,0);
         this.target = target;
-        //this.speed = target.getMvspeed() * 2;
         this.owner = owner;
         spawnTime = System.currentTimeMillis();
         targeted = target != null;
@@ -158,4 +157,12 @@ public class Bullet implements Tickable,Renderable{
         this.sizeY = dim.getY();
     }
 
+    @Override
+    public String toString(){
+        String superStr = super.toString();
+        int index = superStr.lastIndexOf('.') + 1;
+        String ownerStr = this.owner.toString();
+        int index2 = ownerStr.lastIndexOf('.') + 1;
+        return superStr.substring(index) + " owner: " + ownerStr.substring(index2);
+    }
 }

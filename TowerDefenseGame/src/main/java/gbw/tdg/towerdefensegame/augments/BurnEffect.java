@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame.augments;
 
+import gbw.tdg.towerdefensegame.Decimals;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.LifetimeEffect;
 
@@ -7,8 +8,8 @@ public class BurnEffect extends LifetimeEffect {
 
     private double damageASecond,damageApplied;
 
-
-    public BurnEffect(double totalDamage, int lifetimeMS){
+    public BurnEffect(double totalDamage, int lifetimeMS, Object owner){
+        super(owner);
         super.lifetimeMS = lifetimeMS;
         lastCall = spawnTime = System.currentTimeMillis();
         this.damageASecond = totalDamage / lifetimeMS;
@@ -29,11 +30,11 @@ public class BurnEffect extends LifetimeEffect {
 
     @Override
     public String getEffectString(){
-        double temp = damageApplied * 100;
-        int dmgTwoDec = (int) (temp);
-        dmgTwoDec /= 100;
+        return "Burning " + Decimals.toXDecimalPlaces(damageApplied,3);
+    }
 
-        return "Burning " + dmgTwoDec;
+    public void setTotalDamage(double damage){
+        this.damageASecond = damage / lifetimeMS;
     }
 
 }

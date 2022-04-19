@@ -5,6 +5,7 @@ import gbw.tdg.towerdefensegame.UI.FancyProgressBar;
 import gbw.tdg.towerdefensegame.UI.ProgressBar;
 import gbw.tdg.towerdefensegame.UI.RText;
 import gbw.tdg.towerdefensegame.UI.WaveRoundDisplay;
+import gbw.tdg.towerdefensegame.UI.buttons.AugmentShopButton;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.UI.buttons.TowerShopButton;
 import gbw.tdg.towerdefensegame.handlers.WaveManager;
@@ -17,9 +18,9 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
 
     private final ProgressBar mainHealthBar;
     private final RText goldDisplay;
-    private final Button towerShopButton;
+    private final Button towerShopButton,augmentShopButton;
     private final WaveRoundDisplay roundDisplay;
-    private final static Color goldColor = new Color(255 / 255.0,178 / 255.0,0,1);
+    public final static Color goldColor = new Color(255 / 255.0,178 / 255.0,0,1);
     private final Point2D roundDisplayDim = new Point2D(Main.canvasSize.getX() * 0.1, Main.canvasSize.getY() * 0.05);
 
     public InGameScreen(WaveManager waveManager){
@@ -40,6 +41,10 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
                 Main.canvasSize.getY() *0.05,
                 new RText("Towers",towerShopPos.subtract(10,0),3,goldColor,Font.font("Impact",Main.canvasSize.getX() * 0.0182)));
         towerShopButton.setPosition(towerShopButton.getPosition().subtract(towerShopButton.getDimensions().multiply(0.5)));
+
+        Point2D augShopDim = new Point2D(Main.canvasSize.getX() *0.1, Main.canvasSize.getY() *0.05);
+        augmentShopButton = new AugmentShopButton(towerShopPos.subtract(0, augShopDim.getY()), augShopDim.getX(), augShopDim.getY());
+        augmentShopButton.setPosition(augmentShopButton.getPosition().subtract(augmentShopButton.getDimensions().multiply(0.5)));
     }
 
     @Override
@@ -60,6 +65,7 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
         mainHealthBar.spawn();
         towerShopButton.spawn();
         roundDisplay.spawn();
+        augmentShopButton.spawn();
     }
 
     @Override
@@ -69,6 +75,7 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
         mainHealthBar.destroy();
         towerShopButton.destroy();
         roundDisplay.destroy();
+        augmentShopButton.destroy();
     }
 
 }

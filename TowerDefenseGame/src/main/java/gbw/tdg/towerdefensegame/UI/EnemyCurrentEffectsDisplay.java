@@ -43,8 +43,9 @@ public class EnemyCurrentEffectsDisplay implements Tickable {
             texts.add(
                     ARText.create(lE.getEffectString(),Point2D.ZERO,2,0)
                             .setFont(Font.font("Impact",Main.canvasSize.getX() * 0.01))
-                            .setBackgroundColor(new Color(0,0,0,0.5))
+                            .setBackgroundColor(new Color(0,Main.random.nextDouble(),0,1))
                             .setCornerWidth(Main.canvasSize.getX() * 0.001)
+                            .setTextColor(new Color(0,Main.random.nextDouble(),0,0.5))
             );
         }
 

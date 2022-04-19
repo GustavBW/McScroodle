@@ -86,7 +86,10 @@ public class Main extends Application {
         uiController.spawn();
         setState(GameState.START_MENU);
 
-        new Tower(canvasSize.multiply(0.5),0.1,10,1000,10).spawn();
+        Tower testTower = new Tower(canvasSize.multiply(0.5),0,0.3,1000,10);
+        testTower.addAugment(Augment.getSpecific(3,3));
+        testTower.addAugment(Augment.getSpecific(2,3));
+        testTower.spawn();
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
         scene.setOnMouseMoved(e -> mouseHandler.updateMousePos(e));

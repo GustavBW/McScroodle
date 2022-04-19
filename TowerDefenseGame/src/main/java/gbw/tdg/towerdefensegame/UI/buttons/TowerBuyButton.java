@@ -8,7 +8,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class TowerBuyButton extends Button implements Tickable {
+public class TowerBuyButton extends Button {
 
     private final Tower tower;
     private final IClickableOwner owner;
@@ -40,10 +40,6 @@ public class TowerBuyButton extends Button implements Tickable {
     public void setPosition(Point2D p) {
         position = p;
         super.text.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.025)));
-    }
-
-    @Override
-    public void tick(){
     }
 
     public Tower getTower(){

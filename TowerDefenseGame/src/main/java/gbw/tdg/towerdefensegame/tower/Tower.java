@@ -27,7 +27,7 @@ public class Tower implements Clickable, Tickable, ITower{
     private final List<Invocation> invocations = new ArrayList<>();
     private final Set<SupportTowerBuff> damageBuffs = new HashSet<>();
     private final Set<SupportTowerBuff> atkSpeedBuffs = new HashSet<>();
-    private final double maxAugments = 3, maxInvocations = 3;
+    private final double maxAugments = 4, maxInvocations = 3;
 
     public Tower(int points){
         double subDivider = 0.01;
@@ -64,7 +64,7 @@ public class Tower implements Clickable, Tickable, ITower{
         this.range = range;
         this.multishot = multishot;
         rangeIndicator.setDimensions(new Point2D(range,0));
-        statDisplay.setText(this.toString());
+        statDisplay.setText(this.getStats());
     }
 
     public void tick(){
@@ -111,16 +111,18 @@ public class Tower implements Clickable, Tickable, ITower{
     public double getDamage(){return damage;}
     public double getAtkSpeed(){return atkSpeed;}
     public boolean addAugment(Augment augment){
+        boolean success = false;
         if(augments.size() < maxAugments){
             if(augment.applyToTower(this)) {
                 augments.add(augment);
-                return true;
+                success = true;
             }else{
                 new OnScreenWarning("Augmentation Failed! - Requirements Not Met", Main.canvasSize.multiply(0.4),3).spawn();
             }
+        }else {
+            new OnScreenWarning("Augmentation Failed!", Main.canvasSize.multiply(0.4), 3).spawn();
         }
-        new OnScreenWarning("Augmentation Failed!", Main.canvasSize.multiply(0.4),3).spawn();
-        return false;
+        return success;
     }
     public boolean addInvocation(Invocation invocation){
         if(invocations.size() < maxInvocations){
@@ -273,13 +275,20 @@ public class Tower implements Clickable, Tickable, ITower{
     }
 
     public String getStats(){
-        return "DMG: " + getDamage() + "\n" +
-                "RNG " + getRange() + "\n" +
-                "SPD " + getAtkSpeed() + "\n" +
+        return "DMG: " + Decimals.toXDecimalPlaces(getDamage(),3) + "\n" +
+                "RNG " + Decimals.toXDecimalPlaces(getRange(),3) + "\n" +
+                "SPD " + Decimals.toXDecimalPlaces(getAtkSpeed(),3) + "\n" +
                 "Targets: " + targetingType.asString;
     }
 
+    @Override
+    public String toString(){
+        String superStr = super.toString();
+        int index = superStr.lastIndexOf('.') + 1;
+        return superStr.substring(index);
+    }
+
     public double getWorth(){
-        return damage + range + atkSpeed;
+        return Decimals.toXDecimalPlaces(damage + range + atkSpeed, 2);
     }
 }

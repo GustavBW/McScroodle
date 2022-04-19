@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame.UI;
 
+import gbw.tdg.towerdefensegame.Decimals;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
@@ -81,6 +82,7 @@ public class EnemyStatDisplay implements Renderable, Tickable {
 
     @Override
     public void tick() {
-        hpText.setText("HP: " + enemy.getHp() + "/"+ enemy.getMaxHP());
+        hpText.setText("HP: " + Decimals.toXDecimalPlaces(enemy.getHp(),2) + "/"+ enemy.getMaxHP());
+        spdText.setText("SPD: " + Decimals.toXDecimalPlaces(enemy.getMvspeed(),2));
     }
 }

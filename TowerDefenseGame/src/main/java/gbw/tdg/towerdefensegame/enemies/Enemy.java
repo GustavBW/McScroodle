@@ -127,6 +127,11 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         ogmvspeed += buff.getBonusSpeed();
     }
     public void addLifetimeEffect(LifetimeEffect lE){
+        for(LifetimeEffect lE2 : lifetimeEffects){
+            if(lE2.getOwner() == lE.getOwner()){
+                return;
+            }
+        }
         lifetimeEffects.add(lE);
     }
     public void removeLifetimeEffect(LifetimeEffect lE){

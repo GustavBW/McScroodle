@@ -1,12 +1,14 @@
 package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
-import gbw.tdg.towerdefensegame.TargetingType;
+import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.UI.TextFormatter;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import gbw.tdg.towerdefensegame.UI.AugmentIcon;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +18,10 @@ public abstract class Augment implements Cloneable{
     //this will return one of the static Augments which itself uses the protected constructor below.
     //These Augments below are loaded through the Augment.getAugs() method.
 
-    private final static Augment EXPLOSIVE_I = new ExplosiveAugment(10,0,1);
-    private final static Augment EXPLOSIVE_II = new ExplosiveAugment(10,0,2);
-    private final static Augment EXPLOSIVE_III = new ExplosiveAugment(10,0,3);
-    private final static Augment PIERCING_I = new PiercingAugment(5,1,1);
-    private final static Augment PIERCING_II = new PiercingAugment(5,1,2);
-    private final static Augment PIERCING_III = new PiercingAugment(5,1,3);
+    private final static Augment EXPLOSIVE = new ExplosiveAugment(10,0,1);
+    private final static Augment PIERCING = new PiercingAugment(5,1,1);
+    private final static Augment HELLFIRE = new HellfireAugment(3,2,1);
+    private final static Augment ICICLE = new IceAugment(3,3,1);
 
     protected int level;
     protected Tower tower;
@@ -41,18 +41,34 @@ public abstract class Augment implements Cloneable{
     }
 
     private static Augment getRandomAugment(double value){
+        List<Augment> augs = new ArrayList<>();
         try {
-            for(Augment aug : getAugs()){
-
-            }
+            augs.addAll(getAugs());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        System.out.println("Trying to get Augment at Augment.37 - not implimented");
-        return null;
+        int size = augs.size();
+        int startAt = Main.random.nextInt(0,size -1);
+        Augment foundAug = null;
+
+        int i = startAt;
+        while(foundAug == null){
+            Augment current = augs.get(i % size);
+
+            for(int j = 1; j < 4;j++) {
+                current = current.getModified(j);
+                double currentWorth = current.getWorth();
+                if (currentWorth >= value * 0.7 && currentWorth <= 1.3 * value) {
+                    foundAug = current;
+                }
+            }
+
+            i++;
+        }
+        System.out.println("Looped " + i + " times | startAt: " + startAt + " | size " + size);
+        return foundAug;
     }
     private static Augment getSpecificAugment(int type, int level){
-
         try {
             for(Augment a : getAugs()){
                 if(a.getType() == type){
@@ -62,7 +78,6 @@ public abstract class Augment implements Cloneable{
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        System.out.println("Trying to get Augment at Augment.37 - not implimented");
         return null;
     }
 
@@ -72,7 +87,7 @@ public abstract class Augment implements Cloneable{
         List<Field> staticFields = new ArrayList<>();
 
         for (Field field : declaredFields) {
-            if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+            if (Modifier.isStatic(field.getModifiers())) {
                 staticFields.add(field);
             }
         }
@@ -99,15 +114,18 @@ public abstract class Augment implements Cloneable{
         amountOfAugmentObjects++;
     }
 
-    public void applyToBullet(Bullet bullet){}
+    public void applyToBullet(Bullet bullet){
+        bullet.addOnHitAug(this);
+    }
 
     public boolean applyToTower(Tower tower){
+        boolean success = false;
         if(requirement != null){
             if(!needsToNotHaveRequirement) {
                 for (Augment a : tower.getAugments()) {
                     if (a.getType() == requirement.getType()) {
                         this.tower = tower;
-                        return true;
+                        success = true;
                     }
                 }
             }else{
@@ -119,25 +137,23 @@ public abstract class Augment implements Cloneable{
                 }
                 if(!hasIt){
                     this.tower = tower;
-                    return true;
+                    success = true;
                 }
             }
         }else {
             this.tower = tower;
-            return true;
+            success = true;
         }
-        return false;
+        return success;
     }
 
     public void triggerEffects(Enemy enemyHit, Bullet bullet) {}
 
-    public String getDesc(){
-        return "Unkown Augment which powers may become the subject of legend";
-    }
-
     public int getType(){
         return type;
     }
+    public Tower getOwner(){return tower;}
+    public int getId(){return id;}
     private void setLevel(int newLevel){
         this.level = newLevel;
     }
@@ -158,6 +174,29 @@ public abstract class Augment implements Cloneable{
 
     @Override
     public Augment clone(){
-        return this.clone();
+        try {
+            return (Augment) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String toString(){
+        String superStr = super.toString();
+        int index = superStr.lastIndexOf('.') + 1;
+
+        String ownerStr = tower == null ? "null" : tower.toString();
+        int index2 = tower == null ? 0 : ownerStr.lastIndexOf('.') + 1;
+        return superStr.substring(index) + " owner: " + ownerStr.substring(index2);
+    }
+    public String getDesc(){
+        return "Unkown Augment which powers may become the subject of legend";
+    }
+    public String getName(){
+        String base = this.toString();
+        int index = base.indexOf('@')-7;
+        return base.substring(0,index) + " " + TextFormatter.intToRomanNumerals(level <= 0 ? 1 : level);
     }
 }

@@ -33,6 +33,7 @@ public class ARText extends RText implements Renderable {
     }
     public ARText setBackgroundColor(Color newColor){
         this.background = newColor;
+
         return this;
     }
     public ARText setFont(Font font){
