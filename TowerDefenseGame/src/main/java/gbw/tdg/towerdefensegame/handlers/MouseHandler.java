@@ -14,9 +14,8 @@ import java.util.Set;
 public class MouseHandler implements EventHandler<MouseEvent> {
 
     public static boolean locked;
-    private boolean foundClickable;
     public static Point2D mousePos = new Point2D(0,0);
-    private Clickable selected;
+    private Clickable selected, previous, selectedRoot,previousRoot;
     private static final List<Clickable> storedDuringLock = new ArrayList<>();
 
     public MouseHandler(){
@@ -25,7 +24,6 @@ public class MouseHandler implements EventHandler<MouseEvent> {
 
     @Override
     public void handle(MouseEvent mouseEvent) {
-        foundClickable = false;
         Point2D clickPos = new Point2D(mouseEvent.getX(),mouseEvent.getY());
 
         for(ClickListener cL : ClickListener.active){
@@ -33,25 +31,46 @@ public class MouseHandler implements EventHandler<MouseEvent> {
             //System.out.println("ClickListener: " + cL);
         }
 
+        previous = selected;
+        previousRoot = selectedRoot;
+        selected = null;
+        selectedRoot = null;
+
         for (Clickable c : Clickable.active) {
             if (c.isInBounds(clickPos)) {
-                if(selected != null && selected.getRoot() != c.getRoot()){
-                    selected.deselect();
-                }
                 selected = c;
-                foundClickable = true;
-                c.onInteraction();
-                //System.out.println("You clicked on " + c);
+                selectedRoot = c.getRoot();
+                System.out.println("MouseHandler: Clicked " + c);
                 break;
             }
         }
 
-        if(selected != null && !foundClickable){
-            selected.deselect();
+        System.out.println("MouseHandler: selected: " + selected + " previous: " + previous);
+
+        if(selected != null){
+            selected.onInteraction();
+        }
+        if (previous != null && !rootsAreEqual(selected, previous)) {
+            System.out.println("MouseHandler: Deselecting " + previous);
+            previous.deselect();
         }
 
+        System.out.println("#");
 
         cleanUp();
+    }
+
+    private boolean rootsAreEqual(Clickable first, Clickable second){
+        if(first == null || second == null){
+            return false;
+        }
+        System.out.println("MouseHandler roots: " + first.getRoot()  + " | " + second.getRoot());
+
+        if(first.getRoot() == null || second.getRoot() == null){
+            return false;
+        }
+
+        return first.getRoot() == second.getRoot();
     }
 
     private static void cleanUp(){
@@ -59,6 +78,11 @@ public class MouseHandler implements EventHandler<MouseEvent> {
         ClickListener.active.removeAll(ClickListener.expended);
         ClickListener.newborn.clear();
         ClickListener.expended.clear();
+
+        Clickable.active.addAll(Clickable.newborn);
+        Clickable.active.removeAll(Clickable.expended);
+        Clickable.expended.clear();
+        Clickable.newborn.clear();
     }
 
     public void updateMousePos(MouseEvent mEvent){

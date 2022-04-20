@@ -19,7 +19,7 @@ public class IceAugment extends Augment {
     }
 
     @Override
-    public void triggerEffects(Enemy e, Bullet b){
+    public synchronized void triggerEffects(Enemy e, Bullet b){
         slowness = Decimals.toXDecimalPlaces(1 - (0.2 * super.level), 2);
 
         e.addLifetimeEffect(

@@ -2,10 +2,13 @@ package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.UI.TextFormatter;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
+import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import gbw.tdg.towerdefensegame.UI.AugmentIcon;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
+import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -27,8 +30,9 @@ public abstract class Augment implements Cloneable{
     protected Tower tower;
     protected double value;
     protected AugmentIcon icon;
-    protected Augment requirement = null;
-    private boolean needsToNotHaveRequirement = false;
+    private Image image;
+    protected int requirement = -1;
+    protected boolean needsToNotHaveRequirement = false;
     protected int type;
     private final int id;
     private static int amountOfAugmentObjects = 0;
@@ -65,7 +69,7 @@ public abstract class Augment implements Cloneable{
 
             i++;
         }
-        System.out.println("Looped " + i + " times | startAt: " + startAt + " | size " + size);
+        System.out.println("Looped " + i + " times | startAt: " + startAt + " | size " + size + " | returned: " + TextFormatter.getIsolatedClassName(foundAug));
         return foundAug;
     }
     private static Augment getSpecificAugment(int type, int level){
@@ -100,12 +104,6 @@ public abstract class Augment implements Cloneable{
         return augsFound;
     }
 
-    private Augment(double value){
-        this(value,-1);
-    }
-    private Augment(double value,int type){
-        this(value, type,1);
-    }
     protected Augment(double value, int type, int level){
         this.value = value;
         this.type = type;
@@ -117,13 +115,12 @@ public abstract class Augment implements Cloneable{
     public void applyToBullet(Bullet bullet){
         bullet.addOnHitAug(this);
     }
-
     public boolean applyToTower(Tower tower){
         boolean success = false;
-        if(requirement != null){
+        if(requirement != -1){
             if(!needsToNotHaveRequirement) {
                 for (Augment a : tower.getAugments()) {
-                    if (a.getType() == requirement.getType()) {
+                    if (a.getType() == requirement) {
                         this.tower = tower;
                         success = true;
                     }
@@ -131,7 +128,7 @@ public abstract class Augment implements Cloneable{
             }else{
                 boolean hasIt = false;
                 for(Augment a : tower.getAugments()){
-                    if(a.getType() == requirement.getType()){
+                    if(a.getType() == requirement){
                         hasIt = true;
                     }
                 }
@@ -146,7 +143,6 @@ public abstract class Augment implements Cloneable{
         }
         return success;
     }
-
     public void triggerEffects(Enemy enemyHit, Bullet bullet) {}
 
     public int getType(){
@@ -154,22 +150,47 @@ public abstract class Augment implements Cloneable{
     }
     public Tower getOwner(){return tower;}
     public int getId(){return id;}
+    public double getWorth(){
+        return level * value;
+    }
+    public double getValue(){
+        return value;
+    }
+    public int getMaxLevel(){
+        return maxLevel;
+    }
+    public int getLevel(){
+        return level <= 0 ? 1 : level;
+    }
+    public String getDesc(){
+        return "Unkown Augment which powers may become the subject of legend";
+    }
+    public String getName(){
+        String base = this.toString();
+        int index = base.indexOf('@')-7;
+        return base.substring(0,index) + " " + TextFormatter.intToRomanNumerals(this.getLevel());
+    }
+    public Image getImage(){
+        if(image != null){
+            return image;
+        }
+        image = ContentEngine.AUGMENTS.getIcon(TextFormatter.getIsolatedClassName(this));
+        return image;
+    }
+    public AugmentIcon getIcon(){
+        if(icon == null){
+            this.icon = new AugmentIcon(getImage(),100, Point2D.ZERO,Point2D.ZERO,true);
+        }
+        return icon;
+    }
+
     private void setLevel(int newLevel){
         this.level = newLevel;
     }
-
     public Augment getModified(int level){
         Augment newAug = this.clone();
         newAug.setLevel(Math.min(level, this.maxLevel));
         return newAug;
-    }
-
-    public double getWorth(){
-        return level * value;
-    }
-
-    public double getValue(){
-        return value;
     }
 
     @Override
@@ -181,14 +202,6 @@ public abstract class Augment implements Cloneable{
         }
         return null;
     }
-
-    public int getMaxLevel(){
-        return maxLevel;
-    }
-    public int getLevel(){
-        return level <= 0 ? 1 : level;
-    }
-
     @Override
     public String toString(){
         String superStr = super.toString();
@@ -197,13 +210,5 @@ public abstract class Augment implements Cloneable{
         String ownerStr = tower == null ? "null" : tower.toString();
         int index2 = tower == null ? 0 : ownerStr.lastIndexOf('.') + 1;
         return superStr.substring(index) + " owner: " + ownerStr.substring(index2);
-    }
-    public String getDesc(){
-        return "Unkown Augment which powers may become the subject of legend";
-    }
-    public String getName(){
-        String base = this.toString();
-        int index = base.indexOf('@')-7;
-        return base.substring(0,index) + " " + TextFormatter.intToRomanNumerals(this.getLevel());
     }
 }

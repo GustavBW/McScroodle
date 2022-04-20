@@ -94,14 +94,14 @@ public class Bullet implements Tickable,Renderable{
     public void addPiercingLevels(int lvl){this.piercingLevel += lvl;}
     public ITower getOwner(){return owner;}
     public double getDamage(){return owner.getDamage();}
+    public List<Augment> getOnHitAugments(){
+        return onHitAugments;
+    }
     public void setDamage(double value){this.damage = value;}
     protected void onCollision(IEnemy enemyHit){
-        enemyHit.onHitByBullet(this);
+        enemyHit.onHitByBullet(this,!onHitAugments.isEmpty());
         hasAlreadyHit.add(enemyHit);
         piercingLevel--;
-        for(Augment a : onHitAugments){
-            a.triggerEffects((Enemy) enemyHit, this);
-        }
 
         if(piercingLevel == 0) {
             destroy();

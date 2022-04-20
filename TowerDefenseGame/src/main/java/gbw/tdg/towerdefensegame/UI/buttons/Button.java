@@ -72,6 +72,9 @@ public class Button implements Clickable, Renderable {
     public double getRenderingPriority() {
         return renderingPriority;
     }
+    public RText getText(){
+        return text;
+    }
     @Override
     public void setRenderingPriority(double newPrio){this.renderingPriority = newPrio;}
 

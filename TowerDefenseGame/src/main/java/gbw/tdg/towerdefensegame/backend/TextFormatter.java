@@ -1,4 +1,4 @@
-package gbw.tdg.towerdefensegame.UI;
+package gbw.tdg.towerdefensegame.backend;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -47,6 +47,13 @@ public class TextFormatter {
         }
 
         return sB.toString();
+    }
+
+    public static String getIsolatedClassName(Object obj){
+        String full = obj.toString();
+        int indexStart = full.lastIndexOf('.') +1;
+        int indexEnd = full.indexOf('@');
+        return full.substring(indexStart,indexEnd);
     }
 
     public static String intToRomanNumerals(int input) {

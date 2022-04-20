@@ -16,7 +16,7 @@ public class BurnEffect extends LifetimeEffect {
     }
 
     @Override
-    public void evaluateOn(Enemy e){
+    public synchronized void evaluateOn(Enemy e){
         long now = System.currentTimeMillis() +1;
         double factor = 1000.0 / (now - lastCall);
         double damageToApplyThisTick = damageASecond * factor;

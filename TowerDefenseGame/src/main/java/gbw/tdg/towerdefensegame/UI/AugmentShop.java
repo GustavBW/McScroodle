@@ -27,8 +27,8 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
     public AugmentShop(){
         this.shop = new GraphicalInventory<>(1, sizeX, sizeY, 10, position,87D,3);
         shop.addAll(List.of(getNewOffering(),getNewOffering(),getNewOffering()));
-
-        this.storedAugs = new GraphicalInventory<>(1,sizeX,sizeY * 1.5,10,position.add(0,sizeY),87D,6);
+        double margin = Main.canvasSize.getY() * 0.01;
+        this.storedAugs = new GraphicalInventory<>(1,sizeX * 0.9,sizeY,10,position.add(0,sizeY + margin),87D,6);
     }
 
     private AugmentBuyButton getNewOffering(){
@@ -61,15 +61,17 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
     public void trigger(MouseEvent event) {
         if(selectedOffering != null){
             Tower tFound = findTowerOnPos(new Point2D(event.getX(),event.getY()));
+            boolean success = false;
 
             if(tFound != null){
                 if(tFound.addAugment(selectedOffering.getAugment())){
                     System.out.println("AugmentShop: Augment added to tower " + tFound);
-                }else{
-                    storedAugs.add(selectedOffering);
+                    success = true;
                 }
-            }else{
-                storedAugs.add(selectedOffering);
+            }
+
+            if(!success){
+                storedAugs.add(new AugmentBuyButton(selectedOffering, false));
             }
 
             setShopLock(false);
@@ -106,6 +108,8 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
     private void augmentBought(AugmentBuyButton aBB){
 
         shop.replace(aBB,getNewOffering());
+        storedAugs.remove(aBB);
+
         if(amountBought % 3 == 0){
             increaseBaseCost(1);
         }

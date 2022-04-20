@@ -39,7 +39,7 @@ public class TowerFunctionsDisplay implements Renderable {
 
 
     public void onTowerMove() {
-        System.out.println("Trying to move tower not hooked up yet");
+
     }
 
     public void onTowerDelete(){

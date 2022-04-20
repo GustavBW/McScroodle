@@ -14,16 +14,22 @@ public class ExplosiveAugment extends Augment{
 
     private double explosionRadius;
 
+
     public ExplosiveAugment(double value, int type, int level){
         super(value,type,level);
+        needsToNotHaveRequirement = true;
+        requirement = type;
         this.explosionRadius = 100 * level * (Main.canvasSize.getX() * (1.00 / 1920));
     }
 
     @Override
     public void triggerEffects(Enemy enemyHit, Bullet bullet){
         Set<IEnemy> enemiesFound = findEnemiesInRange(enemyHit);
+
         for(IEnemy e : enemiesFound){
-            e.onHitByBullet(bullet);
+            e.addIgnoredAug(this);
+            e.onHitByBullet(bullet,true);
+            e.removeIgnoredAug(this);
         }
     }
 
@@ -43,5 +49,12 @@ public class ExplosiveAugment extends Augment{
     @Override
     public String getDesc(){
         return "Bullets explode in a " + Decimals.toXDecimalPlaces(explosionRadius,0) + " unit radius.";
+    }
+
+    @Override
+    public Augment getModified(int level){
+        needsToNotHaveRequirement = true;
+        requirement = type;
+        return super.getModified(level);
     }
 }

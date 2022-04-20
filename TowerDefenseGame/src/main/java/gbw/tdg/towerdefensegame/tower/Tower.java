@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
-public class Tower extends ITower implements Clickable, Tickable, Renderable{
+public class Tower extends ITower{
 
     private double renderingPriority = 55D, rangeMultiplier = 100;
     private double sizeX, sizeY, damage = 0.1, atkSpeed = 0.1;
@@ -27,7 +27,7 @@ public class Tower extends ITower implements Clickable, Tickable, Renderable{
     private final List<Invocation> invocations = new ArrayList<>();
     private final Set<SupportTowerBuff> damageBuffs = new HashSet<>();
     private final Set<SupportTowerBuff> atkSpeedBuffs = new HashSet<>();
-    private final double maxAugments = 4, maxInvocations = 3;
+    private final double maxAugments = 3, maxInvocations = 3;
 
     public Tower(int points){
         double subDivider = 0.01;

@@ -29,6 +29,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     private Set<LifetimeEffect> lifetimeEffects;
     private Set<ITower> provokers = new HashSet<>();
     private Map<ITower, Double> provokerDamageMap = new HashMap<>();
+    private Set<Augment> ignoredAugs = new HashSet<>();
 
     public Enemy(Point2D position, Path path){
         this.position = position;
@@ -205,10 +206,25 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         hp += amount;
         latestHit = null;
     }
+    public void addIgnoredAug(Augment a){
+        ignoredAugs.add(a);
+    }
+    public void removeIgnoredAug(Augment a){
+        ignoredAugs.remove(a);
+    }
     @Override
-    public void onHitByBullet(Bullet bullet){
+    public void onHitByBullet(Bullet bullet, boolean appliesOnHit){
         provokers.add(bullet.getOwner());
         provokerDamageMap.put(bullet.getOwner(), provokerDamageMap.getOrDefault(bullet.getOwner(), 0D) + bullet.getDamage());
+
+        if(appliesOnHit) {
+            for (Augment a : bullet.getOnHitAugments()) {
+                if(!ignoredAugs.contains(a)) {
+                    a.triggerEffects(this, bullet);
+                }
+            }
+        }
+
         hp -= bullet.getDamage();
         latestHit = bullet;
     }

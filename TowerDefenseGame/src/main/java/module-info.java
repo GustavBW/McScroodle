@@ -19,4 +19,6 @@ module gbw.tdg.towerdefensegame {
     opens gbw.tdg.towerdefensegame.augments to javafx.fxml;
     exports gbw.tdg.towerdefensegame.tower;
     opens gbw.tdg.towerdefensegame.tower to javafx.fxml;
+    exports gbw.tdg.towerdefensegame.backend;
+    opens gbw.tdg.towerdefensegame.backend to javafx.fxml;
 }

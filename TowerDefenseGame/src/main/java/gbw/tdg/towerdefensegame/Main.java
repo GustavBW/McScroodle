@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame;
 
 import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.augments.Augment;
+import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import gbw.tdg.towerdefensegame.handlers.*;
 import gbw.tdg.towerdefensegame.tower.ITower;
@@ -86,9 +87,9 @@ public class Main extends Application {
         uiController.spawn();
         setState(GameState.START_MENU);
 
-        Tower testTower = new Tower(canvasSize.multiply(0.5),0,0.3,1000,10);
-        testTower.addAugment(Augment.getSpecific(3,3));
-        testTower.addAugment(Augment.getSpecific(2,3));
+        Tower testTower = new Tower(canvasSize.multiply(0.5),0,0.3,1000,1);
+        //testTower.addAugment(Augment.getSpecific(0,5));
+        //testTower.addAugment(Augment.getSpecific(2,3));
         testTower.spawn();
 
         scene.setOnMouseClicked(e -> mouseHandler.handle(e));
@@ -168,12 +169,6 @@ public class Main extends Application {
     }
 
     private void cleanUp(){
-
-        Clickable.active.addAll(Clickable.newborn);
-        Clickable.active.removeAll(Clickable.expended);
-        Clickable.expended.clear();
-        Clickable.newborn.clear();
-
         ITower.active.addAll(ITower.newborn);
         ITower.active.removeAll(ITower.expended);
         ITower.expended.clear();
