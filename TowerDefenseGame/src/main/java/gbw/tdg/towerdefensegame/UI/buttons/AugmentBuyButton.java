@@ -24,9 +24,9 @@ public class AugmentBuyButton extends Button{
         super.setBackgroundColor(new Color(0,0,0,0.5));
         this.augment = augment;
         this.owner = owner;
-        this.price = price;
+        this.price = (int) (price + augment.getWorth());
         super.text.setText(augment.getName());
-        String formattedDesc = TextFormatter.toLines(augment.getDesc(),30," ");
+        String formattedDesc = TextFormatter.toLines(augment.getDesc(),30," ") + " " + price + "G";
         this.descText = new RText(formattedDesc, position,2, Color.WHITE, Font.font("Verdana", Main.canvasSize.getX()*0.007));
     }
     public AugmentBuyButton(RText textUnit, Augment augment, IClickableOwner owner, int price){
