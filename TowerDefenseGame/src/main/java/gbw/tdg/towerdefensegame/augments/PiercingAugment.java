@@ -10,11 +10,11 @@ public class PiercingAugment extends Augment{
 
     @Override
     public void applyToBullet(Bullet b){
-        b.setPiercingLevel(level);
+        b.addPiercingLevels(super.level);
     }
 
     @Override
     public String getDesc(){
-        return "Allows bullets to penetrate through enemies";
+        return "Allows bullets to penetrate through " + super.level + " enemies";
     }
 }

@@ -26,12 +26,12 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     private final Color color;
     private Bullet latestHit;
     private EnemyStatDisplay statDisplay;
-    private Set<LifetimeEffect> lifetimeEffects = new HashSet<>();
+    private Set<LifetimeEffect> lifetimeEffects;
     private Set<ITower> provokers = new HashSet<>();
     private Map<ITower, Double> provokerDamageMap = new HashMap<>();
 
     public Enemy(Point2D position, Path path){
-    this.position = position;
+        this.position = position;
         this.path = path;
         this.color = new Color(Main.random.nextInt(1,255)/255.0,0,Main.random.nextInt(1,255) / 255.0,1);
         latest = path.getStartPoint();
@@ -42,11 +42,12 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         enemyCount++;
         this.id = enemyCount;
         this.statDisplay = new EnemyStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
+        this.lifetimeEffects = Collections.synchronizedSet(new HashSet<>());
     }
     @Override
-    public void tick(){
+    public synchronized void tick(){
         if(hp <= 0){
-            onKilled();
+            onKilled(false);
         }
 
         if(alive) {
@@ -72,9 +73,9 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         }
     }
 
-    private void onKilled() {
+    private void onKilled(boolean byBullet) {
         alive = false;
-        if(latestHit != null){
+        if(byBullet && latestHit != null){
             for(int i = 0; i < 10; i++){
                 Point2D attackedDirection = position.subtract(latestHit.getPosition()).normalize();
                 Point2D velocity = new Point2D(
@@ -88,6 +89,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
                 new Coin(maxHP * 0.1, position, 100, 58).spawn();
             }
         }
+        Main.alterSoulsAmount(1);
         destroy();
     }
 
@@ -126,7 +128,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         maxHP += buff.getHealth();
         ogmvspeed += buff.getBonusSpeed();
     }
-    public void addLifetimeEffect(LifetimeEffect lE){
+    public synchronized void addLifetimeEffect(LifetimeEffect lE){
         for(LifetimeEffect lE2 : lifetimeEffects){
             if(lE2.getOwner() == lE.getOwner()){
                 return;
@@ -134,10 +136,10 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         }
         lifetimeEffects.add(lE);
     }
-    public void removeLifetimeEffect(LifetimeEffect lE){
+    public synchronized  void removeLifetimeEffect(LifetimeEffect lE){
         lifetimeEffects.remove(lE);
     }
-    public List<LifetimeEffect> getLifetimeEffects(){
+    public synchronized List<LifetimeEffect> getLifetimeEffects(){
         return new ArrayList<>(lifetimeEffects);
     }
     public void applyDamage(double amount){
@@ -199,6 +201,10 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     @Override
     public double getHp(){return hp;}
     public double getMaxHP(){return maxHP;}
+    public void alterHP(double amount){
+        hp += amount;
+        latestHit = null;
+    }
     @Override
     public void onHitByBullet(Bullet bullet){
         provokers.add(bullet.getOwner());

@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
-public class Tower implements Clickable, Tickable, ITower{
+public class Tower extends ITower implements Clickable, Tickable, Renderable{
 
     private double renderingPriority = 55D, rangeMultiplier = 100;
     private double sizeX, sizeY, damage = 0.1, atkSpeed = 0.1;

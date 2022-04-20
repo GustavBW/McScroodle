@@ -24,9 +24,9 @@ public class AugmentBuyButton extends Button{
         super.setBackgroundColor(new Color(0,0,0,0.5));
         this.augment = augment;
         this.owner = owner;
-        this.price = (int) (price + augment.getWorth());
+        this.price = price + (int) (augment.getWorth());
         super.text.setText(augment.getName());
-        String formattedDesc = TextFormatter.toLines(augment.getDesc(),30," ") + " " + price + "G";
+        String formattedDesc = TextFormatter.toLines(augment.getDesc(), (int) (15 * (Main.canvasSize.getX() * (1 / 1920.0)))," ") + this.price + "S";
         this.descText = new RText(formattedDesc, position,2, Color.WHITE, Font.font("Verdana", Main.canvasSize.getX()*0.007));
     }
     public AugmentBuyButton(RText textUnit, Augment augment, IClickableOwner owner, int price){
@@ -50,11 +50,11 @@ public class AugmentBuyButton extends Button{
 
     @Override
     public void onInteraction(){
-        if(Main.getGold() >= price) {
-            Main.alterGoldAmount(-price);
+        if(Main.getSouls() >= price) {
+            Main.alterSoulsAmount(-price);
             owner.childClicked(this);
         }else{
-            new OnScreenWarning("Not enough gold!", Main.canvasSize.multiply(0.5), 3).spawn();
+            new OnScreenWarning("Not enough Souls!", Main.canvasSize.multiply(0.5), 3).spawn();
         }
     }
 

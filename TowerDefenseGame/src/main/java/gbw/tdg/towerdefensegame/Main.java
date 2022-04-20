@@ -43,8 +43,8 @@ public class Main extends Application {
     private long lastCall = 0,lastCall2 = 0;
     private final double fpsWanted = 60;
     private int frameCount;
-    public static int MAXHP = 10, HP = MAXHP, FPS, totalGoldEarned, totalGoldSpend;
-    private static double GOLD = 20;
+    public static int MAXHP = 10, HP = MAXHP, FPS, totalGoldEarned, totalGoldSpend, totalSoulsEarned, totalSoulsSpend;
+    private static double GOLD = 20, SOULS;
     public static boolean isRunning, onPause;
     public static GameState state = GameState.VOID;
 
@@ -208,8 +208,20 @@ public class Main extends Application {
             totalGoldEarned += amount;
         }
     }
+    public static void alterSoulsAmount(double amount){
+        if(amount <= 0){
+            SOULS += amount;
+            totalSoulsSpend += amount;
+        }else{
+            SOULS += amount;
+            totalSoulsEarned += amount;
+        }
+    }
     public static double getGold(){
         return GOLD;
+    }
+    public static double getSouls(){
+        return SOULS;
     }
 
     public static void onGameStart(){

@@ -34,6 +34,7 @@ public class DevTools implements Tickable{
     public void tick() {
         if(KeyHandler.currentInputs.contains(KeyCode.M) && KeyHandler.currentInputs.contains(KeyCode.L)){
             Main.alterGoldAmount(100);
+            Main.alterSoulsAmount(10);
         }
     }
 }

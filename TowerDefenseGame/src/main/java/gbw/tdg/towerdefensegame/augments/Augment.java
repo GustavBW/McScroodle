@@ -23,7 +23,7 @@ public abstract class Augment implements Cloneable{
     private final static Augment HELLFIRE = new HellfireAugment(3,2,1);
     private final static Augment ICICLE = new IceAugment(3,3,1);
 
-    protected int level;
+    protected int level, maxLevel = 3;
     protected Tower tower;
     protected double value;
     protected AugmentIcon icon;
@@ -55,7 +55,7 @@ public abstract class Augment implements Cloneable{
         while(foundAug == null){
             Augment current = augs.get(i % size);
 
-            for(int j = 1; j < 4;j++) {
+            for(int j = 1; j <= current.getMaxLevel(); j++) {
                 current = current.getModified(j);
                 double currentWorth = current.getWorth();
                 if (currentWorth >= value * 0.7 && currentWorth <= 1.3 * value) {
@@ -160,7 +160,7 @@ public abstract class Augment implements Cloneable{
 
     public Augment getModified(int level){
         Augment newAug = this.clone();
-        newAug.setLevel(level);
+        newAug.setLevel(Math.min(level, this.maxLevel));
         return newAug;
     }
 
@@ -182,6 +182,13 @@ public abstract class Augment implements Cloneable{
         return null;
     }
 
+    public int getMaxLevel(){
+        return maxLevel;
+    }
+    public int getLevel(){
+        return level <= 0 ? 1 : level;
+    }
+
     @Override
     public String toString(){
         String superStr = super.toString();
@@ -197,6 +204,6 @@ public abstract class Augment implements Cloneable{
     public String getName(){
         String base = this.toString();
         int index = base.indexOf('@')-7;
-        return base.substring(0,index) + " " + TextFormatter.intToRomanNumerals(level <= 0 ? 1 : level);
+        return base.substring(0,index) + " " + TextFormatter.intToRomanNumerals(this.getLevel());
     }
 }

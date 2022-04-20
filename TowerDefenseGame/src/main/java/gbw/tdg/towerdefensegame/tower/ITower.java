@@ -1,18 +1,20 @@
 package gbw.tdg.towerdefensegame.tower;
 
 import gbw.tdg.towerdefensegame.Renderable;
+import gbw.tdg.towerdefensegame.Tickable;
+import gbw.tdg.towerdefensegame.UI.Clickable;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public interface ITower extends Renderable {
+public abstract class ITower implements Clickable, Renderable, Tickable {
 
-    Set<ITower> active = new HashSet<>();
-    Set<ITower> expended = new HashSet<>();
-    Set<ITower> newborn = new HashSet<>();
+    public static Set<ITower> active = new HashSet<>();
+    public static Set<ITower> expended = new HashSet<>();
+    public static Set<ITower> newborn = new HashSet<>();
 
-    void applyDamageBuff(SupportTowerBuff buff);
-    void applyAtkSpeedBuff(SupportTowerBuff buff);
+    public abstract void applyDamageBuff(SupportTowerBuff buff);
+    public abstract void applyAtkSpeedBuff(SupportTowerBuff buff);
 
-    double getDamage();
+    public abstract double getDamage();
 }
