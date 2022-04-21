@@ -14,4 +14,9 @@ public class StartGameButton extends Button{
     public void onInteraction(){
         Main.onGameStart();
     }
+
+    @Override
+    public void spawn(){
+        super.spawn();
+    }
 }

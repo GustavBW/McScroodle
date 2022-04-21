@@ -24,6 +24,8 @@ public class MouseHandler implements EventHandler<MouseEvent> {
 
     @Override
     public void handle(MouseEvent mouseEvent) {
+        cleanUp();
+
         Point2D clickPos = new Point2D(mouseEvent.getX(),mouseEvent.getY());
 
         for(ClickListener cL : ClickListener.active){
@@ -40,31 +42,22 @@ public class MouseHandler implements EventHandler<MouseEvent> {
             if (c.isInBounds(clickPos)) {
                 selected = c;
                 selectedRoot = c.getRoot();
-                System.out.println("MouseHandler: Clicked " + c);
                 break;
             }
         }
 
-        System.out.println("MouseHandler: selected: " + selected + " previous: " + previous);
-
         if(selected != null){
             selected.onInteraction();
         }
-        if (previous != null && !rootsAreEqual(selected, previous)) {
-            System.out.println("MouseHandler: Deselecting " + previous);
-            previous.deselect();
+        if (previousRoot != null && !rootsAreEqual(selected, previous)) {
+            previousRoot.deselect();
         }
-
-        System.out.println("#");
-
-        cleanUp();
     }
 
     private boolean rootsAreEqual(Clickable first, Clickable second){
         if(first == null || second == null){
             return false;
         }
-        System.out.println("MouseHandler roots: " + first.getRoot()  + " | " + second.getRoot());
 
         if(first.getRoot() == null || second.getRoot() == null){
             return false;

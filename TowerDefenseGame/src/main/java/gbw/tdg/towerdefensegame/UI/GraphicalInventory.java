@@ -6,10 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class GraphicalInventory<T extends Renderable> extends Inventory<T> implements Renderable{
 
@@ -20,6 +17,10 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     private Point2D position;
     private int rows;
     private boolean enableAutoSpawn;
+
+    public GraphicalInventory(int c, int r, Point2D dim, Point2D pos, double rendPrio){
+        this(c,dim.getX(),dim.getY(),dim.getY()*0.1, pos,rendPrio,r);
+    }
 
     public GraphicalInventory(int slotCount, double width, double height, double margin, Point2D position, double renderingPrio) {
         this(slotCount, width,height,margin,position,renderingPrio,1);
@@ -105,9 +106,38 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         return output;
     }
 
-    public void setBackgroundColor(Color color){
-        backgroundColor = color;
+    public boolean addIfAbsent(T obj){
+        if(!super.objects.contains(obj)){
+            this.add(obj);
+            return true;
+        }
+        return false;
     }
+
+    public int removeMissing(Collection<T> list){
+        //Removes from this Inventory all objects that are not in the given Collection
+        int count = 0;
+
+        for(T obj : super.objects){
+            if(!list.contains(obj)){
+                this.remove(obj);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public List<T> addMissing(Collection<T> list){
+        //Just calls this.addIfAbsent() but return those that were
+        List<T> thoseWhoWhereMissing = new LinkedList<>();
+        for(T obj : list){
+            if(this.addIfAbsent(obj)){
+                thoseWhoWhereMissing.add(obj);
+            }
+        }
+        return thoseWhoWhereMissing;
+    }
+
     @Override
     public boolean add(T object){
         boolean success = super.add(object);
@@ -130,7 +160,9 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
 
     private void addObject(T object, int slot){
-        if(enableAutoSpawn){object.spawn();}
+        if(enableAutoSpawn){
+            object.spawn();
+        }
         object.setPosition(objOffsetMap.get(slot));
         object.setDimensions(new Point2D(objWidth,objHeight));
         object.setRenderingPriority(renderingPriority + 0.01);
@@ -153,8 +185,12 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
     @Override
     public boolean remove(T obj){
-        obj.destroy();
-        return super.remove(obj);
+        if(obj == null){return false;}
+        boolean success = super.remove(obj);
+        if(success){
+            obj.destroy();
+        }
+        return success;
     }
 
     public List<T> removeAll(List<T> list){
@@ -188,6 +224,9 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
+    }
+    public void setBackgroundColor(Color color){
+        backgroundColor = color;
     }
     @Override
     public void setRenderingPriority(double newPrio) {

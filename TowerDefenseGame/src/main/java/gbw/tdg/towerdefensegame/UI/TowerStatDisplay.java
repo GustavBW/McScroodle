@@ -10,8 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TowerStatDisplay implements Renderable, Tickable, Clickable {
 
@@ -21,7 +20,7 @@ public class TowerStatDisplay implements Renderable, Tickable, Clickable {
     private Color background = new Color(0,0,0,0.5);
     private Point2D position;
     private double sizeX,sizeY, cornerWidth = 15;
-    private Menu<AugmentIcon> augmentDisplay;
+    private GraphicalInventory<AugmentIcon> augmentDisplay;
     private long lastCall;
     private boolean isSpawned = false;
 
@@ -35,7 +34,8 @@ public class TowerStatDisplay implements Renderable, Tickable, Clickable {
 
         double posXOfAugmentDisplay = Main.canvasSize.getX() * 0.1 - (sizeY / 3);
         this.sizeX = Main.canvasSize.getX() * 0.1 - (sizeY / 3);
-        this.augmentDisplay = new Menu<>(position.add(posXOfAugmentDisplay,0),new Point2D(sizeX,sizeY),renderingPriority +1,1,3);
+        this.augmentDisplay = new GraphicalInventory<>(1,sizeX,sizeY,0,position.add(posXOfAugmentDisplay,0),renderingPriority,3);
+        augmentDisplay.setBackgroundColor(Color.TRANSPARENT);
     }
 
     public void render(GraphicsContext gc){
@@ -46,16 +46,18 @@ public class TowerStatDisplay implements Renderable, Tickable, Clickable {
     }
 
     @Override
-    public void tick(){
-        if(System.currentTimeMillis() >= lastCall + 1000) {
-            text.setText(tower.getStats());
+    public synchronized void tick(){
+        text.setText(tower.getStats());
 
-            List<AugmentIcon> currentAugImages = new ArrayList<>();
+        if(System.currentTimeMillis() >= lastCall + 1000) {
+
+            AugmentIcon current;
+            Set<AugmentIcon> list = new HashSet<>();
             for (Augment a : tower.getAugments()) {
-                currentAugImages.add(a.getIcon().setRoot(this.getRoot()));
+                augmentDisplay.addIfAbsent((current = a.getIcon().setRoot(this.getRoot())));
+                list.add(current);
             }
-            augmentDisplay.clear();
-            augmentDisplay.addAll(currentAugImages);
+            augmentDisplay.removeMissing(list);
             lastCall = System.currentTimeMillis();
         }
     }

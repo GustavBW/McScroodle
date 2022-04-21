@@ -3,33 +3,40 @@ package gbw.tdg.towerdefensegame.augments;
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Decimals;
 import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.UI.vfx.CircleVFX;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ExplosiveAugment extends Augment{
 
-    private double explosionRadius;
-
+    private double baseRangeMultiplier = 20;
 
     public ExplosiveAugment(double value, int type, int level){
         super(value,type,level);
         needsToNotHaveRequirement = true;
+        appliesOnHit = true;
         requirement = type;
-        this.explosionRadius = 100 * level * (Main.canvasSize.getX() * (1.00 / 1920));
+    }
+
+    @Override
+    public Augment getModified(int level){
+        needsToNotHaveRequirement = true;
+        appliesOnHit = true;
+        requirement = type;
+        return super.getModified(level);
     }
 
     @Override
     public void triggerEffects(Enemy enemyHit, Bullet bullet){
-        Set<IEnemy> enemiesFound = findEnemiesInRange(enemyHit);
+        new CircleVFX(1_000,70,enemyHit.getPosition(),getERadius()).spawn();
 
+        Set<IEnemy> enemiesFound = findEnemiesInRange(enemyHit);
         for(IEnemy e : enemiesFound){
-            e.addIgnoredAug(this);
-            e.onHitByBullet(bullet,true);
-            e.removeIgnoredAug(this);
+            ((Enemy) e).onHitByOnHit(this,bullet);
+            ((Enemy) e).applyDamage(bullet.getDamage() * 0.7);
         }
     }
 
@@ -38,7 +45,7 @@ public class ExplosiveAugment extends Augment{
         Point2D tPos = enemyHit.getPosition();
 
         for(IEnemy e : IEnemy.active){
-            if(tPos.distance(e.getPosition()) <= explosionRadius){
+            if(tPos.distance(e.getPosition()) <= getERadius()){
                 enemiesFound.add(e);
             }
         }
@@ -46,15 +53,14 @@ public class ExplosiveAugment extends Augment{
         return enemiesFound;
     }
 
-    @Override
-    public String getDesc(){
-        return "Bullets explode in a " + Decimals.toXDecimalPlaces(explosionRadius,0) + " unit radius.";
+    private double getERadius(){
+        double er = baseRangeMultiplier * level * (Main.canvasSize.getX() * (1.00 / 1920));
+        return er;
     }
 
     @Override
-    public Augment getModified(int level){
-        needsToNotHaveRequirement = true;
-        requirement = type;
-        return super.getModified(level);
+    public String getDesc(){
+        return "Bullets explode in a " + Decimals.toXDecimalPlaces(getERadius(),0) + " unit radius.";
     }
+
 }

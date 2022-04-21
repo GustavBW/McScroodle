@@ -15,7 +15,6 @@ public class IceAugment extends Augment {
     public IceAugment(int value, int type, int level) {
         super(value,type,level);
         this.slowness = Decimals.toXDecimalPlaces(1 - (0.2 * level), 2);
-        System.out.println("IceAugment: Slowness is: " + slowness);
     }
 
     @Override

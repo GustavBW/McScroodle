@@ -103,7 +103,7 @@ public class Bullet implements Tickable,Renderable{
         hasAlreadyHit.add(enemyHit);
         piercingLevel--;
 
-        if(piercingLevel == 0) {
+        if(piercingLevel <= 0) {
             destroy();
         }
         targeted = false;

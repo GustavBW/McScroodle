@@ -38,13 +38,19 @@ public class SetTowerTargetingButton extends Button{
 
     @Override
     public void onInteraction(){
-        menuIsSpawned = !menuIsSpawned;
-        if(menuIsSpawned){
+        if(!menuIsSpawned){
             menu.spawn();
+            menuIsSpawned = true;
         }else{
             menu.destroy();
         }
 
+    }
+    @Override
+    public void destroy(){
+        super.destroy();
+        menu.destroy();
+        menuIsSpawned = false;
     }
 
     @Override

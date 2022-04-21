@@ -32,7 +32,7 @@ public abstract class Augment implements Cloneable{
     protected AugmentIcon icon;
     private Image image;
     protected int requirement = -1;
-    protected boolean needsToNotHaveRequirement = false;
+    protected boolean needsToNotHaveRequirement = false, appliesOnHit = false;
     protected int type;
     private final int id;
     private static int amountOfAugmentObjects = 0;
@@ -182,6 +182,9 @@ public abstract class Augment implements Cloneable{
             this.icon = new AugmentIcon(getImage(),100, Point2D.ZERO,Point2D.ZERO,true);
         }
         return icon;
+    }
+    public boolean appliesOnHit(){
+        return appliesOnHit;
     }
 
     private void setLevel(int newLevel){

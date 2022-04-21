@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.Decimals;
 import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.UI.AugmentIcon;
 import gbw.tdg.towerdefensegame.UI.IClickableOwner;
 import gbw.tdg.towerdefensegame.UI.OnScreenWarning;
 import gbw.tdg.towerdefensegame.UI.RText;
@@ -16,14 +17,17 @@ public class AugmentBuyButton extends Button{
 
     private final Augment augment;
     private final IClickableOwner owner;
-    private final double price,ogPrice;
+    private double price,ogPrice;
     private final RText descText;
-    private boolean showDesc = true;
+    private boolean showDesc = true, showIcon = false;
+    private Point2D iconOffset;
 
     public AugmentBuyButton(Point2D position, double sizeX, double sizeY, RText textUnit, Augment augment, IClickableOwner owner, double price) {
         super(position, sizeX, sizeY, textUnit,true);
         super.setBackgroundColor(new Color(0,0,0,0.5));
         this.augment = augment;
+        augment.getIcon().setDimensions(new Point2D(sizeY - (2 * rimOffset),sizeY - (2 * rimOffset)));
+        this.iconOffset = new Point2D((position.getX() + sizeX) - (rimOffset + augment.getIcon().getDim().getX()), position.getY() + rimOffset);
         this.owner = owner;
         this.ogPrice = price;
         this.price = Decimals.toXDecimalPlaces(price + augment.getWorth(),2);
@@ -34,9 +38,16 @@ public class AugmentBuyButton extends Button{
     public AugmentBuyButton(RText textUnit, Augment augment, IClickableOwner owner, int price){
         this(new Point2D(0,0),0,0,textUnit,augment,owner,price);
     }
-    public AugmentBuyButton(AugmentBuyButton aBB, boolean showDesc){
+    public AugmentBuyButton(AugmentBuyButton aBB, boolean showDesc, boolean augWorthAsPrice, boolean showIcon){
         this(aBB.getPosition(),aBB.getDimensions().getX(),aBB.getDimensions().getY(),aBB.getText(),aBB.getAugment(),aBB.getOwner(),aBB.getOgPrice());
         this.showDesc = showDesc;
+        this.showIcon = showIcon;
+        if(showIcon){
+            this.setPosition(aBB.getPosition());
+        }
+        if(augWorthAsPrice) {
+            this.price = augment.getWorth();
+        }
     }
 
     @Override
@@ -47,6 +58,20 @@ public class AugmentBuyButton extends Button{
         }
     }
 
+    @Override
+    public void spawn(){
+        super.spawn();
+        if(showIcon){
+            augment.getIcon().spawn();
+        }
+    }
+    @Override
+    public void destroy(){
+        super.destroy();
+        if(showIcon) {
+            augment.getIcon().destroy();
+        }
+    }
     public Augment getAugment(){return augment;}
     public IClickableOwner getOwner(){
         return owner;
@@ -54,11 +79,23 @@ public class AugmentBuyButton extends Button{
     public double getOgPrice(){
         return ogPrice;
     }
-
+    public void setPrice(double price){
+        this.price = price;
+    }
+    public void setShowDesc(boolean state){
+        showDesc = state;
+    }
+    public void setShowIcon(boolean state){
+        showIcon = state;
+    }
+    public AugmentIcon getIcon(){
+        return augment.getIcon();
+    }
 
     @Override
     public void setPosition(Point2D p) {
         position = p;
+        augment.getIcon().setPosition(p.add(iconOffset));
         super.text.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.025)));
         descText.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.045)));
     }

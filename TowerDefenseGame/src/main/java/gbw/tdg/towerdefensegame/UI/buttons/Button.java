@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 public class Button implements Clickable, Renderable {
 
     public static final Point2D STANDARD_TEXT_OFFSET = new Point2D(1,1);
-    protected double renderingPriority = 85D;
+    protected double renderingPriority = 85D, rimOffset = 5;
     protected Point2D position;
     protected double sizeX, sizeY;
     protected final RText text;
@@ -45,7 +45,7 @@ public class Button implements Clickable, Renderable {
             gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
 
             gc.setFill(rimColor);
-            gc.fillRect(position.getX() - 5, position.getY() - 5, sizeX + 10, sizeY + 10);
+            gc.fillRect(position.getX() - rimOffset, position.getY() - rimOffset, sizeX + (2 * rimOffset), sizeY + (2 * rimOffset));
 
             gc.setFill(Color.BLACK);
             gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);

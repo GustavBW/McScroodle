@@ -217,17 +217,21 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         provokers.add(bullet.getOwner());
         provokerDamageMap.put(bullet.getOwner(), provokerDamageMap.getOrDefault(bullet.getOwner(), 0D) + bullet.getDamage());
 
-        if(appliesOnHit) {
-            for (Augment a : bullet.getOnHitAugments()) {
-                if(!ignoredAugs.contains(a)) {
-                    a.triggerEffects(this, bullet);
-                }
-            }
+        for(Augment a : bullet.getOnHitAugments()){
+            a.triggerEffects(this,bullet);
         }
 
         hp -= bullet.getDamage();
         latestHit = bullet;
     }
+    public void onHitByOnHit(Augment source,Bullet sourceBullet){
+        for(Augment a : sourceBullet.getOnHitAugments()){
+            if (!a.appliesOnHit()) {
+                a.triggerEffects(this,sourceBullet);
+            }
+        }
+    }
+
     @Override
     public void applyAugmentEffect(Augment aug){
 

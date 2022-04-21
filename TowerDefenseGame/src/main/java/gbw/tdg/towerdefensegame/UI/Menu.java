@@ -26,14 +26,14 @@ public class Menu<T extends Renderable> implements Renderable{
         this.positionMap = calcPositions();
     }
 
-    private void setChildrenPos(){
+    private synchronized void setChildrenPos(){
         positionMap = calcPositions();
 
         for(int i = 0; i < elements.size(); i++){
             elements.get(i).setPosition(positionMap.getOrDefault(i,Point2D.ZERO));
         }
     }
-    private Map<Integer, Point2D> calcPositions(){
+    private synchronized Map<Integer, Point2D> calcPositions(){
         Map<Integer, Point2D> toReturn = new HashMap<>();
         double singleElWidth = dim.getX() / coloumns;
         double singleElHeight = dim.getY() / rows;
@@ -49,7 +49,7 @@ public class Menu<T extends Renderable> implements Renderable{
 
         return toReturn;
     }
-    private void setChildrenSize(){
+    private synchronized void setChildrenSize(){
         double singleElWidth = dim.getX() / coloumns;
         double singleElHeight = dim.getY() / rows;
 
@@ -57,16 +57,16 @@ public class Menu<T extends Renderable> implements Renderable{
             obj.setDimensions(new Point2D(singleElWidth,singleElHeight));
         }
     }
-    private void setChildrenRendPrio(){
+    private synchronized void setChildrenRendPrio(){
         for(T obj : elements){
             obj.setRenderingPriority(rendPrio);
         }
     }
 
-    public List<T> getChildren(){
+    public synchronized List<T> getChildren(){
         return new ArrayList<>(elements);
     }
-    public boolean add(T obj){
+    public synchronized boolean add(T obj){
         boolean success = elements.add(obj);
         if(success) {
             setChildrenPos();
@@ -78,7 +78,7 @@ public class Menu<T extends Renderable> implements Renderable{
         }
         return success;
     }
-    public boolean remove(T obj){
+    public synchronized boolean remove(T obj){
         boolean success = elements.remove(obj);
         if(success) {
             setChildrenPos();
@@ -89,7 +89,7 @@ public class Menu<T extends Renderable> implements Renderable{
         }
         return success;
     }
-    public boolean addAll(List<T> list){
+    public synchronized boolean addAll(List<T> list){
         List<T> thoseWhomSucceeded = new LinkedList<>();
         for(T obj : list){
             if(this.add(obj)){
@@ -99,7 +99,7 @@ public class Menu<T extends Renderable> implements Renderable{
 
         return !thoseWhomSucceeded.isEmpty();
     }
-    public boolean removeAll(List<T> list){
+    public synchronized boolean removeAll(List<T> list){
         List<T> thoseWhomSucceeded = new LinkedList<>();
 
         for(T obj : list){
@@ -111,69 +111,69 @@ public class Menu<T extends Renderable> implements Renderable{
         return !thoseWhomSucceeded.isEmpty();
     }
 
-    private void spawnAll(List<T> list){
+    private synchronized void spawnAll(List<T> list){
         for(T obj : list){
             obj.spawn();
         }
     }
-    private void spawnAll(){
+    private synchronized void spawnAll(){
         spawnAll(elements);
     }
-    private void destroyAll(List<T> list){
+    private synchronized void destroyAll(List<T> list){
         for(T obj : list){
             obj.destroy();
         }
     }
-    private void destroyAll(){
+    private synchronized void destroyAll(){
         destroyAll(elements);
     }
 
-    public void clear(){
+    public synchronized void clear(){
         removeAll(elements);
         elements.clear();
     }
 
     @Override
-    public void spawn() {
+    public synchronized void spawn() {
         Renderable.newborn.add(this);
         spawnAll();
         isSpawned = true;
     }
 
     @Override
-    public void destroy() {
+    public synchronized void destroy() {
         Renderable.expended.add(this);
         destroyAll();
         isSpawned = false;
     }
 
     @Override
-    public void render(GraphicsContext gc) {
+    public synchronized void render(GraphicsContext gc) {
     }
 
     @Override
-    public Point2D getPosition() {
+    public synchronized Point2D getPosition() {
         return position;
     }
 
     @Override
-    public double getRenderingPriority() {
+    public synchronized double getRenderingPriority() {
         return rendPrio;
     }
 
     @Override
-    public void setPosition(Point2D p) {
+    public synchronized void setPosition(Point2D p) {
         this.position = p;
         setChildrenPos();
     }
 
     @Override
-    public void setRenderingPriority(double newPrio) {
+    public synchronized void setRenderingPriority(double newPrio) {
         this.rendPrio = newPrio;
     }
 
     @Override
-    public void setDimensions(Point2D dim) {
+    public synchronized void setDimensions(Point2D dim) {
         this.dim = dim;
         setChildrenSize();
     }

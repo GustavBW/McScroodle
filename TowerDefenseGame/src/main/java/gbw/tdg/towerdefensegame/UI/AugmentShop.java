@@ -5,6 +5,7 @@ import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.UI.buttons.AugmentBuyButton;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.handlers.ClickListener;
+import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import gbw.tdg.towerdefensegame.tower.ITower;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
@@ -54,24 +55,26 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
 
     @Override
     public void tick() {
-
+        if(selectedOffering != null){
+            selectedOffering.getIcon().setPosition(MouseHandler.mousePos);
+        }
     }
 
     @Override
     public void trigger(MouseEvent event) {
         if(selectedOffering != null){
             Tower tFound = findTowerOnPos(new Point2D(event.getX(),event.getY()));
+            selectedOffering.getIcon().destroy();
             boolean success = false;
 
             if(tFound != null){
                 if(tFound.addAugment(selectedOffering.getAugment())){
-                    System.out.println("AugmentShop: Augment added to tower " + tFound);
                     success = true;
                 }
             }
 
             if(!success){
-                storedAugs.add(new AugmentBuyButton(selectedOffering, false));
+                storedAugs.add(new AugmentBuyButton(selectedOffering, false,true,true));
             }
 
             setShopLock(false);
@@ -94,6 +97,9 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
         if(child instanceof AugmentBuyButton) {
             setShopLock(true);
             selectedOffering = (AugmentBuyButton) child;
+            selectedOffering.destroy();
+            selectedOffering.getIcon().setDimensions(Main.canvasSize.multiply(0.03));
+            selectedOffering.getIcon().spawn();
             ClickListener.newborn.add(this);
         }
     }

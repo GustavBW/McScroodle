@@ -1,8 +1,11 @@
 package gbw.tdg.towerdefensegame.UI;
 
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+
+import java.util.Arrays;
 
 public class AugmentIcon extends RenderableImage implements Clickable {
 

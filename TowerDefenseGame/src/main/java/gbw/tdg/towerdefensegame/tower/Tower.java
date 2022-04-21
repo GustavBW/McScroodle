@@ -20,9 +20,7 @@ public class Tower extends ITower{
     protected Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
     private long lastCall = 0;
-    private final TowerStatDisplay statDisplay;
-    private final TowerRangeIndicator rangeIndicator;
-    private final TowerFunctionsDisplay functionsDisplay;
+    private final TowerDisplay display;
     private final List<Augment> augments = new ArrayList<>();
     private final List<Invocation> invocations = new ArrayList<>();
     private final Set<SupportTowerBuff> damageBuffs = new HashSet<>();
@@ -51,9 +49,7 @@ public class Tower extends ITower{
         atkSpeed *= 0.01;
         pointsSubbed -= allocPoints;
 
-        this.statDisplay = new TowerStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
-        this.rangeIndicator = new TowerRangeIndicator(this,position.add(sizeX * 0.5, sizeY * 0.5));
-        this.functionsDisplay = new TowerFunctionsDisplay(this,new Point2D(Main.canvasSize.getX()*.01,statDisplay.getExtremeties().getY()));
+        this.display = new TowerDisplay(this);
         attackDelay = 1_000_000_000 / atkSpeed;
     }
     public Tower(Point2D pos, double dmg, double atkspd, double range, int multishot){
@@ -61,10 +57,8 @@ public class Tower extends ITower{
         setPosition(pos);
         setAtkSpeed(atkspd);
         damage = dmg;
-        this.range = range;
+        this.range = range / rangeMultiplier;
         this.multishot = multishot;
-        rangeIndicator.setDimensions(new Point2D(range,0));
-        statDisplay.setText(this.getStats());
     }
 
     public void tick(){
@@ -143,10 +137,11 @@ public class Tower extends ITower{
     public Point2D getPosition() {
         return position;
     }
+    public TowerDisplay getDisplay(){return display;}
     @Override
     public void setPosition(Point2D newPos){
         position = newPos;
-        rangeIndicator.setPosition(newPos.add(sizeX * 0.5, sizeY * 0.5));
+        display.setPosition(newPos);
     }
     public Point2D getDimensions(){
         return new Point2D(sizeX, sizeY);
@@ -163,8 +158,8 @@ public class Tower extends ITower{
     @Override
     public void setRenderingPriority(double newPrio) {
         this.renderingPriority = newPrio;
+        display.setRenderingPriority(newPrio);
     }
-
 
     private Set<IEnemy> findEnemiesInRange(){
         Point2D origin = new Point2D(position.getX() + (sizeX * 0.5), position.getY() + (sizeY * 0.5));
@@ -233,9 +228,7 @@ public class Tower extends ITower{
         Tickable.expended.add(this);
         Renderable.expended.add(this);
         Clickable.expended.add(this);
-        rangeIndicator.destroy();
-        functionsDisplay.destroy();
-        statDisplay.destroy();
+        display.destroy();
     }
     @Override
     public boolean isInBounds(Point2D pos) {
@@ -246,20 +239,14 @@ public class Tower extends ITower{
     @Override
     public void onInteraction() {
         if(!isSelected) {
-
-            statDisplay.spawn();
-            rangeIndicator.spawn();
-            functionsDisplay.spawn();
+            display.spawn();
         }
-        isSelected = true;
+        isSelected = !isSelected;
     }
     @Override
     public void deselect(){
         if(isSelected) {
-            statDisplay.setText(this.toString());
-            statDisplay.destroy();
-            rangeIndicator.destroy();
-            functionsDisplay.destroy();
+            display.destroy();
         }
         isSelected = false;
     }
