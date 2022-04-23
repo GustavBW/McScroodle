@@ -72,6 +72,10 @@ public class ARText extends RText implements Renderable {
 
     @Override
     public void setDimensions(Point2D dim) {
+    }
 
+    @Override
+    public Point2D getDimensions() {
+        return new Point2D(font.getSize(), 0);
     }
 }

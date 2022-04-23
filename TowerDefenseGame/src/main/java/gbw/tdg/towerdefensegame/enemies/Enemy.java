@@ -6,32 +6,34 @@ import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.tower.ITower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.util.*;
 
-public class Enemy implements Clickable, Tickable,IEnemy{
+public class Enemy extends IEnemy implements Clickable, Tickable {
 
     private double renderingPriority = 40D;
     private WayPoint latest;
     private WayPoint next;
     private Point2D position;
-    private double ogmvspeed = 5,mvspeedToUse = ogmvspeed, minDistToPoint = 10, sizeX = 40, sizeY = sizeX;
+    private double ogmvspeed = 5,mvspeedToUse = ogmvspeed, minDistToPoint = 10;
     private final Path path;
     private final ProgressBar hpBar;
     private double maxHP = 1, id, hp = maxHP;
     private double lengthTraveled = 0;
     private static int enemyCount = 0;
+    private static double sizeX = 40, sizeY = 40;
     private boolean alive = true,selected = false;
     private final Color color;
     private Bullet latestHit;
-    private EnemyStatDisplay statDisplay;
-    private Set<LifetimeEffect> lifetimeEffects;
-    private Set<ITower> provokers = new HashSet<>();
-    private Map<ITower, Double> provokerDamageMap = new HashMap<>();
-    private Set<Augment> ignoredAugs = new HashSet<>();
+    private final EnemyStatDisplay statDisplay;
+    private volatile Set<LifetimeEffect> lifetimeEffects;
+    private final Set<ITower> provokers = new HashSet<>();
+    private final Map<ITower, Double> provokerDamageMap = new HashMap<>();
 
     public Enemy(Point2D position, Path path){
+        super(position,sizeX,sizeY);
         this.position = position;
         this.path = path;
         this.color = new Color(Main.random.nextInt(1,255)/255.0,0,Main.random.nextInt(1,255) / 255.0,1);
@@ -67,7 +69,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
                 lengthTraveled += new Point2D(dir.getX(), dir.getY()).magnitude();
             }
 
-            hpBar.setVal((double) hp / maxHP);
+            hpBar.setVal(hp / maxHP);
             hpBar.setPosition(new Point2D(position.getX() - (sizeX * 0.5),position.getY() - (sizeY * 0.5)));
 
             mvspeedToUse = ogmvspeed;
@@ -83,11 +85,11 @@ public class Enemy implements Clickable, Tickable,IEnemy{
                         attackedDirection.getX() + (1 * (Main.random.nextDouble() - 0.5)),
                         attackedDirection.getY() + (1 * (Main.random.nextDouble() - 0.5))
                 ).normalize();
-                new Coin(maxHP * 0.1, position,velocity, 200, 58).spawn();
+                new Coin(maxHP * 0.1, position,velocity, 200, renderingPriority - .1).spawn();
             }
         }else {
             for (int i = 0; i < 6; i++) {
-                new Coin(maxHP * 0.1, position, 100, 58).spawn();
+                new Coin(maxHP * 0.1, position, 100, renderingPriority - .1).spawn();
             }
         }
         Main.alterSoulsAmount(1);
@@ -135,6 +137,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
                 return;
             }
         }
+        lE.resetSpawntime();
         lifetimeEffects.add(lE);
     }
     public synchronized  void removeLifetimeEffect(LifetimeEffect lE){
@@ -170,7 +173,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
                 && (pos.getY() < position.getY() + sizeY && pos.getY() > position.getY());
     }
     @Override
-    public void onInteraction() {
+    public void onClick(MouseEvent event) {
         selected = true;
         statDisplay.spawn();
         System.out.println("OOF");
@@ -202,16 +205,7 @@ public class Enemy implements Clickable, Tickable,IEnemy{
     @Override
     public double getHp(){return hp;}
     public double getMaxHP(){return maxHP;}
-    public void alterHP(double amount){
-        hp += amount;
-        latestHit = null;
-    }
-    public void addIgnoredAug(Augment a){
-        ignoredAugs.add(a);
-    }
-    public void removeIgnoredAug(Augment a){
-        ignoredAugs.remove(a);
-    }
+
     @Override
     public void onHitByBullet(Bullet bullet, boolean appliesOnHit){
         provokers.add(bullet.getOwner());
@@ -232,10 +226,6 @@ public class Enemy implements Clickable, Tickable,IEnemy{
         }
     }
 
-    @Override
-    public void applyAugmentEffect(Augment aug){
-
-    }
     @Override
     public double getMvspeed(){
         return mvspeedToUse;

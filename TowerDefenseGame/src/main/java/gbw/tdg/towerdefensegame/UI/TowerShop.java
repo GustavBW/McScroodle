@@ -13,9 +13,9 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 public class TowerShop implements IClickableOwner, Tickable, ClickListener {
-    private Point2D position = new Point2D(0, Main.canvasSize.getY() * 0.8);
+    private final Point2D position = new Point2D(0, Main.canvasSize.getY() * 0.8);
     private final double sizeX = Main.canvasSize.getX()*0.6, sizeY = Main.canvasSize.getY() - position.getY();
-    private GraphicalInventory<TowerBuyButton> shop;
+    private final GraphicalInventory<TowerBuyButton> shop;
     private boolean shopLocked = false;
     private int pointBuyPoints = 5, amountBought = 0,  reloadCost = 100;
     private TowerBuyButton selectedTowerOffering;
@@ -83,7 +83,7 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
     }
 
     @Override
-    public void childClicked(Clickable child) {
+    public void onChildPress(Clickable child, MouseEvent event) {
         if(child instanceof TowerBuyButton) {
             setShopLock(true);
             selectedTowerOffering = (TowerBuyButton) child;
@@ -91,7 +91,17 @@ public class TowerShop implements IClickableOwner, Tickable, ClickListener {
             tower.setActive(false);
             ClickListener.newborn.add(this);
             tower.spawn();
-            tower.onInteraction();
+            tower.onClick(event);
         }
+    }
+
+    @Override
+    public void onChildClick(Clickable child, MouseEvent event) {
+
+    }
+
+    @Override
+    public void onChildRelease(Clickable child, MouseEvent event) {
+
     }
 }

@@ -66,6 +66,12 @@ public class EnemyStatDisplay implements Renderable, Tickable {
         sizeX = dim.getX();
         sizeY = dim.getY();
     }
+
+    @Override
+    public Point2D getDimensions() {
+        return new Point2D(sizeX, sizeY);
+    }
+
     @Override
     public void spawn() {
         Renderable.newborn.add(this);

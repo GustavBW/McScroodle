@@ -5,6 +5,7 @@ import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.UI.TowerFunctionsDisplay;
 import gbw.tdg.towerdefensegame.UI.RText;
+import gbw.tdg.towerdefensegame.UI.vfx.ConnectingLine;
 import gbw.tdg.towerdefensegame.handlers.ClickListener;
 import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import gbw.tdg.towerdefensegame.tower.Tower;
@@ -19,7 +20,7 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
     private static final Point2D textOffset = new Point2D(0,0);
     private final TowerFunctionsDisplay display;
     private Tower towerToMove = null;
-    private boolean moveStarted = false;
+    private boolean moveStarted = false, destroyCalledDuringMove = false, movePending = false;
     private Point2D moveAlongVector = null;
     private Point2D ogTowerPosition;
     private Point2D whereToPosition;
@@ -38,12 +39,13 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
     }
 
     @Override
-    public void onInteraction(){
+    public void onClick(MouseEvent event){
         towerToMove = display.getTower();
         towerToMove.setActive(false);
         ogTowerPosition = towerToMove.getPosition();
         ClickListener.newborn.add(this);
         display.onTowerMove();
+        movePending = true;
     }
 
     @Override
@@ -77,6 +79,11 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
         towerToMove.setActive(true);
         towerToMove = null;
         moveStarted = false;
+        movePending = false;
+        if(destroyCalledDuringMove){
+            destroy();
+            destroyCalledDuringMove = false;
+        }
     }
 
     @Override
@@ -91,6 +98,7 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
 
         moveStartTime = System.currentTimeMillis();
         moveStarted = true;
+        new ConnectingLine(moveLengthMS, display.getRenderingPriority(),towerToMove,whereToPosition).spawn();
         ClickListener.expended.add(this);
     }
 
@@ -98,12 +106,19 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
     public void spawn(){
         super.spawn();
         Tickable.newborn.add(this);
+        destroyCalledDuringMove = false;
     }
 
     @Override
     public void destroy(){
         super.destroy();
-        Tickable.expended.add(this);
+
+        if(movePending) {
+            destroyCalledDuringMove = true;
+        }else{
+            Tickable.expended.add(this);
+            System.out.println("MoveTowerButton removed from tickable");
+        }
     }
 
     @Override

@@ -43,4 +43,8 @@ public class LifetimeEffect implements Comparable<LifetimeEffect>{
         int index2 = ownerStr.lastIndexOf('.') + 1;
         return superStr.substring(index) + " owner: " + ownerStr.substring(index2);
     }
+
+    public void resetSpawntime(){
+        this.spawnTime = System.currentTimeMillis();
+    }
 }

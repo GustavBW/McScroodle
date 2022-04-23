@@ -158,6 +158,11 @@ public class Bullet implements Tickable,Renderable{
     }
 
     @Override
+    public Point2D getDimensions() {
+        return new Point2D(sizeX, sizeY);
+    }
+
+    @Override
     public String toString(){
         String superStr = super.toString();
         int index = superStr.lastIndexOf('.') + 1;

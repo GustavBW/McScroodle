@@ -4,6 +4,7 @@ import gbw.tdg.towerdefensegame.Decimals;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.UI.Screens.InGameScreen;
+import gbw.tdg.towerdefensegame.Updating;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;

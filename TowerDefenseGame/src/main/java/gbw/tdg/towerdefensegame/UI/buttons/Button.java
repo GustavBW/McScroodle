@@ -6,6 +6,7 @@ import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -67,6 +68,9 @@ public class Button implements Clickable, Renderable {
     public void setRimColor(Color color){
         rimColor = color;
     }
+    public void setShouldRenderBackground(boolean state){
+        shouldRenderBackground = state;
+    }
 
     @Override
     public double getRenderingPriority() {
@@ -102,7 +106,11 @@ public class Button implements Clickable, Renderable {
     }
 
     @Override
-    public void onInteraction() {}
+    public void onClick(MouseEvent event) {}
+    @Override
+    public void onPress(MouseEvent event) {}
+    @Override
+    public void onRelease(MouseEvent event) {}
 
     @Override
     public void spawn() {

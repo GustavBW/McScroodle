@@ -3,37 +3,38 @@ package gbw.tdg.towerdefensegame.UI;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
+import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.*;
 
-public class TowerStatDisplay implements Renderable, Tickable, Clickable {
+public class TowerStatDisplay extends Button implements Renderable, Tickable, Clickable {
 
     private double renderingPriority = 57;
     private final RText text;
     private final Tower tower;
     private Color background = new Color(0,0,0,0.5);
     private Point2D position;
-    private double sizeX,sizeY, cornerWidth = 15;
+    private double cornerWidth = 15;
     private GraphicalInventory<AugmentIcon> augmentDisplay;
     private long lastCall;
     private boolean isSpawned = false;
 
     public TowerStatDisplay(Tower t, Point2D position){
+        super(position, Main.canvasSize.getX() * 0.1 - ((Main.canvasSize.getY() * 0.1) / 3),Main.canvasSize.getY() * 0.1);
         this.text = new RText(t.getStats(),
                 position.add(Main.canvasSize.getX() * 0.015,Main.canvasSize.getX() * 0.007),
                 1, Color.WHITESMOKE, Font.font("Impact", Main.canvasSize.getX() * 0.0104));
         this.tower = t;
         this.position = position;
-        this.sizeY = Main.canvasSize.getY() * 0.1;
 
         double posXOfAugmentDisplay = Main.canvasSize.getX() * 0.1 - (sizeY / 3);
-        this.sizeX = Main.canvasSize.getX() * 0.1 - (sizeY / 3);
         this.augmentDisplay = new GraphicalInventory<>(1,sizeX,sizeY,0,position.add(posXOfAugmentDisplay,0),renderingPriority,3);
         augmentDisplay.setBackgroundColor(Color.TRANSPARENT);
     }
@@ -113,11 +114,6 @@ public class TowerStatDisplay implements Renderable, Tickable, Clickable {
         return (pos.getX() >= position.getX() && pos.getX() <= position.getX() + sizeX)
                 &&
                 (pos.getY() >= position.getY() && pos.getY() <= position.getY() + sizeY);
-    }
-
-    @Override
-    public void onInteraction() {
-
     }
 
     @Override

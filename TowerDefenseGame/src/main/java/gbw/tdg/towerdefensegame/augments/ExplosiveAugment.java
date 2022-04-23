@@ -54,8 +54,7 @@ public class ExplosiveAugment extends Augment{
     }
 
     private double getERadius(){
-        double er = baseRangeMultiplier * level * (Main.canvasSize.getX() * (1.00 / 1920));
-        return er;
+        return baseRangeMultiplier * level * (Main.canvasSize.getX() * (1.00 / 1920));
     }
 
     @Override

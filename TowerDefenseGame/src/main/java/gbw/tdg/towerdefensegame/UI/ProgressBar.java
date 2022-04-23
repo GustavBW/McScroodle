@@ -55,6 +55,11 @@ public class ProgressBar implements Renderable {
         sizeY = dim.getY();
     }
 
+    @Override
+    public Point2D getDimensions() {
+        return new Point2D(sizeX, sizeY);
+    }
+
     public Point2D getPosition(){
         return position;
     }

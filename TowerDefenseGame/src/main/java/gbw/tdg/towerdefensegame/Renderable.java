@@ -20,4 +20,5 @@ public interface Renderable extends IGameObject{
     void setPosition(Point2D p);
     void setRenderingPriority(double newPrio);
     void setDimensions(Point2D dim);
+    Point2D getDimensions();
 }

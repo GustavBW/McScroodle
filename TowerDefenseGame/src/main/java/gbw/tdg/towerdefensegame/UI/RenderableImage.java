@@ -58,6 +58,10 @@ public class RenderableImage implements Renderable {
         this.rendPrio = newPrio;
     }
 
+    public void setFixedScaling(boolean state){
+        this.fixedScaling = state;
+    }
+
     @Override
     public void setDimensions(Point2D dim) {
         if(fixedScaling){
@@ -69,8 +73,9 @@ public class RenderableImage implements Renderable {
         }
         this.dim = dim;
     }
-
-    public Point2D getDim(){
+    @Override
+    public Point2D getDimensions(){
         return dim;
     }
+
 }

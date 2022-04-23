@@ -51,7 +51,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
         screenDim = Screen.getPrimary().getBounds();
         System.out.println("Screen dim is: " + screenDim.getWidth() + " | " + screenDim.getHeight());
         canvasSize = new Point2D(screenDim.getWidth(),screenDim.getHeight() -50);
@@ -91,8 +90,10 @@ public class Main extends Application {
         testTower.addAugment(Augment.getSpecific(0,3));
         testTower.spawn();
 
-        scene.setOnMouseClicked(e -> mouseHandler.handle(e));
+        scene.setOnMouseClicked(e -> mouseHandler.onClick(e));
         scene.setOnMouseMoved(e -> mouseHandler.updateMousePos(e));
+        scene.setOnMousePressed(e -> mouseHandler.onPress(e));
+        scene.setOnMouseReleased(e -> mouseHandler.onRelease(e));
         scene.setOnKeyPressed(e -> keyHandler.press(e));
         scene.setOnKeyReleased(e -> keyHandler.release(e));
         isRunning = true;

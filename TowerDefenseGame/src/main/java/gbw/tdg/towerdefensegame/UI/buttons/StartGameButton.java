@@ -4,6 +4,7 @@ import gbw.tdg.towerdefensegame.GameState;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 
 public class StartGameButton extends Button{
 
@@ -11,7 +12,7 @@ public class StartGameButton extends Button{
         super(position, sizeX, sizeY, textUnit,true);
     }
     @Override
-    public void onInteraction(){
+    public void onClick(MouseEvent event){
         Main.onGameStart();
     }
 

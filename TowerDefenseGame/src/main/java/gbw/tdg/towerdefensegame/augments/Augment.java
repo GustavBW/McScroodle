@@ -2,6 +2,10 @@ package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.UI.Menu;
+import gbw.tdg.towerdefensegame.UI.RenderableImage;
+import gbw.tdg.towerdefensegame.UI.UpdatingMenu;
+import gbw.tdg.towerdefensegame.Updating;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.tower.Tower;
@@ -21,10 +25,13 @@ public abstract class Augment implements Cloneable{
     //this will return one of the static Augments which itself uses the protected constructor below.
     //These Augments below are loaded through the Augment.getAugs() method.
 
-    private final static Augment EXPLOSIVE = new ExplosiveAugment(10,0,1);
-    private final static Augment PIERCING = new PiercingAugment(5,1,1);
-    private final static Augment HELLFIRE = new HellfireAugment(3,2,1);
-    private final static Augment ICICLE = new IceAugment(3,3,1);
+    private static List<Augment> contents = new ArrayList<>(List.of(
+            new ExplosiveAugment(10,0,1),
+            new PiercingAugment(5,1,1),
+            new HellfireAugment(3,2,1),
+            new IceAugment(3,3,1),
+            new LightningAugment(10,4,1)
+    ));
 
     protected int level, maxLevel = 3;
     protected Tower tower;
@@ -45,23 +52,21 @@ public abstract class Augment implements Cloneable{
     }
 
     private static Augment getRandomAugment(double value){
-        List<Augment> augs = new ArrayList<>();
-        try {
-            augs.addAll(getAugs());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        List<Augment> augs = getAugs();
+
         int size = augs.size();
         int startAt = Main.random.nextInt(0,size -1);
         Augment foundAug = null;
 
         int i = startAt;
+
         while(foundAug == null){
-            Augment current = augs.get(i % size);
+            Augment current = augs.get(i % size + 1);
 
             for(int j = 1; j <= current.getMaxLevel(); j++) {
                 current = current.getModified(j);
                 double currentWorth = current.getWorth();
+
                 if (currentWorth >= value * 0.7 && currentWorth <= 1.3 * value) {
                     foundAug = current;
                 }
@@ -72,36 +77,17 @@ public abstract class Augment implements Cloneable{
         System.out.println("Looped " + i + " times | startAt: " + startAt + " | size " + size + " | returned: " + TextFormatter.getIsolatedClassName(foundAug));
         return foundAug;
     }
-    private static Augment getSpecificAugment(int type, int level){
-        try {
-            for(Augment a : getAugs()){
-                if(a.getType() == type){
-                    return a.getModified(level);
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static List<Augment> getAugs(){
+        return contents;
     }
-
-    public static List<Augment> getAugs() throws IllegalAccessException {
-        List<Augment> augsFound = new ArrayList<>();
-        Field[] declaredFields = Augment.class.getDeclaredFields();
-        List<Field> staticFields = new ArrayList<>();
-
-        for (Field field : declaredFields) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                staticFields.add(field);
+    private static Augment getSpecificAugment(int type, int level){
+        for(Augment a : getAugs()){
+            if(a.getType() == type){
+                return a.getModified(level);
             }
         }
-        for(Field field : staticFields){
-            Object obj = field.get(new Object());
-            if(obj instanceof Augment){
-                augsFound.add((Augment) obj);
-            }
-        }
-        return augsFound;
+
+        return null;
     }
 
     protected Augment(double value, int type, int level){

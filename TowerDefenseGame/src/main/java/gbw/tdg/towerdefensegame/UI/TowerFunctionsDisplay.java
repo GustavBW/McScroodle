@@ -89,4 +89,9 @@ public class TowerFunctionsDisplay implements Renderable {
     public void setDimensions(Point2D dim) {
         menu.setDimensions(dim);
     }
+
+    @Override
+    public Point2D getDimensions() {
+        return new Point2D(sizeX, sizeY);
+    }
 }

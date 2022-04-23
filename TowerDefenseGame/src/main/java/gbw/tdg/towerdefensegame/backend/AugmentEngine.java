@@ -8,10 +8,9 @@ import java.util.*;
 public class AugmentEngine {
 
     private static AugmentEngine instance;
-    private String root;
-    private File[] contents;
+    private final String root;
     private Image unknownAugment;
-    private Map<String,Image> strImageMap;
+    private final Map<String,Image> strImageMap;
 
     public static AugmentEngine getInstance(String root){
         if(instance == null){
@@ -42,7 +41,7 @@ public class AugmentEngine {
     }
 
     private List<File> getContents(){
-        return new ArrayList<>(List.of(new File(root).listFiles()));
+        return new ArrayList<>(List.of(Objects.requireNonNull(new File(root).listFiles())));
     }
 
     private Image getUnknownAugment(){

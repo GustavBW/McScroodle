@@ -64,8 +64,7 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
     public void trigger(MouseEvent event) {
         if(selectedOffering != null){
             Tower tFound = findTowerOnPos(new Point2D(event.getX(),event.getY()));
-            selectedOffering.getIcon().destroy();
-            boolean success = false;
+            boolean success = false, contains = false;
 
             if(tFound != null){
                 if(tFound.addAugment(selectedOffering.getAugment())){
@@ -73,12 +72,33 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
                 }
             }
 
-            if(!success){
-                storedAugs.add(new AugmentBuyButton(selectedOffering, false,true,true));
-            }
-
             setShopLock(false);
             augmentBought(selectedOffering);
+
+            if(!success){
+                for(AugmentBuyButton aBB : storedAugs.getNonNull()){
+                    if(aBB.getAugment() == selectedOffering.getAugment()){
+                        contains = true;
+                    }
+                }
+
+                if(!contains) {
+                    AugmentBuyButton copy = new AugmentBuyButton(selectedOffering);
+                    copy.setPrice(copy.getAugment().getWorth());
+                    copy.setShowDesc(false);
+                    copy.setShowIcon(true);
+                    storedAugs.add(copy);
+                }else{
+                    selectedOffering.setPrice(selectedOffering.getAugment().getWorth());
+                    selectedOffering.setShowDesc(false);
+                    selectedOffering.setShowIcon(true);
+                    selectedOffering.spawn();
+                }
+
+            }else{
+                selectedOffering.getIcon().destroy();
+            }
+
             selectedOffering = null;
         }
         ClickListener.expended.add(this);
@@ -93,7 +113,7 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
     }
 
     @Override
-    public void childClicked(Clickable child) {
+    public void onChildPress(Clickable child, MouseEvent event) {
         if(child instanceof AugmentBuyButton) {
             setShopLock(true);
             selectedOffering = (AugmentBuyButton) child;
@@ -102,6 +122,16 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
             selectedOffering.getIcon().spawn();
             ClickListener.newborn.add(this);
         }
+    }
+
+    @Override
+    public void onChildClick(Clickable child, MouseEvent event) {
+
+    }
+
+    @Override
+    public void onChildRelease(Clickable child, MouseEvent event) {
+
     }
 
     private void setShopLock(boolean state){
@@ -124,4 +154,5 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
     public void increaseBaseCost(int amount){
         baseCost += amount;
     }
+
 }

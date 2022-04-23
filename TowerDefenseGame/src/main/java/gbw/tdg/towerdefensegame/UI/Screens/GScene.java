@@ -56,4 +56,9 @@ public class GScene implements Renderable {
         sizeX = dim.getX();
         sizeY = dim.getY();
     }
+
+    @Override
+    public Point2D getDimensions() {
+        return new Point2D(sizeX,sizeY);
+    }
 }

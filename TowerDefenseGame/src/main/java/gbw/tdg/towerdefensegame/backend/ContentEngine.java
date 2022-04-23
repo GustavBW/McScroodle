@@ -16,6 +16,7 @@ public class ContentEngine {
         }
         root = root + "/src/main/resources/gbw/tdg/towerdefensegame";
     }
+
     public static AugmentEngine AUGMENTS = AugmentEngine.getInstance(root + "/augments");
 
 }

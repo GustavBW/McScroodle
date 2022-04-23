@@ -1,9 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
 import gbw.tdg.towerdefensegame.UI.buttons.TowerBuyButton;
 
 public class Inventory<T extends IGameObject> {
@@ -63,8 +61,10 @@ public class Inventory<T extends IGameObject> {
     public boolean replace(T obj1, T obj2){
         int index = getIndexOf(obj1);
         if(index != -1){
-            remove(obj1);
-            add(obj2,index);
+            if(this.remove(obj1)) {
+                add(obj2, index);
+            }
+            return true;
         }
         return false;
     }
@@ -76,9 +76,6 @@ public class Inventory<T extends IGameObject> {
             }
         }
         return false;
-    }
-    public List<T> getAll(){
-        return objects;
     }
     public T get(int slot){
         if(slot < slotCount && slot >= 0) {
@@ -96,5 +93,25 @@ public class Inventory<T extends IGameObject> {
             }
         }
         return -1;
+    }
+    public boolean contains(T obj){
+        for(T obj2 : objects){
+            if(obj == obj2){
+                return true;
+            }
+        }
+        return false;
+    }
+    public List<T> getAll(){
+        return new ArrayList<>(objects);
+    }
+    public Collection<T> getNonNull(){
+        Set<T> toReturn = new HashSet<>();
+        for(T obj : objects){
+            if(obj != null){
+                toReturn.add(obj);
+            }
+        }
+        return toReturn;
     }
 }

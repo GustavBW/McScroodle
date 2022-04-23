@@ -7,6 +7,7 @@ import gbw.tdg.towerdefensegame.UI.TowerFunctionsDisplay;
 import gbw.tdg.towerdefensegame.UI.GraphicalInventory;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -37,7 +38,7 @@ public class SetTowerTargetingButton extends Button{
     }
 
     @Override
-    public void onInteraction(){
+    public void onClick(MouseEvent event){
         if(!menuIsSpawned){
             menu.spawn();
             menuIsSpawned = true;

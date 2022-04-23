@@ -6,6 +6,7 @@ import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.util.*;
@@ -13,7 +14,7 @@ import java.util.*;
 public class Tower extends ITower{
 
     private double renderingPriority = 55D, rangeMultiplier = 100;
-    private double sizeX, sizeY, damage = 0.1, atkSpeed = 0.1;
+    private double damage = 0.1, atkSpeed = 0.1;
     private int multishot = 1;
     protected double range = 0.5, attackDelay;
     protected boolean isSelected = false, isActive = true;
@@ -28,12 +29,11 @@ public class Tower extends ITower{
     private final double maxAugments = 3, maxInvocations = 3;
 
     public Tower(int points){
+        super(Point2D.ZERO,40,40);
         double subDivider = 0.01;
         double pointsSubbed = points / subDivider;
 
         this.position = new Point2D(0,0);
-        this.sizeX = 40;
-        this.sizeY = 40;
 
         double allocPoints;
 
@@ -237,7 +237,7 @@ public class Tower extends ITower{
     }
 
     @Override
-    public void onInteraction() {
+    public void onClick(MouseEvent event) {
         if(!isSelected) {
             display.spawn();
         }

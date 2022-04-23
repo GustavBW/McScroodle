@@ -5,6 +5,7 @@ import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.UI.TowerFunctionsDisplay;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -22,7 +23,7 @@ public class DeleteTowerButton extends Button {
     }
 
     @Override
-    public void onInteraction(){
+    public void onClick(MouseEvent event){
         display.onTowerDelete();
     }
 

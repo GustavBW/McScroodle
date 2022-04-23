@@ -103,6 +103,12 @@ public class Coin implements Renderable, Tickable {
     public void setDimensions(Point2D dim) {
         this.radius = dim.getX();
     }
+
+    @Override
+    public Point2D getDimensions() {
+        return new Point2D(radius,0);
+    }
+
     private void onCollected(double percentage){
         Main.alterGoldAmount(value * percentage);
         this.destroy();

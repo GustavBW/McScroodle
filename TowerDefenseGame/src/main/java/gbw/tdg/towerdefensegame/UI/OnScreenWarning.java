@@ -69,6 +69,11 @@ public class OnScreenWarning implements Renderable, Tickable {
 
     @Override
     public void setDimensions(Point2D dim) {
+        text.setFont(Font.font(text.getFont().getFamily(),dim.getX()));
+    }
 
+    @Override
+    public Point2D getDimensions() {
+        return new Point2D(text.getFont().getSize(), 0);
     }
 }

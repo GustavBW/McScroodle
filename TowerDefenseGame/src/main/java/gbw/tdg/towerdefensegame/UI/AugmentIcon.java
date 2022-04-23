@@ -4,6 +4,7 @@ import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 
 import java.util.Arrays;
 
@@ -45,7 +46,17 @@ public class AugmentIcon extends RenderableImage implements Clickable {
     }
 
     @Override
-    public void onInteraction() {
+    public void onClick(MouseEvent event) {
+
+    }
+
+    @Override
+    public void onPress(MouseEvent event) {
+
+    }
+
+    @Override
+    public void onRelease(MouseEvent event) {
 
     }
 

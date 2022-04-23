@@ -75,6 +75,10 @@ public class WaveRoundDisplay implements Renderable, Tickable {
     public void setDimensions(Point2D dim) {
         this.dimensions = dim;
     }
+    @Override
+    public Point2D getDimensions(){
+        return dimensions;
+    }
 
     @Override
     public void tick() {

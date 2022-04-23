@@ -159,7 +159,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         return success;
     }
 
-    private void addObject(T object, int slot){
+    protected void addObject(T object, int slot){
         if(enableAutoSpawn){
             object.spawn();
         }
@@ -257,6 +257,10 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
 
         setObjectPositions();
         setObjectDimensions();
+    }
+    @Override
+    public Point2D getDimensions(){
+        return new Point2D(width,height);
     }
     public void setAutoSpawn(boolean val){enableAutoSpawn = val;}
 

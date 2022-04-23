@@ -3,15 +3,17 @@ package gbw.tdg.towerdefensegame.UI.Screens;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.UI.RText;
+import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.UI.buttons.StartGameButton;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class StartMenuScreen extends GScene {
 
-    private final StartGameButton startGameButton;
+    private final Button startGameButton;
     private final RText titleText;
 
     public StartMenuScreen(){
@@ -22,7 +24,12 @@ public class StartMenuScreen extends GScene {
         Point2D titlePos = new Point2D(Main.canvasSize.getX() * 0.42, Main.canvasSize.getY() * 0.15);
         titleText = new RText("\t\t Σ\nTOWER DEFENCE", titlePos, 5, Color.WHITE, Font.font("Impact", Main.canvasSize.getX() * 0.0537));
 
-        this.startGameButton = new StartGameButton(sGBPos, Main.canvasSize.getX() * 0.2,Main.canvasSize.getY() * 0.1,sGBText);
+        this.startGameButton = new Button(sGBPos, Main.canvasSize.getX() * 0.2,Main.canvasSize.getY() * 0.1,sGBText){
+            @Override
+            public void onClick(MouseEvent event){
+                Main.onGameStart();
+            }
+        };
         startGameButton.setPosition(sGBPos.subtract(startGameButton.getDimensions().multiply(0.5)));
     }
 

@@ -67,4 +67,9 @@ public abstract class VFX implements Renderable, Tickable {
         this.dim = dim;
     }
 
+    @Override
+    public Point2D getDimensions(){
+        return null;
+    }
+
 }

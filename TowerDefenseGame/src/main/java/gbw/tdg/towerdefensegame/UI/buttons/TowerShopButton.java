@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 import gbw.tdg.towerdefensegame.UI.RText;
 import gbw.tdg.towerdefensegame.UI.TowerShop;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 
 public class TowerShopButton extends Button{
 
@@ -15,7 +16,7 @@ public class TowerShopButton extends Button{
     }
 
     @Override
-    public void onInteraction(){
+    public void onClick(MouseEvent event){
         toggle = !toggle;
         if(toggle){
             shop.spawn();

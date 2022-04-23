@@ -59,4 +59,9 @@ public class TowerRangeIndicator implements Renderable {
     public void setDimensions(Point2D dim) {
         this.range = dim.getX();
     }
+
+    @Override
+    public Point2D getDimensions() {
+        return new Point2D(range,0);
+    }
 }

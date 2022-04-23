@@ -7,6 +7,7 @@ import gbw.tdg.towerdefensegame.UI.GraphicalInventory;
 import gbw.tdg.towerdefensegame.UI.RText;
 import gbw.tdg.towerdefensegame.UI.Screens.InGameScreen;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 
 public class AugmentShopButton extends Button{
@@ -22,7 +23,7 @@ public class AugmentShopButton extends Button{
     }
 
     @Override
-    public void onInteraction(){
+    public void onClick(MouseEvent event){
         toggle = !toggle;
 
         if(toggle){

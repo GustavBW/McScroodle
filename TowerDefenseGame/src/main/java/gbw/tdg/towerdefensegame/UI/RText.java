@@ -45,8 +45,12 @@ public class RText {
     public void setText(String s){
         text = s;
     }
-    private void setFont(Font font){
+    public RText setFont(Font font){
         this.font = font;
+        return this;
+    }
+    public Font getFont(){
+        return font;
     }
     public String getText(){return text;}
     public Point2D getPosition(){return position;}

@@ -10,10 +10,11 @@ import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class AugmentBuyButton extends Button{
+public class AugmentBuyButton extends BounceBackButton{
 
     private final Augment augment;
     private final IClickableOwner owner;
@@ -23,11 +24,11 @@ public class AugmentBuyButton extends Button{
     private Point2D iconOffset;
 
     public AugmentBuyButton(Point2D position, double sizeX, double sizeY, RText textUnit, Augment augment, IClickableOwner owner, double price) {
-        super(position, sizeX, sizeY, textUnit,true);
+        super(position, sizeX, sizeY, textUnit,null);
         super.setBackgroundColor(new Color(0,0,0,0.5));
         this.augment = augment;
         augment.getIcon().setDimensions(new Point2D(sizeY - (2 * rimOffset),sizeY - (2 * rimOffset)));
-        this.iconOffset = new Point2D((position.getX() + sizeX) - (rimOffset + augment.getIcon().getDim().getX()), position.getY() + rimOffset);
+        this.iconOffset = new Point2D((sizeX) - (rimOffset + augment.getIcon().getDimensions().getX()), rimOffset);
         this.owner = owner;
         this.ogPrice = price;
         this.price = Decimals.toXDecimalPlaces(price + augment.getWorth(),2);
@@ -38,16 +39,8 @@ public class AugmentBuyButton extends Button{
     public AugmentBuyButton(RText textUnit, Augment augment, IClickableOwner owner, int price){
         this(new Point2D(0,0),0,0,textUnit,augment,owner,price);
     }
-    public AugmentBuyButton(AugmentBuyButton aBB, boolean showDesc, boolean augWorthAsPrice, boolean showIcon){
+    public AugmentBuyButton(AugmentBuyButton aBB){
         this(aBB.getPosition(),aBB.getDimensions().getX(),aBB.getDimensions().getY(),aBB.getText(),aBB.getAugment(),aBB.getOwner(),aBB.getOgPrice());
-        this.showDesc = showDesc;
-        this.showIcon = showIcon;
-        if(showIcon){
-            this.setPosition(aBB.getPosition());
-        }
-        if(augWorthAsPrice) {
-            this.price = augment.getWorth();
-        }
     }
 
     @Override
@@ -93,18 +86,36 @@ public class AugmentBuyButton extends Button{
     }
 
     @Override
-    public void setPosition(Point2D p) {
-        position = p;
-        augment.getIcon().setPosition(p.add(iconOffset));
-        super.text.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.025)));
-        descText.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.045)));
+    public void setRenderingPriority(double newPrio){
+        if(showIcon){
+            getIcon().setRenderingPriority(newPrio+.1);
+        }
+        super.setRenderingPriority(newPrio);
     }
 
     @Override
-    public void onInteraction(){
+    public void setPosition(Point2D p) {
+        position = p;
+        super.text.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.025)));
+        descText.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.045)));
+        if(showIcon){
+            getIcon().setPosition(p.add(iconOffset));
+        }
+    }
+
+    @Override
+    public void setDimensions(Point2D dim){
+        super.setDimensions(dim);
+        if(showIcon){
+            getIcon().setDimensions(dim.subtract(rimOffset,rimOffset));
+        }
+    }
+
+    @Override
+    public void onClick(MouseEvent event){
         if(Main.getSouls() >= price) {
             Main.alterSoulsAmount(-price);
-            owner.childClicked(this);
+            owner.onChildPress(this,event);
         }else{
             new OnScreenWarning("Not enough Souls!", Main.canvasSize.multiply(0.5), 3).spawn();
         }

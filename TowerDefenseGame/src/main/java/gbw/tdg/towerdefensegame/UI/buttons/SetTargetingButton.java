@@ -6,6 +6,7 @@ import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -24,7 +25,7 @@ public class SetTargetingButton extends Button {
     }
 
     @Override
-    public void onInteraction(){
+    public void onClick(MouseEvent event){
         tower.setTargetingType(type);
     }
 

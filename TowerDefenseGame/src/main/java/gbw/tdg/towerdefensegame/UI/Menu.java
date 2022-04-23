@@ -177,4 +177,9 @@ public class Menu<T extends Renderable> implements Renderable{
         this.dim = dim;
         setChildrenSize();
     }
+
+    @Override
+    public Point2D getDimensions() {
+        return dim;
+    }
 }
