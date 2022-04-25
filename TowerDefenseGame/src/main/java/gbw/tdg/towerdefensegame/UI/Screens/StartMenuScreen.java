@@ -24,7 +24,7 @@ public class StartMenuScreen extends GScene {
         Point2D titlePos = new Point2D(Main.canvasSize.getX() * 0.42, Main.canvasSize.getY() * 0.15);
         titleText = new RText("\t\t Σ\nTOWER DEFENCE", titlePos, 5, Color.WHITE, Font.font("Impact", Main.canvasSize.getX() * 0.0537));
 
-        this.startGameButton = new Button(sGBPos, Main.canvasSize.getX() * 0.2,Main.canvasSize.getY() * 0.1,sGBText){
+        this.startGameButton = new Button(sGBPos, Main.canvasSize.getX() * 0.2,Main.canvasSize.getY() * 0.1,sGBText,true){
             @Override
             public void onClick(MouseEvent event){
                 Main.onGameStart();

@@ -8,7 +8,8 @@ import javafx.scene.paint.Color;
 
 public abstract class VFX implements Renderable, Tickable {
 
-    public static Color defaultColor = new Color(1,1,0.5,0.5);
+    public static Color DEFAULT_COLOR = new Color(1,1,0.5,0.5);
+    public static double DEFAULT_PRIO = 69;
     private long killTimeStamp;
     private int lifetime = 1;
     private double rendPrio = 50;

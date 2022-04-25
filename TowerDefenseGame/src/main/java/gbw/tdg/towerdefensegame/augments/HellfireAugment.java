@@ -27,4 +27,9 @@ public class HellfireAugment extends Augment{
         return "Blazing bullets dealing " + Decimals.toXDecimalPlaces(100 * 0.2 * super.level,0)
                 + "% of bullet damage + " + super.level + " over " + (durationMS / 1_000) + " seconds";
     }
+
+    @Override
+    public Augment copy() {
+        return new HellfireAugment(this.getValue(), this.getType(), this.getLevel());
+    }
 }

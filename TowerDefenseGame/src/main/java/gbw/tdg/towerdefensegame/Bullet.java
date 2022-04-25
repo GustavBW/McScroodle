@@ -17,10 +17,10 @@ public class Bullet implements Tickable,Renderable{
     private double renderingPriority = 65D;
     private Point2D position, velocity;
     private double sizeX = 10,sizeY = 10;
-    private final double spawnTime, lifeTime = 10 * 1_000;
+    private double spawnTime, lifeTime = 10 * 1_000;
     protected double speed = 40, damage;
-    protected IEnemy target;
-    protected List<IEnemy> hasAlreadyHit = new ArrayList<>();
+    protected Enemy target;
+    protected List<Enemy> hasAlreadyHit = new ArrayList<>();
     private final List<Augment> onHitAugments = new ArrayList<>();
     private final List<Augment> inFlightAugments = new ArrayList<>();
     private final List<Augment> onSpawnAugments = new ArrayList<>();
@@ -28,7 +28,7 @@ public class Bullet implements Tickable,Renderable{
     private boolean targeted;
     private int piercingLevel = 1;
 
-    public Bullet(Point2D position, IEnemy target, ITower owner){
+    public Bullet(Point2D position, Enemy target, ITower owner){
         this.position = position;
         this.velocity = new Point2D(0,0);
         this.target = target;
@@ -38,13 +38,14 @@ public class Bullet implements Tickable,Renderable{
     }
 
     public Bullet(Point2D position, Point2D velocity, ITower owner){
-        this(position, (IEnemy) null,owner);
+        this(position, (Enemy) null,owner);
         this.velocity = velocity;
     }
 
     public void tick(){
         if(targeted) {
             velocity = target.getPosition().subtract(position).normalize();
+            targeted = target.isAlive();
         }
 
         position = position.add(velocity.multiply(speed));
@@ -65,11 +66,11 @@ public class Bullet implements Tickable,Renderable{
     }
 
     private void checkForCollision() {
-        List<IEnemy> collisionsFound = new ArrayList<>();
+        List<Enemy> collisionsFound = new ArrayList<>();
 
         for(IEnemy e : IEnemy.active){
             if(e.getPosition().distance(position) < e.getSize()){
-                collisionsFound.add(e);
+                collisionsFound.add((Enemy) e);
             }
         }
 
@@ -77,7 +78,7 @@ public class Bullet implements Tickable,Renderable{
 
             collisionsFound.removeAll(hasAlreadyHit);
             collisionsFound.sort(Comparator.comparingDouble(o -> o.getPosition().distance(position)));
-            for(IEnemy e : collisionsFound){
+            for(Enemy e : collisionsFound){
                 onCollision(e);
             }
 
@@ -98,7 +99,7 @@ public class Bullet implements Tickable,Renderable{
         return onHitAugments;
     }
     public void setDamage(double value){this.damage = value;}
-    protected void onCollision(IEnemy enemyHit){
+    protected void onCollision(Enemy enemyHit){
         enemyHit.onHitByBullet(this,!onHitAugments.isEmpty());
         hasAlreadyHit.add(enemyHit);
         piercingLevel--;

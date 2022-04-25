@@ -117,7 +117,6 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
             destroyCalledDuringMove = true;
         }else{
             Tickable.expended.add(this);
-            System.out.println("MoveTowerButton removed from tickable");
         }
     }
 

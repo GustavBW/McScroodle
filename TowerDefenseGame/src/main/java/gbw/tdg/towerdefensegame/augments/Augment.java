@@ -2,10 +2,6 @@ package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.UI.Menu;
-import gbw.tdg.towerdefensegame.UI.RenderableImage;
-import gbw.tdg.towerdefensegame.UI.UpdatingMenu;
-import gbw.tdg.towerdefensegame.Updating;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.tower.Tower;
@@ -14,23 +10,22 @@ import gbw.tdg.towerdefensegame.enemies.Enemy;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Augment implements Cloneable{
+public abstract class Augment implements Comparable<Augment>, BounceReciever<Enemy,Bullet>{
 
     //Creating new augments (read: instantiating) is done through calling Augment.getRandom(double) or Augment.getSpecific(int).
     //this will return one of the static Augments which itself uses the protected constructor below.
     //These Augments below are loaded through the Augment.getAugs() method.
 
-    private static List<Augment> contents = new ArrayList<>(List.of(
+    private static final List<Augment> contents = new ArrayList<>(List.of(
             new ExplosiveAugment(10,0,1),
             new PiercingAugment(5,1,1),
             new HellfireAugment(3,2,1),
             new IceAugment(3,3,1),
-            new LightningAugment(10,4,1)
+            new ChainLightningAugment(10,4,1),
+            new LightningAugment(8,5,1)
     ));
 
     protected int level, maxLevel = 3;
@@ -55,27 +50,30 @@ public abstract class Augment implements Cloneable{
         List<Augment> augs = getAugs();
 
         int size = augs.size();
-        int startAt = Main.random.nextInt(0,size -1);
+        int startAt = Main.random.nextInt(0,size);
         Augment foundAug = null;
 
         int i = startAt;
 
         while(foundAug == null){
-            Augment current = augs.get(i % size + 1);
-
+            Augment current = augs.get(i % size);
+            //System.out.println("Augment.getRandomAugment() considering \t" + current.baseStats());
             for(int j = 1; j <= current.getMaxLevel(); j++) {
                 current = current.getModified(j);
                 double currentWorth = current.getWorth();
 
-                if (currentWorth >= value * 0.7 && currentWorth <= 1.3 * value) {
+                if (isValInRange(value, currentWorth * 0.7, currentWorth * 1.3)) {
                     foundAug = current;
                 }
             }
 
             i++;
         }
-        System.out.println("Looped " + i + " times | startAt: " + startAt + " | size " + size + " | returned: " + TextFormatter.getIsolatedClassName(foundAug));
+        //System.out.println("Augment.getRandomAugment() chose:\t\t" + foundAug.baseStats());
         return foundAug;
+    }
+    private static boolean isValInRange(double val, double min, double max){
+        return val >= min && val <= max;
     }
     public static List<Augment> getAugs(){
         return contents;
@@ -129,7 +127,7 @@ public abstract class Augment implements Cloneable{
         }
         return success;
     }
-    public void triggerEffects(Enemy enemyHit, Bullet bullet) {}
+    public abstract void triggerEffects(Enemy enemyHit, Bullet bullet);
 
     public int getType(){
         return type;
@@ -150,6 +148,11 @@ public abstract class Augment implements Cloneable{
     }
     public String getDesc(){
         return "Unkown Augment which powers may become the subject of legend";
+    }
+    public String getLongDesc(){
+        return "Lorem Ipsum Wingardium... Fuck me can't remember the damn thing. Well, having a nice day? Don't worry 'bout this, "
+                + " some dev clearly messed up and his farther will hear about this. It's just a default placeholder, nothing "
+                + " to worry about. Nothing at all. The game wont crash. The CPU isn't on fire. We aren't in danger. Everything is well";
     }
     public String getName(){
         String base = this.toString();
@@ -172,25 +175,23 @@ public abstract class Augment implements Cloneable{
     public boolean appliesOnHit(){
         return appliesOnHit;
     }
+    @Override
+    public void bounce(Enemy e, Bullet b){}
 
     private void setLevel(int newLevel){
         this.level = newLevel;
     }
+    public String baseStats(){
+        return TextFormatter.getIsolatedClassName(this) + " val " + getValue() + " level " + getLevel() + " worth " + getWorth();
+    }
     public Augment getModified(int level){
-        Augment newAug = this.clone();
+        Augment newAug = this.copy();
         newAug.setLevel(Math.min(level, this.maxLevel));
         return newAug;
     }
 
-    @Override
-    public Augment clone(){
-        try {
-            return (Augment) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    public abstract Augment copy();
+
     @Override
     public String toString(){
         String superStr = super.toString();
@@ -199,5 +200,10 @@ public abstract class Augment implements Cloneable{
         String ownerStr = tower == null ? "null" : tower.toString();
         int index2 = tower == null ? 0 : ownerStr.lastIndexOf('.') + 1;
         return superStr.substring(index) + " owner: " + ownerStr.substring(index2);
+    }
+
+    @Override
+    public int compareTo(Augment a){
+        return Integer.compare(this.id,a.getId());
     }
 }

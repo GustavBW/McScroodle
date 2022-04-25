@@ -26,4 +26,5 @@ public abstract class IEnemy extends Button implements Renderable {
     public double getMvspeed(){return 0;}
     public double getSize(){return 0;}
     public void onHitByBullet(Bullet b, boolean onHit){}
+
 }

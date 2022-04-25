@@ -153,6 +153,9 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
         Main.HP--;
         destroy();
     }
+    public boolean isAlive(){
+        return alive;
+    }
     @Override
     public void spawn() {
         Clickable.newborn.add(this);

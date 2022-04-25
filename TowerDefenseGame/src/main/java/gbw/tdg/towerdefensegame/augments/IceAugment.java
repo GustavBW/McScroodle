@@ -12,7 +12,7 @@ public class IceAugment extends Augment {
     private double slowness;
     private LifetimeEffect currentEffect;
 
-    public IceAugment(int value, int type, int level) {
+    public IceAugment(double value, int type, int level) {
         super(value,type,level);
         this.slowness = Decimals.toXDecimalPlaces(1 - (0.2 * level), 2);
     }
@@ -31,5 +31,10 @@ public class IceAugment extends Augment {
         int lifetime = currentEffect == null ? super.level : (int) (currentEffect.getLifetimeMS() / 1000);
         slowness = Decimals.toXDecimalPlaces(1 - (0.2 * level), 2);
         return "Slows enemies down by " + (100 - slowness * 100) + "% for " + lifetime + " seconds";
+    }
+
+    @Override
+    public Augment copy() {
+        return new IceAugment(this.getValue(), this.getType(), this.getLevel());
     }
 }

@@ -62,4 +62,9 @@ public class ExplosiveAugment extends Augment{
         return "Bullets explode in a " + Decimals.toXDecimalPlaces(getERadius(),0) + " unit radius.";
     }
 
+    @Override
+    public Augment copy() {
+        return new ExplosiveAugment(this.getValue(), this.getType(), this.getLevel());
+    }
+
 }

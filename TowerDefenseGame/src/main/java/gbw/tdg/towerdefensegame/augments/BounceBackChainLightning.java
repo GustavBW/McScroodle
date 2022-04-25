@@ -4,50 +4,43 @@ import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.UI.vfx.CircleVFX;
 import gbw.tdg.towerdefensegame.UI.vfx.ConnectingLine;
+import gbw.tdg.towerdefensegame.UI.vfx.VFX;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
-import javafx.geometry.Point2D;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class BounceBackLightning implements Tickable {
+public class BounceBackChainLightning extends Bouncer<Enemy,Bullet> implements Tickable {
 
-    private double searchRange,rendPrio;
-    private int maxJumps, jumpDelayMS = 100, jumps;
-    private long lastCall;
-    private IEnemy currentEnemy, previousEnemy;
+    private double searchRange;
+    private int maxJumps, jumps;
+    private IEnemy currentEnemy;
     private final Set<IEnemy> enemiesHit = new HashSet<>();
-    private final LightningAugment sourceAug;
     private final Bullet sourceBullet;
 
-    public BounceBackLightning(Enemy start, double searchRange, int maxJumps, LightningAugment sourceAug, Bullet sourceBullet){
-        this.rendPrio = 70;
+    public BounceBackChainLightning(Enemy start, double searchRange, int maxJumps, ChainLightningAugment sourceAug, Bullet sourceBullet){
+        super(sourceAug,start,sourceBullet);
         currentEnemy = start;
         this.searchRange = searchRange;
         this.maxJumps = maxJumps;
-        this.sourceAug = sourceAug;
         this.sourceBullet = sourceBullet;
     }
 
     @Override
     public void tick() {
-        if(System.currentTimeMillis() >= lastCall + jumpDelayMS){
-            IEnemy enemyStruck = filter(findInRange());
 
-            if(enemyStruck != null){
-                enemiesHit.add(enemyStruck);
-                previousEnemy = currentEnemy;
-                currentEnemy = enemyStruck;
-                sourceAug.onEnemyHitByLightning((Enemy) currentEnemy,sourceBullet);
-                new ConnectingLine(1_000,70,previousEnemy,currentEnemy).spawn();
-                new CircleVFX(3000,100,currentEnemy.getPosition(),searchRange);
-                jumps++;
-            }else{
-                destroy();
-            }
+        IEnemy enemyStruck = filter(findInRange());
 
-            lastCall = System.currentTimeMillis();
+        if(enemyStruck != null){
+            enemiesHit.add(enemyStruck);
+            IEnemy previousEnemy = currentEnemy;
+            currentEnemy = enemyStruck;
+            trigger((Enemy) currentEnemy,sourceBullet);
+            new ConnectingLine(1_000, VFX.DEFAULT_PRIO, previousEnemy,currentEnemy).spawn();
+            jumps++;
+        }else{
+            destroy();
         }
 
         if(jumps >= maxJumps){

@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame.tower;
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
 import gbw.tdg.towerdefensegame.augments.Augment;
+import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -63,11 +64,11 @@ public class Tower extends ITower{
 
     public void tick(){
         if(isActive){
-            Set<IEnemy> targets = findEnemiesInRange();
+            Set<Enemy> targets = findEnemiesInRange();
 
             if(lastCall + attackDelay < System.nanoTime() && !targets.isEmpty()){
 
-                List<IEnemy> targetsPrioritized = findTargets(targets);
+                List<Enemy> targetsPrioritized = findTargets(targets);
 
                 for (int i = 0; i < multishot && i < targetsPrioritized.size(); i++) {
                     attack(targetsPrioritized.get(i));
@@ -161,9 +162,9 @@ public class Tower extends ITower{
         display.setRenderingPriority(newPrio);
     }
 
-    private Set<IEnemy> findEnemiesInRange(){
+    private Set<Enemy> findEnemiesInRange(){
         Point2D origin = new Point2D(position.getX() + (sizeX * 0.5), position.getY() + (sizeY * 0.5));
-        Set<IEnemy> enemiesFound = new HashSet<>();
+        Set<Enemy> enemiesFound = new HashSet<>();
 
         for(IEnemy e : IEnemy.active){
             double distX = Math.pow(e.getPosition().getX() - origin.getX(), 2);
@@ -171,7 +172,7 @@ public class Tower extends ITower{
             double distance = Math.sqrt(distX + distY);
 
             if(distance <= getRange()){
-                enemiesFound.add(e);
+                enemiesFound.add((Enemy) e);
             }
 
         }
@@ -179,9 +180,9 @@ public class Tower extends ITower{
         return enemiesFound;
     }
 
-    private List<IEnemy> findTargets(Set<IEnemy> set){
+    private List<Enemy> findTargets(Set<Enemy> set){
 
-        List<IEnemy> list = new LinkedList<>(set);
+        List<Enemy> list = new LinkedList<>(set);
 
         if(!list.isEmpty()) {
 
@@ -207,7 +208,7 @@ public class Tower extends ITower{
         this.targetingType = type;
     }
 
-    private void attack(IEnemy target){
+    private void attack(Enemy target){
         Bullet b = new AugmentedBullet(position.add(sizeX*0.5,sizeY*0.5),target,this);
         for(Augment a : augments){
             a.applyToBullet(b);
