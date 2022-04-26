@@ -1,7 +1,7 @@
 package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
-import gbw.tdg.towerdefensegame.Decimals;
+import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.UI.vfx.CircleVFX;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
@@ -14,19 +14,11 @@ public class ExplosiveAugment extends Augment{
 
     private double baseRangeMultiplier = 20;
 
-    public ExplosiveAugment(double value, int type, int level){
-        super(value,type,level);
+    public ExplosiveAugment(double value, int type, int level,int maxLevel){
+        super(value,type,level,maxLevel);
         needsToNotHaveRequirement = true;
         appliesOnHit = true;
         requirement = type;
-    }
-
-    @Override
-    public Augment getModified(int level){
-        needsToNotHaveRequirement = true;
-        appliesOnHit = true;
-        requirement = type;
-        return super.getModified(level);
     }
 
     @Override
@@ -54,7 +46,7 @@ public class ExplosiveAugment extends Augment{
     }
 
     private double getERadius(){
-        return baseRangeMultiplier * level * (Main.canvasSize.getX() * (1.00 / 1920));
+        return baseRangeMultiplier * getLevel() * (Main.canvasSize.getX() * (1.00 / 1920));
     }
 
     @Override
@@ -64,7 +56,7 @@ public class ExplosiveAugment extends Augment{
 
     @Override
     public Augment copy() {
-        return new ExplosiveAugment(this.getValue(), this.getType(), this.getLevel());
+        return new ExplosiveAugment(this.getValue(), this.getType(), this.getLevel(),this.getMaxLevel());
     }
 
 }

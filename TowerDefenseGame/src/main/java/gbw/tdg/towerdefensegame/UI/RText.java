@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Main;
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -13,9 +14,10 @@ public class RText {
     public static final RText EMPTY = new RText("",new Point2D(0,0),0,Color.BLACK,Font.font("Verdana", 15));
     private String text;
     protected Point2D position;
-    private final double dropShadowOffset;
+    private double dropShadowOffset;
     protected Color textColor;
     protected Font font;
+    private double defaulWidth;
     protected Color dropShadowColor;
 
     public RText(String text, Point2D position, double dropShadowOffset, Color textColor, Font font){
@@ -24,6 +26,7 @@ public class RText {
         this.dropShadowOffset = dropShadowOffset;
         this.textColor = textColor;
         this.font = font;
+        this.defaulWidth = getDefaulWidth();
         this.position = this.position.subtract(font.getSize() * 1.1,(-font.getSize() / 2) * 0.9);
         dropShadowColor = new Color(0,0,0,1);
     }
@@ -35,19 +38,29 @@ public class RText {
     public void render(GraphicsContext gc){
         gc.setFont(font);
         gc.setFill(dropShadowColor);
-        gc.fillText(text, position.getX() + dropShadowOffset, position.getY() + dropShadowOffset);
+        gc.fillText(text, position.getX() + dropShadowOffset, position.getY() + dropShadowOffset,  defaulWidth);
 
         gc.setFill(textColor);
-        gc.fillText(text, position.getX(), position.getY());
+        gc.fillText(text, position.getX(), position.getY(),defaulWidth);
 
     }
 
+    private double getDefaulWidth(){
+        double d = font.getSize() * text.length();
+        return d <= 0 ? Main.canvasSize.getX() : d;
+    }
     public void setText(String s){
         text = s;
+        defaulWidth = getDefaulWidth();
     }
+
     public RText setFont(Font font){
         this.font = font;
+        defaulWidth = getDefaulWidth();
         return this;
+    }
+    public void setMaxTextWidth(double width){
+        defaulWidth = width;
     }
     public Font getFont(){
         return font;
@@ -57,6 +70,15 @@ public class RText {
     public void setPosition(Point2D pos){position = pos;}
     public double getSize(){
         return font.getSize();
+    }
+    public double getDropShadowOffset(){
+        return dropShadowOffset;
+    }
+    public void setDropShadowOffset(double offset){
+        this.dropShadowOffset = offset;
+    }
+    public void setDropShadowColor(Color color){
+        this.dropShadowColor = color;
     }
 
 }

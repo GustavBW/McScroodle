@@ -42,14 +42,15 @@ public class Inventory<T extends IGameObject> {
     public boolean add(T newObject){
         for(int i = 0; i < slotCount; i++){
             if(objects.get(i) == null){
-                objects.set(i,newObject);
-                return true;
+                return this.add(newObject,i);
             }
         }
         return false;
     }
 
     public boolean add(T newObject, int slot){
+        if(newObject == null){return false;}
+
         if(slot < slotCount && slot >= 0){
             if(objects.get(slot) == null){
                 objects.set(slot,newObject);
@@ -62,9 +63,8 @@ public class Inventory<T extends IGameObject> {
         int index = getIndexOf(obj1);
         if(index != -1){
             if(this.remove(obj1)) {
-                add(obj2, index);
+                return add(obj2, index);
             }
-            return true;
         }
         return false;
     }

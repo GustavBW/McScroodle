@@ -20,8 +20,5 @@ public abstract class ITower extends Button implements Clickable, Renderable, Ti
         super(position, sizeX, sizeY, RText.EMPTY, false);
     }
 
-    public abstract void applyDamageBuff(SupportTowerBuff buff);
-    public abstract void applyAtkSpeedBuff(SupportTowerBuff buff);
-
     public abstract double getDamage();
 }

@@ -3,14 +3,12 @@ package gbw.tdg.towerdefensegame.backend;
 import javafx.scene.image.Image;
 
 import java.io.File;
-import java.util.*;
 
 public class AugmentEngine {
 
     private static AugmentEngine instance;
-    private final String root;
-    private Image unknownAugment;
-    private final Map<String,Image> strImageMap;
+    private File unknownAugmentFile;
+    private final FileMaster9000 fm9;
 
     public static AugmentEngine getInstance(String root){
         if(instance == null){
@@ -20,46 +18,17 @@ public class AugmentEngine {
     }
 
     private AugmentEngine(String root){
-        this.root = root;
-        this.strImageMap = new HashMap<>();
+        this.fm9 = new FileMaster9000(root);
     }
 
-    public Image getIcon(String request){
-        String name = request.toLowerCase();
-        if(strImageMap.get(name) != null){
-            return strImageMap.get(name);
+    public Image getImage(String request){
+        return new Image(fm9.requestOrDefault(request,getUnknownAugment()).toURI().toString());
+    }
+
+    private File getUnknownAugment(){
+        if(unknownAugmentFile == null){
+            unknownAugmentFile = fm9.request("unknownAugment");
         }
-
-        for(File f : getContents()){
-            if(isolateName(f).equalsIgnoreCase(name)){
-                strImageMap.put(name, new Image(f.toURI().toString()));
-                return strImageMap.get(name);
-            }
-        }
-
-        return getUnknownAugment();
+        return unknownAugmentFile;
     }
-
-    private List<File> getContents(){
-        return new ArrayList<>(List.of(Objects.requireNonNull(new File(root).listFiles())));
-    }
-
-    private Image getUnknownAugment(){
-        if(unknownAugment == null){
-            for(File f : getContents()){
-                if(isolateName(f).equalsIgnoreCase("unknownAugment")){
-                    unknownAugment = new Image(f.toURI().toString());
-                }
-            }
-        }
-        return unknownAugment;
-    }
-
-    private String isolateName(File f){
-        String fName = f.toString();
-        int indexEnd = fName.lastIndexOf('.');
-        int indexStart = fName.lastIndexOf('\\') + 1;
-       return fName.substring(indexStart,indexEnd).toLowerCase();
-    }
-
 }

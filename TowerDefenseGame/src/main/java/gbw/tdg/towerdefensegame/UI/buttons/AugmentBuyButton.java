@@ -1,11 +1,8 @@
 package gbw.tdg.towerdefensegame.UI.buttons;
 
-import gbw.tdg.towerdefensegame.Decimals;
+import gbw.tdg.towerdefensegame.UI.*;
+import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.UI.AugmentIcon;
-import gbw.tdg.towerdefensegame.UI.IClickableOwner;
-import gbw.tdg.towerdefensegame.UI.OnScreenWarning;
-import gbw.tdg.towerdefensegame.UI.RText;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import javafx.geometry.Point2D;
@@ -81,7 +78,7 @@ public class AugmentBuyButton extends BounceBackButton{
     public void setShowIcon(boolean state){
         showIcon = state;
     }
-    public AugmentIcon getIcon(){
+    public ClickableIcon getIcon(){
         return augment.getIcon();
     }
 

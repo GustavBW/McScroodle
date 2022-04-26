@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame;
 import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.backend.ContentEngine;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import gbw.tdg.towerdefensegame.handlers.*;
 import gbw.tdg.towerdefensegame.tower.ITower;
@@ -28,6 +29,7 @@ public class Main extends Application {
     private static Main instance;
     public static RenderHandler renderHandler = new RenderHandler();
     public static Point2D canvasSize = new Point2D(1500,1000);
+    public static Point2D scale = Point2D.ZERO;
     public static Random random = new Random(System.currentTimeMillis());
     private Canvas canvas;
     private Stage mainStage;
@@ -54,6 +56,10 @@ public class Main extends Application {
         screenDim = Screen.getPrimary().getBounds();
         System.out.println("Screen dim is: " + screenDim.getWidth() + " | " + screenDim.getHeight());
         canvasSize = new Point2D(screenDim.getWidth(),screenDim.getHeight() -50);
+        scale = new Point2D(
+                canvasSize.getX() / 3840,
+                canvasSize.getY() / 2160
+        );
         mainStage = stage;
         BorderPane bp = new BorderPane();
 
@@ -86,7 +92,7 @@ public class Main extends Application {
         uiController.spawn();
         setState(GameState.START_MENU);
 
-        Tower testTower = new Tower(canvasSize.multiply(0.5),0,0.3,100000,1);
+        Tower testTower = new Tower(canvasSize.multiply(0.5),0,0.3,1000,1);
         testTower.spawn();
 
         scene.setOnMouseClicked(e -> mouseHandler.onClick(e));

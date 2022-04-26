@@ -1,6 +1,5 @@
 package gbw.tdg.towerdefensegame.UI.buttons;
 
-import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.UI.RText;
@@ -8,35 +7,55 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
-public class Button implements Clickable, Renderable {
+public abstract class Button implements Clickable, Renderable {
 
     public static final Point2D STANDARD_TEXT_OFFSET = new Point2D(1,1);
     protected double renderingPriority = 85D, rimOffset = 5;
     protected Point2D position;
     protected double sizeX, sizeY;
     protected final RText text;
-    protected boolean disabled, shouldRenderBackground;
+    protected boolean disabled, shouldRenderBackground,isSpawned = false;
     protected Color rimColor;
     protected Color enabledColor = new Color(1,1,1,1);
     protected Color disabledColor = new Color(0,0,0,0.5);
     protected Color backgroundColor = enabledColor;
+    private Clickable root;
 
-    public Button(Point2D position, double sizeX, double sizeY, RText textUnit, boolean shouldRenderBackground){
+    public Button(Button b) {
+        this.renderingPriority = b.getRenderingPriority();
+        this.rimOffset = b.getRimOffset();
+        this.position = b.getPosition();
+        this.sizeX = b.getDimensions().getX();
+        this.sizeY = b.getDimensions().getY();
+        this.text = b.getText();
+        this.disabled = b.isDisabled();
+        this.shouldRenderBackground = b.rendersBackground();
+        this.rimColor = b.getRimColor();
+        this.enabledColor = b.getEnabledColor();
+        this.disabledColor = b.getDisabledColor();
+        this.backgroundColor = b.getBackgroundColor();
+        this.root = b.getRoot();
+        this.isSpawned = b.isSpawned();
+    }
+
+    public Button(Point2D position, double sizeX, double sizeY, RText textUnit, Clickable root, boolean shouldRenderBackground){
         this.position = position;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.root = root;
         this.text = textUnit;
         this.shouldRenderBackground = shouldRenderBackground;
         rimColor = new Color(1,1,1,1);
     }
-
+    public Button(Point2D position, double sizeX, double sizeY, RText textUnit, boolean shouldRenderBackground){
+        this(position,sizeX,sizeY,textUnit,null,shouldRenderBackground);
+    }
     public Button(Point2D position, double sizeX, double sizeY){
-        this(position,sizeX,sizeY,RText.EMPTY,true);
+        this(position,sizeX,sizeY,RText.EMPTY,null,true);
     }
     public Button(Point2D position, double sizeX, double sizeY, RText textUnit){
-        this(position,sizeX,sizeY,textUnit,false);
+        this(position,sizeX,sizeY,textUnit,null,false);
     }
 
     @Override
@@ -71,17 +90,36 @@ public class Button implements Clickable, Renderable {
     public void setShouldRenderBackground(boolean state){
         shouldRenderBackground = state;
     }
+    public boolean rendersBackground(){
+        return shouldRenderBackground;
+    }
+    public RText getText(){
+        return text;
+    }
+    public double getRimOffset(){
+        return rimOffset;
+    }
+    public boolean isDisabled(){return disabled;}
+    private Color getRimColor() {
+        return rimColor;
+    }
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+    public Color getDisabledColor() {
+        return disabledColor;
+    }
+    public Color getEnabledColor() {
+        return enabledColor;
+    }
+    public boolean isSpawned(){return isSpawned;}
 
     @Override
     public double getRenderingPriority() {
         return renderingPriority;
     }
-    public RText getText(){
-        return text;
-    }
     @Override
     public void setRenderingPriority(double newPrio){this.renderingPriority = newPrio;}
-
     @Override
     public void setPosition(Point2D p) {
         this.position = p;
@@ -93,6 +131,7 @@ public class Button implements Clickable, Renderable {
         sizeX = dim.getX();
         sizeY = dim.getY();
     }
+
     public Point2D getDimensions(){
         return new Point2D(sizeX,sizeY);
     }
@@ -116,19 +155,24 @@ public class Button implements Clickable, Renderable {
     public void spawn() {
         Clickable.newborn.add(this);
         Renderable.newborn.add(this);
+        isSpawned = true;
     }
 
     @Override
     public void destroy() {
         Clickable.expended.add(this);
         Renderable.expended.add(this);
+        isSpawned = false;
     }
 
     @Override
     public void deselect(){}
 
     @Override
-    public Clickable getRoot(){return this;}
+    public Clickable getRoot(){return root == null ? this : root;}
+    public void setRoot(Clickable c){
+        this.root = c;
+    }
 
     public void setDisable(boolean disabled){
         if(disabled){

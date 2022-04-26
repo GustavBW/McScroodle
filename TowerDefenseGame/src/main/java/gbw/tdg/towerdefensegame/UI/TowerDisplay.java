@@ -71,7 +71,6 @@ public class TowerDisplay implements Renderable {
 
     @Override
     public void setDimensions(Point2D dim) {
-
     }
 
     @Override

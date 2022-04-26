@@ -16,10 +16,10 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     private HashMap<Integer, Point2D> objOffsetMap;
     private Point2D position;
     private int rows;
-    private boolean enableAutoSpawn;
+    private boolean enableAutoSpawn, renderBackground = true;
 
-    public GraphicalInventory(int c, int r, Point2D dim, Point2D pos, double rendPrio){
-        this(c,dim.getX(),dim.getY(),dim.getY()*0.1, pos,rendPrio,r);
+    public GraphicalInventory(int coloumns, int rows, Point2D dim, Point2D pos, double margin, double rendPrio){
+        this(coloumns,dim.getX(),dim.getY(),margin, pos,rendPrio,rows);
     }
 
     public GraphicalInventory(int slotCount, double width, double height, double margin, Point2D position, double renderingPrio) {
@@ -45,8 +45,10 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.setFill(backgroundColor);
-        gc.fillRect(position.getX(),position.getY(),width,height);
+        if(renderBackground) {
+            gc.setFill(backgroundColor);
+            gc.fillRect(position.getX(), position.getY(), width, height);
+        }
     }
 
     private HashMap<Integer, Point2D> calcSlotOffsets() {
@@ -178,6 +180,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     @Override
     public boolean replace(T obj1, T obj2){
         boolean success = super.replace(obj1, obj2);
+
         if(success){
             this.addObject(obj2,super.getIndexOf(obj2));
         }
@@ -227,6 +230,9 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
     public void setBackgroundColor(Color color){
         backgroundColor = color;
+    }
+    public void setRenderBackground(boolean state){
+        renderBackground = state;
     }
     @Override
     public void setRenderingPriority(double newPrio) {

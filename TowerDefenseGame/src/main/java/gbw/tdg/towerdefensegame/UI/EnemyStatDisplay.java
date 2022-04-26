@@ -1,6 +1,6 @@
 package gbw.tdg.towerdefensegame.UI;
 
-import gbw.tdg.towerdefensegame.Decimals;
+import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;

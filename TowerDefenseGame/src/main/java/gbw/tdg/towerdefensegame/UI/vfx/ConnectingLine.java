@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame.UI.vfx;
 
+import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,6 +10,10 @@ public class ConnectingLine extends VFX{
 
     private Point2D start, end;
     private Renderable obj1,obj2;
+
+    private Color strokeColor = Color.BLACK;
+    private double strokeWidth = 10 * (3840.0 / Main.canvasSize.getX());
+
 
     public ConnectingLine(int lifetime, double rendPrio, Point2D start, Point2D end) {
         super(lifetime, rendPrio);
@@ -40,7 +45,8 @@ public class ConnectingLine extends VFX{
 
     @Override
     public void render(GraphicsContext gc){
-        gc.setFill(Color.AQUA);
+        gc.setStroke(strokeColor);
+        gc.setLineWidth(strokeWidth);
         gc.strokeLine(start.getX(), start.getY(),end.getX(),end.getY());
     }
 
@@ -54,6 +60,23 @@ public class ConnectingLine extends VFX{
         if(obj2 != null){
             end = accountForDim(obj2);
         }
+    }
+    public Color getStrokeColor() {
+        return strokeColor;
+    }
+
+    public ConnectingLine setStrokeColor(Color strokeColor) {
+        this.strokeColor = strokeColor;
+        return this;
+    }
+
+    public double getStrokeWidth() {
+        return strokeWidth;
+    }
+
+    public ConnectingLine setStrokeWidth(double strokeWidth) {
+        this.strokeWidth = strokeWidth;
+        return this;
     }
 
     private Point2D accountForDim(Renderable r){

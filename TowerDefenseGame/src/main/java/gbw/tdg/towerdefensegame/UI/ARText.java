@@ -31,6 +31,12 @@ public class ARText extends RText implements Renderable {
         super.textColor = newColor;
         return this;
     }
+    public Color getTextColor(){
+        return super.textColor;
+    }
+    public Font getFont(){
+        return super.font;
+    }
     public ARText setBackgroundColor(Color newColor){
         this.background = newColor;
 
@@ -72,10 +78,24 @@ public class ARText extends RText implements Renderable {
 
     @Override
     public void setDimensions(Point2D dim) {
+        super.setMaxTextWidth(dim.getX());
     }
 
+    public ARText setDimensions2(Point2D dim) {
+        super.setMaxTextWidth(dim.getX());
+        return this;
+    }
+
+    public Color getBackgroundColor(){return background;}
     @Override
     public Point2D getDimensions() {
         return new Point2D(font.getSize(), 0);
+    }
+
+    public ARText copy(){
+        return ARText.create(getText(),getPosition(),getDropShadowOffset(),getRenderingPriority())
+                .setBackgroundColor(this.getBackgroundColor())
+                .setTextColor(this.getTextColor())
+                .setFont(this.getFont());
     }
 }

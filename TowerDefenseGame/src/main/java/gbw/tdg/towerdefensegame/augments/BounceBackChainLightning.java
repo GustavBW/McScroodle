@@ -7,6 +7,7 @@ import gbw.tdg.towerdefensegame.UI.vfx.ConnectingLine;
 import gbw.tdg.towerdefensegame.UI.vfx.VFX;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
+import javafx.scene.paint.Color;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
 public class BounceBackChainLightning extends Bouncer<Enemy,Bullet> implements Tickable {
 
     private double searchRange;
-    private int maxJumps, jumps;
+    private int maxJumps, jumps, lifetime = 1000;
     private IEnemy currentEnemy;
     private final Set<IEnemy> enemiesHit = new HashSet<>();
     private final Bullet sourceBullet;
@@ -37,7 +38,8 @@ public class BounceBackChainLightning extends Bouncer<Enemy,Bullet> implements T
             IEnemy previousEnemy = currentEnemy;
             currentEnemy = enemyStruck;
             trigger((Enemy) currentEnemy,sourceBullet);
-            new ConnectingLine(1_000, VFX.DEFAULT_PRIO, previousEnemy,currentEnemy).spawn();
+            new ConnectingLine(lifetime, VFX.DEFAULT_PRIO, previousEnemy,currentEnemy)
+                    .setStrokeColor(Color.AQUA).spawn();
             jumps++;
         }else{
             destroy();
@@ -65,6 +67,11 @@ public class BounceBackChainLightning extends Bouncer<Enemy,Bullet> implements T
             }
         }
         return null;
+    }
+
+    public BounceBackChainLightning setLifetime(int ms){
+        this.lifetime = ms;
+        return this;
     }
 
     @Override

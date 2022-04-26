@@ -6,7 +6,7 @@ import gbw.tdg.towerdefensegame.Tickable;
 public class BounceBackImpulse<T,R> extends Bouncer<T,R> {
 
     private int delayMS;
-    private long spawnTime;
+    private long spawnTime = Long.MAX_VALUE;
 
     public BounceBackImpulse(int delayMS, BounceReciever<T,R> receiver, T t, R r){
         super(receiver);

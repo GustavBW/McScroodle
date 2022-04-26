@@ -3,8 +3,11 @@ package gbw.tdg.towerdefensegame.tower;
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
 import gbw.tdg.towerdefensegame.augments.Augment;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
-import gbw.tdg.towerdefensegame.enemies.IEnemy;
+import gbw.tdg.towerdefensegame.invocation.BasicDMGInvocation;
+import gbw.tdg.towerdefensegame.invocation.BasicSPDInvocation;
+import gbw.tdg.towerdefensegame.invocation.Invocation;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -14,20 +17,22 @@ import java.util.*;
 
 public class Tower extends ITower{
 
+    public static int MAX_UPGRADE_LEVEL = 10;
     private double renderingPriority = 55D, rangeMultiplier = 100;
     private double damage = 0.1, atkSpeed = 0.1;
     private int multishot = 1;
-    protected double range = 0.5, attackDelay;
+    protected double range = 0.5, attackDelayMS;
     protected boolean isSelected = false, isActive = true;
     protected Point2D position;
     private TargetingType targetingType = TargetingType.FIRST;
     private long lastCall = 0;
     private final TowerDisplay display;
     private final List<Augment> augments = new ArrayList<>();
-    private final List<Invocation> invocations = new ArrayList<>();
-    private final Set<SupportTowerBuff> damageBuffs = new HashSet<>();
-    private final Set<SupportTowerBuff> atkSpeedBuffs = new HashSet<>();
+    private final Map<StatType,Integer> upgradeMap = new HashMap<>();
     private final double maxAugments = 3, maxInvocations = 3;
+    private Invocation dmgInvocation = Invocation.getDMGBase();
+    private Invocation spdInvocation = Invocation.getSPDBase();
+    private Invocation rngInvocation = Invocation.EMPTY;
 
     public Tower(int points){
         super(Point2D.ZERO,40,40);
@@ -38,20 +43,22 @@ public class Tower extends ITower{
 
         double allocPoints;
 
-        damage += (int) ((allocPoints = Main.random.nextDouble() * pointsSubbed) * subDivider * 100);
+        damage += (allocPoints = Main.random.nextDouble() * pointsSubbed) * subDivider * 100;
         damage *= 0.01;
         pointsSubbed -= allocPoints;
 
-        range += (int) ((allocPoints = Main.random.nextDouble() * pointsSubbed) * subDivider * 100);
+        range += (allocPoints = Main.random.nextDouble() * pointsSubbed) * subDivider * 100;
         range *= 0.01;
         pointsSubbed -= allocPoints;
 
-        atkSpeed += (int) ((allocPoints = Main.random.nextDouble() * pointsSubbed) * subDivider * 100);
+        atkSpeed += Main.random.nextDouble() * pointsSubbed * subDivider * 100;
         atkSpeed *= 0.01;
-        pointsSubbed -= allocPoints;
 
         this.display = new TowerDisplay(this);
-        attackDelay = 1_000_000_000 / atkSpeed;
+        attackDelayMS = 1_000 / atkSpeed;
+
+        Invocation.getDMGBase().applyToTower(this);
+        Invocation.getSPDBase().applyToTower(this);
     }
     public Tower(Point2D pos, double dmg, double atkspd, double range, int multishot){
         this(1);
@@ -64,27 +71,46 @@ public class Tower extends ITower{
 
     public void tick(){
         if(isActive){
-            Set<Enemy> targets = findEnemiesInRange();
+            rngInvocation.evaluate();
 
-            if(lastCall + attackDelay < System.nanoTime() && !targets.isEmpty()){
+            if(lastCall + attackDelayMS < System.currentTimeMillis()){
 
-                List<Enemy> targetsPrioritized = findTargets(targets);
+                List<Enemy> targetsPrioritized = spdInvocation.preattack();
 
-                for (int i = 0; i < multishot && i < targetsPrioritized.size(); i++) {
-                    attack(targetsPrioritized.get(i));
+                if(!targetsPrioritized.isEmpty()) {
+                    dmgInvocation.attack(targetsPrioritized.subList(0,Math.min(multishot, targetsPrioritized.size())));
+                    lastCall = System.currentTimeMillis();
+                }else{
+                    lastCall += 100;
                 }
-
-                lastCall = System.nanoTime();
-            }
-
-            for(Invocation i : invocations){
-                i.evalutate();
             }
         }
+    }
+    public int upgrade(StatType type, double val){
+        boolean possible = upgradeMap.getOrDefault(type, 1) <= MAX_UPGRADE_LEVEL;
+
+        if(!possible){return -1;}
+        if(Main.getGold() < getUpgradeCost()){
+            new OnScreenWarning("Not enough funds", Main.canvasSize.multiply(0.5),3).spawn();
+            return 0;
+        }
+
+        switch (type) {
+            case RANGE -> setRange(val);
+
+            case DAMAGE -> damage = val;
+
+            case ATTACK_SPEED -> setAtkSpeed(val);
+        }
+        upgradeMap.put(type, upgradeMap.getOrDefault(type,0) + 1);
+        return upgradeMap.get(type);
     }
 
     public double getRange(){
         return range * rangeMultiplier;
+    }
+    public void setRange(double val){
+        this.range = val;
     }
 
     public void render(GraphicsContext gc){
@@ -95,22 +121,17 @@ public class Tower extends ITower{
         this.isActive = newState;
     }
     @Override
-    public void applyDamageBuff(SupportTowerBuff buff){
-        damageBuffs.add(buff);
-    }
-    @Override
-    public void applyAtkSpeedBuff(SupportTowerBuff buff){
-        atkSpeedBuffs.add(buff);
-    }
-    @Override
     public double getDamage(){return damage;}
     public double getAtkSpeed(){return atkSpeed;}
+    public int getMultishot(){return multishot;}
+    public void setMultishot(int val){multishot = val;}
     public boolean addAugment(Augment augment){
         boolean success = false;
         if(augments.size() < maxAugments){
             if(augment.applyToTower(this)) {
                 augments.add(augment);
                 success = true;
+                display.getStatDisplay().addNewAugment(augment.getIcon());
             }else{
                 new OnScreenWarning("Augmentation Failed! - Requirements Not Met", Main.canvasSize.multiply(0.4),3).spawn();
             }
@@ -119,20 +140,24 @@ public class Tower extends ITower{
         }
         return success;
     }
-    public boolean addInvocation(Invocation invocation){
-        if(invocations.size() < maxInvocations){
-            invocations.add(invocation);
-            invocation.setTower(this);
-            return true;
-        }
-        new OnScreenWarning("Invocation Failed!", Main.canvasSize.multiply(0.4),3).spawn();
-        return false;
+    public void setSPDInvocation(BasicSPDInvocation invocation){
+        this.spdInvocation = invocation;
+        invocation.setTower(this);
+    }
+    public void setDMGInvocation(BasicDMGInvocation invocation){
+        this.dmgInvocation = invocation;
+        invocation.setTower(this);
+    }
+    public void setRNGInvocation(Invocation invocation){
+        this.spdInvocation = invocation;
+        invocation.setTower(this);
     }
     public List<Augment> getAugments(){return augments;}
-    public List<Invocation> getInvocations(){return invocations;}
-    public void setAtkSpeed(double newSpeed){
+
+    public double setAtkSpeed(double newSpeed){
         this.atkSpeed = newSpeed;
-        this.attackDelay = 1_000_000_000 / atkSpeed;
+        this.attackDelayMS = 1_000 / atkSpeed;
+        return atkSpeed;
     }
     @Override
     public Point2D getPosition() {
@@ -162,59 +187,11 @@ public class Tower extends ITower{
         display.setRenderingPriority(newPrio);
     }
 
-    private Set<Enemy> findEnemiesInRange(){
-        Point2D origin = new Point2D(position.getX() + (sizeX * 0.5), position.getY() + (sizeY * 0.5));
-        Set<Enemy> enemiesFound = new HashSet<>();
-
-        for(IEnemy e : IEnemy.active){
-            double distX = Math.pow(e.getPosition().getX() - origin.getX(), 2);
-            double distY = Math.pow(e.getPosition().getY() - origin.getY(), 2);
-            double distance = Math.sqrt(distX + distY);
-
-            if(distance <= getRange()){
-                enemiesFound.add((Enemy) e);
-            }
-
-        }
-
-        return enemiesFound;
-    }
-
-    private List<Enemy> findTargets(Set<Enemy> set){
-
-        List<Enemy> list = new LinkedList<>(set);
-
-        if(!list.isEmpty()) {
-
-            switch (targetingType) {
-                case LAST -> list.sort(Comparator.comparingDouble(IEnemy::getProgress));
-
-                case RANDOM -> list.sort(Comparator.comparingInt(o -> Main.random.nextInt(-1, 1)));
-
-                case FIRST -> list.sort(Comparator.comparingDouble(IEnemy::getProgress).reversed());
-
-                case WEAKEST -> list.sort(Comparator.comparingDouble(IEnemy::getHp));
-
-                case BEEFIEST -> list.sort(Comparator.comparingDouble(IEnemy::getHp).reversed());
-
-                case FASTEST -> list.sort(Comparator.comparingDouble(IEnemy::getMvspeed));
-            }
-        }
-
-        return list;
-    }
-
     public void setTargetingType(TargetingType type){
         this.targetingType = type;
     }
 
-    private void attack(Enemy target){
-        Bullet b = new AugmentedBullet(position.add(sizeX*0.5,sizeY*0.5),target,this);
-        for(Augment a : augments){
-            a.applyToBullet(b);
-        }
-        b.spawn();
-    }
+    public TargetingType getTargetingType(){return targetingType;}
 
     @Override
     public void spawn() {
@@ -239,17 +216,11 @@ public class Tower extends ITower{
 
     @Override
     public void onClick(MouseEvent event) {
-        if(!isSelected) {
-            display.spawn();
-        }
-        isSelected = !isSelected;
+        display.spawn();
     }
     @Override
     public void deselect(){
-        if(isSelected) {
-            display.destroy();
-        }
-        isSelected = false;
+        display.destroy();
     }
 
     public void sell() {
@@ -263,9 +234,9 @@ public class Tower extends ITower{
     }
 
     public String getStats(){
-        return "DMG: " + Decimals.toXDecimalPlaces(getDamage(),3) + "\n" +
-                "RNG " + Decimals.toXDecimalPlaces(getRange(),3) + "\n" +
-                "SPD " + Decimals.toXDecimalPlaces(getAtkSpeed(),3) + "\n" +
+        return "DMG: " + TextFormatter.doubleToKMBNotation(getDamage(),1) + "\n" +
+                "RNG " + TextFormatter.doubleToKMBNotation(getRange(),1) + "\n" +
+                "SPD " + TextFormatter.doubleToKMBNotation(getAtkSpeed(),1) + "\n" +
                 "Targets: " + targetingType.asString;
     }
 
@@ -277,6 +248,12 @@ public class Tower extends ITower{
     }
 
     public double getWorth(){
-        return Decimals.toXDecimalPlaces(damage + range + atkSpeed, 2);
+        return damage + range + atkSpeed;
+    }
+
+    public double getUpgradeCost() {
+        return getWorth() + upgradeMap.getOrDefault(StatType.DAMAGE,0)
+                + upgradeMap.getOrDefault(StatType.RANGE,0)
+                + upgradeMap.getOrDefault(StatType.ATTACK_SPEED,0);
     }
 }

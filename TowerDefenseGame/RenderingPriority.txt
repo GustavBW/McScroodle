@@ -2,7 +2,7 @@ Render Priority
 (\d+-\d+) ||| $1 range
 \d+-\d+ ([A-Z]\w*$) ||| $1 = range name
 \[\](\d*) ||| $1 = default value (anchor)
-(\d*)?-\d* (([A-Z]\w*), )* element(s)
+(\d*)?-\d* (([A-Z]\w*), )*  ||| $? element(s)
 
 0-10 Ground
 11-20

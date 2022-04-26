@@ -5,13 +5,13 @@ import gbw.tdg.towerdefensegame.enemies.Enemy;
 
 public class PiercingAugment extends Augment{
 
-    protected PiercingAugment(double value, int type, int level) {
-        super(value, type, level);
+    protected PiercingAugment(double value, int type, int level, int maxLevel) {
+        super(value, type, level,maxLevel);
     }
 
     @Override
     public void applyToBullet(Bullet b){
-        b.addPiercingLevels(super.level);
+        b.addPiercingLevels(getLevel());
     }
 
     @Override
@@ -19,13 +19,13 @@ public class PiercingAugment extends Augment{
 
     @Override
     public String getDesc(){
-        return "Allows bullets to penetrate through " + super.level + " enemies";
+        return "Allows bullets to penetrate through " + getLevel() + " enemies";
     }
 
 
     @Override
     public Augment copy() {
-        return new PiercingAugment(this.getValue(), this.getType(), this.getLevel());
+        return new PiercingAugment(this.getValue(), this.getType(), this.getLevel(),this.getMaxLevel());
     }
 
     @Override

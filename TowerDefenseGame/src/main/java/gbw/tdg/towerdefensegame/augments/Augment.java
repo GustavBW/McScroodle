@@ -5,7 +5,7 @@ import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.tower.Tower;
-import gbw.tdg.towerdefensegame.UI.AugmentIcon;
+import gbw.tdg.towerdefensegame.UI.ClickableIcon;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -20,22 +20,22 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
     //These Augments below are loaded through the Augment.getAugs() method.
 
     private static final List<Augment> contents = new ArrayList<>(List.of(
-            new ExplosiveAugment(10,0,1),
-            new PiercingAugment(5,1,1),
-            new HellfireAugment(3,2,1),
-            new IceAugment(3,3,1),
-            new ChainLightningAugment(10,4,1),
-            new LightningAugment(8,5,1)
+            new ExplosiveAugment(10,0,1,5),
+            new PiercingAugment(5,1,1,10),
+            new HellfireAugment(3,2,1, 7),
+            new IceAugment(3,3,1, 5),
+            new ChainLightningAugment(10,4,1,5),
+            new LightningAugment(8,5,1,3)
     ));
 
-    protected int level, maxLevel = 3;
+    private int level, maxLevel = 3;
     protected Tower tower;
-    protected double value;
-    protected AugmentIcon icon;
+    private double value;
+    private ClickableIcon icon;
     private Image image;
     protected int requirement = -1;
     protected boolean needsToNotHaveRequirement = false, appliesOnHit = false;
-    protected int type;
+    private int type;
     private final int id;
     private static int amountOfAugmentObjects = 0;
 
@@ -95,6 +95,10 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
         this.id = amountOfAugmentObjects;
         amountOfAugmentObjects++;
     }
+    protected Augment(double value, int type, int level, int maxLevel){
+        this(value, type, level);
+        this.maxLevel = maxLevel;
+    }
 
     public void applyToBullet(Bullet bullet){
         bullet.addOnHitAug(this);
@@ -143,6 +147,7 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
     public int getMaxLevel(){
         return maxLevel;
     }
+    public void setMaxLevel(int ml){this.maxLevel = ml;}
     public int getLevel(){
         return level <= 0 ? 1 : level;
     }
@@ -157,18 +162,18 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
     public String getName(){
         String base = this.toString();
         int index = base.indexOf('@')-7;
-        return base.substring(0,index) + " " + TextFormatter.intToRomanNumerals(this.getLevel());
+        return base.substring(0,index) + " " + TextFormatter.toRomanNumerals(this.getLevel());
     }
     public Image getImage(){
         if(image != null){
             return image;
         }
-        image = ContentEngine.AUGMENTS.getIcon(TextFormatter.getIsolatedClassName(this));
+        image = ContentEngine.AUGMENTS.getImage(TextFormatter.getIsolatedClassName(this));
         return image;
     }
-    public AugmentIcon getIcon(){
+    public ClickableIcon<Augment> getIcon(){
         if(icon == null){
-            this.icon = new AugmentIcon(getImage(),100, Point2D.ZERO,Point2D.ZERO,true);
+            this.icon = new ClickableIcon<>(getImage(),100, Point2D.ZERO,Point2D.ZERO,true,this);
         }
         return icon;
     }

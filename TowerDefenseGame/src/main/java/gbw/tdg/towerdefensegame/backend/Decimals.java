@@ -1,4 +1,4 @@
-package gbw.tdg.towerdefensegame;
+package gbw.tdg.towerdefensegame.backend;
 
 public class Decimals {
 

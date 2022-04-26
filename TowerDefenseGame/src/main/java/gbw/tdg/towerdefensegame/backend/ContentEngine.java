@@ -6,6 +6,7 @@ import java.io.IOException;
 public class ContentEngine {
 
     private static String root;
+    private static String ressourceDir;
 
     static{
         File file = new File(".");
@@ -14,9 +15,9 @@ public class ContentEngine {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        root = root + "/src/main/resources/gbw/tdg/towerdefensegame";
+        ressourceDir = root + "/src/main/resources/gbw/tdg/towerdefensegame";
     }
 
-    public static AugmentEngine AUGMENTS = AugmentEngine.getInstance(root + "/augments");
-
+    public static AugmentEngine AUGMENTS = AugmentEngine.getInstance(ressourceDir + "/augments");
+    public static InvocationEngine INVOCATIONS = InvocationEngine.getInstance(ressourceDir + "/invocations");
 }

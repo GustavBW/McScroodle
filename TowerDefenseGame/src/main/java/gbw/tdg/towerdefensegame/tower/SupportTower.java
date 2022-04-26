@@ -23,7 +23,7 @@ public class SupportTower extends Tower{
     @Override
     public void tick(){
         if(isActive) {
-            if (System.currentTimeMillis() >= super.attackDelay + lastCall) {
+            if (System.currentTimeMillis() >= super.attackDelayMS + lastCall) {
                 lastCall = System.currentTimeMillis();
                 buffTowers(findTowersInRange());
             }
@@ -44,7 +44,7 @@ public class SupportTower extends Tower{
 
     private void buffTowers(List<ITower> towers){
         for(ITower t : towers){
-            t.applyDamageBuff(buff);
+
         }
     }
 }
