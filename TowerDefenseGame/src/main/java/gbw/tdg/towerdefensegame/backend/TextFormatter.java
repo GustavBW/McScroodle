@@ -1,5 +1,8 @@
 package gbw.tdg.towerdefensegame.backend;
 
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -37,6 +40,64 @@ public class TextFormatter {
         }
         return trimStringArray(array);
     }
+    public static List<String> toLinesArray(String text, int symbolsPerLine){
+        return toLinesArray(text, symbolsPerLine, "\n");
+    }
+    public static List<String> toLinesArray(String text, double prefWidth, Font font){
+        List<String> output = new ArrayList<>();
+        if(text.isBlank()){return output;}
+
+        List<String> spacedOut = new LinkedList<>(List.of(text.split(" ")));
+
+        int i = 0;
+
+        String currentLine = text;
+        Text fullChecker = new Text(currentLine);
+        fullChecker.setFont(font);
+
+        Text substringChecker = new Text();
+        substringChecker.setFont(font);
+
+        while(fullChecker.getLayoutBounds().getWidth() > prefWidth && spacedOut.size() > 1) {
+
+            while (substringChecker.getLayoutBounds().getWidth() < prefWidth && spacedOut.size() > 1) {
+
+                currentLine = concatonateArray(spacedOut.subList(0, i), " ");
+                substringChecker.setText(currentLine);
+
+                if (substringChecker.getLayoutBounds().getWidth() < prefWidth) {
+                    i++;
+
+                } else {
+
+                    currentLine = concatonateArray(spacedOut.subList(0, i), " ");
+                    output.add(currentLine);
+
+                    for (int k = 0; k < i && k < spacedOut.size(); k++) {
+                        spacedOut.remove(k);
+                    }
+
+                    i = 0;
+
+                    currentLine = "";
+                    substringChecker.setText("");
+                }
+            }
+        }
+        output.add(currentLine);
+
+
+        return output;
+    }
+
+    public static void main(String[] args) {
+        String text = "Lmao I really gotta white something long here. Got no ideas but todays Deadlands session was cool. Messed up a bunch though, made an, in the words of Thomas' \" super aspergers move \" which authenticity he appreciated. I didn't. There is a reason it's so authentic";
+        System.out.println(text);
+
+        for(String s : toLinesArray(text,100,Font.font("Impact",20))){
+            System.out.println(s);
+        }
+    }
 
     public static List<String> trimStringArray(List<String> list) {
         List<Integer> indexesToRemove = new ArrayList<>();
@@ -64,6 +125,20 @@ public class TextFormatter {
 
         return sB.toString();
     }
+    public static String toLines(String text, int symbolsPerLine){
+        return toLines(text,symbolsPerLine,"\n");
+    }
+    public static String concatonateArray(List<String> list){
+        return concatonateArray(list,"");
+    }
+    public static String concatonateArray(List<String> list, String inset){
+        StringBuilder sB = new StringBuilder();
+        for(String s : list){
+            sB.append(s).append(inset);
+        }
+        return sB.toString();
+    }
+
 
     public static String getIsolatedClassName(Object obj) {
         String full = obj.toString();

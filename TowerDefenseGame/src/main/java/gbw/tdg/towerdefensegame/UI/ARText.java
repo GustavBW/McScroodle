@@ -11,7 +11,7 @@ public class ARText extends RText implements Renderable {
     private double rendPrio,sizeX,sizeY,cornerWidth;
     private Color background = Color.BLACK;
 
-    private ARText(String text, Point2D position, double dropShadowOffset, Font font, double rendPrio){
+    protected ARText(String text, Point2D position, double dropShadowOffset, Font font, double rendPrio){
         super(text,position,dropShadowOffset,Color.WHITE,font);
         this.rendPrio = rendPrio;
     }
@@ -81,7 +81,7 @@ public class ARText extends RText implements Renderable {
         super.setMaxTextWidth(dim.getX());
     }
 
-    public ARText setDimensions2(Point2D dim) {
+    public ARText setDimAR(Point2D dim) {
         super.setMaxTextWidth(dim.getX());
         return this;
     }

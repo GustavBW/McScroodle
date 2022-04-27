@@ -33,7 +33,6 @@ public class Main extends Application {
     public static Random random = new Random(System.currentTimeMillis());
     private Canvas canvas;
     private Stage mainStage;
-    private Rectangle2D screenDim;
     private GraphicsContext gc;
     private MouseHandler mouseHandler;
     private KeyHandler keyHandler;
@@ -53,13 +52,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        screenDim = Screen.getPrimary().getBounds();
-        System.out.println("Screen dim is: " + screenDim.getWidth() + " | " + screenDim.getHeight());
-        canvasSize = new Point2D(screenDim.getWidth(),screenDim.getHeight() -50);
-        scale = new Point2D(
-                canvasSize.getX() / 3840,
-                canvasSize.getY() / 2160
-        );
+        Rectangle2D screenDim = Screen.getPrimary().getBounds();
+        canvasSize = new Point2D(screenDim.getWidth(),screenDim.getHeight());
+        System.out.println("Canvas Size is: " + canvasSize.getX() + " | " + canvasSize.getY());
+        scale = new Point2D(canvasSize.getX() / 3840, canvasSize.getY() / 2160);
+        System.out.println("Scale factors are " + scale.getX() + " | " + scale.getY());
         mainStage = stage;
         BorderPane bp = new BorderPane();
 

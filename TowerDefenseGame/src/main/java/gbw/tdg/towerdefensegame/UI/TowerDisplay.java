@@ -12,9 +12,10 @@ public class TowerDisplay implements Renderable {
     private TowerRangeIndicator rangeIndicator;
     private TowerFunctionsDisplay functionsDisplay;
     private final Tower tower;
+    private boolean isSpawned = false;
 
     public TowerDisplay(Tower tower){
-        this.statDisplay = new TowerStatDisplay(tower, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
+        this.statDisplay = new TowerStatDisplay(tower, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3),this);
         this.rangeIndicator = new TowerRangeIndicator(tower,tower.getPosition().add(tower.getDimensions().multiply(0.5)));
         this.functionsDisplay = new TowerFunctionsDisplay(tower,new Point2D(Main.canvasSize.getX()*.01,statDisplay.getExtremeties().getY()));
         this.tower = tower;
@@ -26,6 +27,7 @@ public class TowerDisplay implements Renderable {
         rangeIndicator.spawn();
         functionsDisplay.spawn();
         rangeIndicator.setDimensions(new Point2D(tower.getRange(),0));
+        isSpawned = true;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class TowerDisplay implements Renderable {
         statDisplay.destroy();
         rangeIndicator.destroy();
         functionsDisplay.destroy();
+        isSpawned = false;
     }
 
     @Override
@@ -50,6 +53,19 @@ public class TowerDisplay implements Renderable {
     }
     public TowerFunctionsDisplay getFunctionsDisplay() {
         return functionsDisplay;
+    }
+
+    public void requestGUIReset(boolean selectEvent){
+        if(isSpawned){
+            destroy();
+            spawn();
+        }else{
+            spawn();
+            destroy();
+        }
+        if(selectEvent){
+            tower.onClick(null);
+        }
     }
 
     @Override

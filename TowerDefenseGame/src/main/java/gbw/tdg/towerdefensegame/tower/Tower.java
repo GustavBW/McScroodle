@@ -59,7 +59,15 @@ public class Tower extends ITower{
 
         Invocation.getDMGBase().applyToTower(this);
         Invocation.getSPDBase().applyToTower(this);
+        loadUpgradeMap();
     }
+
+    private void loadUpgradeMap() {
+        upgradeMap.put(StatType.DAMAGE,1);
+        upgradeMap.put(StatType.RANGE,1);
+        upgradeMap.put(StatType.ATTACK_SPEED,1);
+    }
+
     public Tower(Point2D pos, double dmg, double atkspd, double range, int multishot){
         this(1);
         setPosition(pos);
@@ -108,6 +116,9 @@ public class Tower extends ITower{
 
     public double getRange(){
         return range * rangeMultiplier;
+    }
+    public double getRangeBase(){
+        return range;
     }
     public void setRange(double val){
         this.range = val;

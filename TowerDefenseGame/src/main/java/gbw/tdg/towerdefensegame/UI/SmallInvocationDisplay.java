@@ -25,12 +25,12 @@ public class SmallInvocationDisplay extends Button {
         descFont = Font.font("Verdana", Main.canvasSize.getY() * .012);
 
         this.desc = ARText.create(invocation.getDesc(),Point2D.ZERO,1,super.renderingPriority)
-                .setDimensions2(getDescDim())
+                .setDimAR(getDescDim())
                 .setFont(descFont)
                 .setTextColor(Color.BLACK);
 
         this.title = ARText.create(invocation.getName(), Point2D.ZERO,4,super.renderingPriority)
-                .setDimensions2(getImageDim())
+                .setDimAR(getImageDim())
                 .setFont(titleFont)
                 .setTextColor(Color.ORANGE);
 
@@ -49,6 +49,17 @@ public class SmallInvocationDisplay extends Button {
         image.render(gc);
         desc.render(gc);
     }
+    @Override
+    public void spawn(){
+        super.spawn();
+        System.out.println("SmallInvocationDisplay.spawn " + invocation.getName());
+    }
+    @Override
+    public void destroy(){
+        super.destroy();
+        System.out.println("SmallInvocationDisplay.destroy " + invocation.getName());
+    }
+
 
     private Point2D getTitleOffset(){
         return new Point2D(
@@ -59,7 +70,7 @@ public class SmallInvocationDisplay extends Button {
     private Point2D getImageOffset(){
         return new Point2D((
                 sizeX - getImageDim().getX()) * .5,
-                getTitleOffset().getY() + getTitleDim().getY() + 15 * Main.scale.getY()
+                getTitleOffset().getY() + getTitleDim().getY() + 5 * Main.scale.getY()
         );
     }
     private Point2D getDescOffset(){
@@ -74,7 +85,7 @@ public class SmallInvocationDisplay extends Button {
     }
 
     private Point2D getImageDim(){
-        return new Point2D(sizeX - (sizeY * .1), sizeX - (sizeY * .1));
+        return new Point2D(sizeY * (1/3D), sizeY * (1/3D));
     }
 
     private Point2D getDescDim(){

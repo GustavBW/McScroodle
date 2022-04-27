@@ -32,7 +32,7 @@ public class InvocationSelectionDisplay extends Button {
         contents = new GraphicalInventory<>(3,1,new Point2D(sizeX,sizeY),position,15 * Main.scale.getX(),renderingPriority);
 
         for(Invocation i : invocations){
-            contents.add(new SmallInvocationDisplay(Point2D.ZERO,Point2D.ZERO,tower,true,i) {
+            contents.add(new SmallInvocationDisplay(Point2D.ZERO,new Point2D(sizeX/3,sizeY),tower,true,i) {
                 @Override
                 public void onClick(MouseEvent event) {
                     System.out.println("InvocationSelectionDisplay: You chose " + getInvo().getName());

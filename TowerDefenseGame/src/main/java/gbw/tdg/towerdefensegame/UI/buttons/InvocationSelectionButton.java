@@ -32,9 +32,7 @@ public class InvocationSelectionButton extends Button {
 
     @Override
     public void onClick(MouseEvent event){
-        if(!isSpawned) {
-            display.spawn();
-        }
+        display.spawn();
     }
 
     @Override

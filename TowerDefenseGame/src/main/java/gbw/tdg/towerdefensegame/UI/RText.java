@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 public class RText {
 
     public static final RText EMPTY = new RText("",new Point2D(0,0),0,Color.BLACK,Font.font("Verdana", 15));
+    public static final Font STANDARD_FONT = Font.font("Verdana",20 * Main.scale.getY());
     private String text;
     protected Point2D position;
     private double dropShadowOffset;

@@ -26,18 +26,20 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
     private final Tower tower;
     private final Color background = new Color(0,0,0,0.5);
     private final Point2D position;
-    private final double arcHeight = 15;
+    private final double someArcNumber = 15 * Main.scale.getX();
     private final GraphicalInventory<ClickableIcon<Augment>> augmentDisplay;
     private final GraphicalInventory<Button> upgradeButtons;
+    private final TowerDisplay display;
 
 
-    public TowerStatDisplay(Tower t, Point2D position){
+    public TowerStatDisplay(Tower t, Point2D position, TowerDisplay display){
         super(position, Main.canvasSize.getX() * 0.1 - ((Main.canvasSize.getY() * 0.1) / 3),Main.canvasSize.getY() * 0.1);
         this.text = new RText(t.getStats(),
                 position.add(Main.canvasSize.getX() * 0.015,Main.canvasSize.getX() * 0.007),
                 1, Color.WHITESMOKE, Font.font("Impact", Main.canvasSize.getX() * 0.0104));
         this.tower = t;
         this.position = position;
+        this.display = display;
 
         double posXofUpgradeDisplay = Main.canvasSize.getX() * 0.1 - (sizeY / 3);
         double widthOfUpgradeDisplay = sizeY / 3;
@@ -67,7 +69,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
                     }
                     @Override
                     public void onClick(MouseEvent event){
-                        if(tower.upgrade(StatType.RANGE,tower.getRange() * 1.1) == Tower.MAX_UPGRADE_LEVEL){
+                        if(tower.upgrade(StatType.RANGE,tower.getRangeBase() * 1.1) == Tower.MAX_UPGRADE_LEVEL){
                             onMaxUpgradeReached(this.getAssociatedValue(),this);
                         }
                     }
@@ -91,7 +93,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
 
     public void render(GraphicsContext gc){
         gc.setFill(background);
-        gc.fillRoundRect(position.getX(), position.getY(), sizeX, sizeY, arcHeight, arcHeight);
+        gc.fillRoundRect(position.getX(), position.getY(), sizeX, sizeY, someArcNumber, someArcNumber);
 
         text.render(gc);
     }
@@ -101,11 +103,9 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
         text.setText(tower.getStats());
     }
 
-    public boolean addNewAugment(ClickableIcon<Augment> icon){
-        augmentDisplay.destroy();
-        boolean success = augmentDisplay.addIfAbsent(icon);
-        augmentDisplay.spawn();
-        return success;
+    public void addNewAugment(ClickableIcon<Augment> icon){
+        augmentDisplay.addIfAbsent(icon);
+        display.requestGUIReset(true);
     }
 
     public void onMaxUpgradeReached(StatType t, Button b){

@@ -11,14 +11,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.util.List;
+
 public class AugmentBuyButton extends BounceBackButton{
 
     private final Augment augment;
     private final IClickableOwner owner;
-    private double price,ogPrice;
-    private final RText descText;
+    private double price,ogPrice, margin = 10 * Main.scale.getY();
+    private final SARText descText;
     private boolean showDesc = true, showIcon = false;
-    private Point2D iconOffset;
+    private Point2D iconOffset, descOffset = new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.045);
+    private Point2D titleOffset = new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.025);
 
     public AugmentBuyButton(Point2D position, double sizeX, double sizeY, RText textUnit, Augment augment, IClickableOwner owner, double price) {
         super(position, sizeX, sizeY, textUnit,null);
@@ -30,9 +33,14 @@ public class AugmentBuyButton extends BounceBackButton{
         this.ogPrice = price;
         this.price = Decimals.toXDecimalPlaces(price + augment.getWorth(),2);
         super.text.setText(augment.getName());
-        String formattedDesc = TextFormatter.toLines(augment.getDesc(), (int) (15 * (Main.canvasSize.getX() * (1 / 1920.0)))," ") + this.price + "S";
-        this.descText = new RText(formattedDesc, position,2, Color.WHITE, Font.font("Verdana", Main.canvasSize.getX()*0.007));
+        List<String> formattedDesc = TextFormatter.toLinesArray(augment.getDesc(), (int) (30 * (Main.scale.getX()))," ");
+        formattedDesc.add(this.price + "S");
+        this.descText = SARText.create(formattedDesc, position,new Point2D(sizeX - descOffset.getX(),sizeY - textUnit.getSize()),2, renderingPriority)
+                .setFont(Font.font("Verdana", Main.canvasSize.getX() * 0.001))
+                .setFittingFontSize(false)
+                .setPrefferedFontSize(30 * Main.scale.getX());
     }
+
     public AugmentBuyButton(RText textUnit, Augment augment, IClickableOwner owner, int price){
         this(new Point2D(0,0),0,0,textUnit,augment,owner,price);
     }
@@ -88,13 +96,14 @@ public class AugmentBuyButton extends BounceBackButton{
             getIcon().setRenderingPriority(newPrio+.1);
         }
         super.setRenderingPriority(newPrio);
+        descText.setRenderingPriority(newPrio+.1);
     }
 
     @Override
     public void setPosition(Point2D p) {
         position = p;
-        super.text.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.025)));
-        descText.setPosition(p.add(new Point2D(Main.canvasSize.getX() * 0.00762, Main.canvasSize.getY() * 0.045)));
+        super.text.setPosition(p.add(titleOffset));
+        descText.setPosition(p.add(descOffset));
         if(showIcon){
             getIcon().setPosition(p.add(iconOffset));
         }
@@ -103,6 +112,7 @@ public class AugmentBuyButton extends BounceBackButton{
     @Override
     public void setDimensions(Point2D dim){
         super.setDimensions(dim);
+        descText.setDimensions(new Point2D(dim.getX(), dim.getY() - (text.getSize() + margin)));
         if(showIcon){
             getIcon().setDimensions(dim.subtract(rimOffset,rimOffset));
         }
