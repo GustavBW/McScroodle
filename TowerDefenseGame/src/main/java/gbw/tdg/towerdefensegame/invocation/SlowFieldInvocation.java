@@ -40,6 +40,7 @@ public class SlowFieldInvocation extends BasicSPDInvocation {
     public void evaluate() {
         circleVFX.setPosition(getOwner().getOrigin());
         circleVFX.setRadius(getFieldRange(getOwner()));
+        super.setSearchRange(getFieldRange(getOwner()));
         Set<Enemy> enemiesInRange = super.findEnemiesInRange();
 
 

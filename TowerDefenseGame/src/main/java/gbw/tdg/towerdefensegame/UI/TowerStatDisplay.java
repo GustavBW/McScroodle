@@ -43,12 +43,10 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
         this.position = position;
         this.display = display;
 
-        double posXofUpgradeDisplay = Main.canvasSize.getX() * 0.1 - (sizeY / 3);
-        double widthOfUpgradeDisplay = sizeY / 3;
-        double posXOfAugmentDisplay = posXofUpgradeDisplay + widthOfUpgradeDisplay;
+        double posXOfAugmentDisplay = Main.canvasSize.getX() * 0.1 - (sizeY / 3);
 
         this.augmentDisplay = new GraphicalInventory<>(1,sizeY / 3,sizeY,0,position.add(posXOfAugmentDisplay,0),renderingPriority,3);
-        this.upgradeButtons = new GraphicalInventory<>(1,3,new Point2D(widthOfUpgradeDisplay,sizeY),position.add(posXofUpgradeDisplay,0),0,renderingPriority);
+        this.upgradeButtons = new GraphicalInventory<>(3,1,new Point2D(position.getX(),position.getY() + sizeY),new Point2D(sizeX, sizeY * 0.5),0,renderingPriority);
 
         ARText rtextForUpgradeButtons = ARText.create(tower.getWorth() + "G",Point2D.ZERO,1,renderingPriority);
         upgradeButtons.addAll(List.of(
@@ -162,14 +160,15 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
 
     public Point2D getExtremeties() {
         return new Point2D(
-                position.getX() + sizeX,
-                position.getY() + sizeY
+                position.getX() + sizeX + augmentDisplay.getDimensions().getX(),
+                position.getY()+  sizeY + upgradeButtons.getDimensions().getY()
         );
     }
 
     public void setText(String newText) {
         text.setText(newText);
     }
+
 
     @Override
     public boolean isInBounds(Point2D pos) {

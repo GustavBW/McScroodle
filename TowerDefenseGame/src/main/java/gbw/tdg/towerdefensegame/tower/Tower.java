@@ -165,7 +165,6 @@ public class Tower extends ITower{
     public void setRNGInvocation(Invocation invocation){
         this.rngInvocation = invocation;
         invocation.setTower(this);
-        System.out.println("Tower: setRngInvocation using " + invocation.getName() + " for " + this);
     }
     public List<Augment> getAugments(){return augments;}
 

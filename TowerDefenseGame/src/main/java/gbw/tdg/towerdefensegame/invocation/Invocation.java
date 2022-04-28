@@ -19,34 +19,45 @@ public abstract class Invocation {
 
     public static EmptyInvocation EMPTY = new EmptyInvocation(1);
 
-    private static final List<Invocation> dmgInvos = new ArrayList<>(List.of(
-        //Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
-            new BasicDMGInvocation(1),
-            new GrapeShotInvocation(1)
-    ));
-    private static final List<Invocation> rngInvos = new ArrayList<>(List.of(
-            new BasicDMGInvocation(1),
-            new SlowFieldInvocation(1)
-        //Invocations for RNG is: Slowfield,
-    ));
-    private static final List<Invocation> spdInvos = new ArrayList<>(List.of(
-            //Invocations for SPD is: Multishot
-            new MultishotInvocation(3),
-            new BasicSPDInvocation(1)
-    ));
-    private static final Map<StatType, List<Invocation>> statInvoListMap = new HashMap<>(Map.of(
-            StatType.DAMAGE, dmgInvos,
-            StatType.RANGE, rngInvos,
-            StatType.ATTACK_SPEED, spdInvos
-    ));
+    private static List<Invocation> dmgInvos;
+    private static List<Invocation> rngInvos;
+    private static List<Invocation> spdInvos;
+    private static Map<StatType, List<Invocation>> statInvoListMap;
 
     private final static Invocation dmgBase = new BasicDMGInvocation(1);
     private final static Invocation spdBase = new BasicSPDInvocation(1);
+    private static boolean contentsPrepped = false;
 
     private final int level;
     private Tower owner;
     private ClickableIcon<Invocation> icon;
     private Image image;
+
+    private static void prepContent(){
+        if(!contentsPrepped){
+            dmgInvos = new ArrayList<>(List.of(
+                    //Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
+                    new BasicDMGInvocation(1),
+                    new GrapeShotInvocation(1)
+            ));
+            rngInvos = new ArrayList<>(List.of(
+                    new BasicDMGInvocation(1),
+                    new SlowFieldInvocation(1)
+                    //Invocations for RNG is: Slowfield,
+            ));
+            spdInvos = new ArrayList<>(List.of(
+                    //Invocations for SPD is: Multishot
+                    new MultishotInvocation(3),
+                    new BasicSPDInvocation(1)
+            ));
+            statInvoListMap = new HashMap<>(Map.of(
+                    StatType.DAMAGE, dmgInvos,
+                    StatType.RANGE, rngInvos,
+                    StatType.ATTACK_SPEED, spdInvos
+            ));
+            contentsPrepped = true;
+        }
+    }
 
     protected Invocation(int level){
         this.level = level;
@@ -83,17 +94,19 @@ public abstract class Invocation {
     public abstract boolean applyToTower(Tower t);
 
     public static Invocation getDMGBase(){
+        prepContent();
         return dmgBase.copy();
     }
     public static Invocation getSPDBase(){
+        prepContent();
         return spdBase.copy();
     }
     public static List<Invocation> getForStatType(StatType type, int amount){
         List<Invocation> invosToReturn = new ArrayList<>();
+        prepContent();
         if(statInvoListMap.get(type) == null){
             return invosToReturn;
         }
-
         List<Invocation> availableForStat = statInvoListMap.get(type);
         if(availableForStat.isEmpty()){return invosToReturn;}
 
@@ -109,7 +122,7 @@ public abstract class Invocation {
         return invosToReturn;
     }
     public static Invocation getSpecific(String name){
-
+        prepContent();
         for(StatType s : StatType.values()) {
             for (Invocation i : statInvoListMap.get(s)) {
                 if (TextFormatter.getIsolatedClassName(i).equalsIgnoreCase(name)) {
@@ -117,9 +130,9 @@ public abstract class Invocation {
                 }
             }
         }
-
         return null;
     }
+
     public String getName(){
         String s = TextFormatter.getIsolatedClassName(this);
         int index = s.indexOf("Invocation");

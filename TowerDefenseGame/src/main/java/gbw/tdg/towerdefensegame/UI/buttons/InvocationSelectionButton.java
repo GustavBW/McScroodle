@@ -14,7 +14,7 @@ public class InvocationSelectionButton extends Button {
     private final StatType type;
     private final InvocationSelectionDisplay display;
     private final TowerStatDisplay statDisplay;
-    private boolean isSpawned = false;
+    private boolean toggle = false;
     private Image image;
 
     public InvocationSelectionButton(StatType t, Tower tower, TowerStatDisplay statDisplay) {
@@ -32,14 +32,20 @@ public class InvocationSelectionButton extends Button {
 
     @Override
     public void onClick(MouseEvent event){
-        display.spawn();
+        if(toggle){
+            display.destroy();
+        }else {
+            display.spawn();
+        }
+
+        toggle = !toggle;
     }
 
     @Override
     public void destroy(){
         super.destroy();
         display.destroy();
-        isSpawned = false;
+        toggle = false;
     }
 
     @Override

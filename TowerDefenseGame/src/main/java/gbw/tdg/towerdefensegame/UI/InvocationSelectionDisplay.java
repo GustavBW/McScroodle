@@ -30,14 +30,13 @@ public class InvocationSelectionDisplay extends Button {
         this.display = display;
         this.spawningButton = spawningButton;
         invocations = Invocation.getForStatType(t,3);
-        contents = new GraphicalInventory<>(3,1,new Point2D(sizeX,sizeY),position,15 * Main.scale.getX(),renderingPriority);
+        contents = new GraphicalInventory<>(3,1,position,new Point2D(sizeX,sizeY),15 * Main.scale.getX(),renderingPriority);
         contents.setRenderBackground(false);
 
         for(Invocation i : invocations){
             contents.add(new SmallInvocationDisplay(Point2D.ZERO,new Point2D(sizeX/3,sizeY),tower,true,i) {
                 @Override
                 public void onClick(MouseEvent event) {
-                    System.out.println("InvocationSelectionDisplay: You chose " + getInvo().getName());
                     InvocationSelectionDisplay.this.getDisplay().onInvocationSelected(getInvo(), InvocationSelectionDisplay.this.getSpawningButton());
                     InvocationSelectionDisplay.this.destroy();
                 }
@@ -61,6 +60,18 @@ public class InvocationSelectionDisplay extends Button {
     public void destroy(){
         super.destroy();
         contents.destroy();
+    }
+    @Override
+    public void setDimensions(Point2D p){
+
+    }
+    @Override
+    public void setPosition(Point2D p){
+
+    }
+    @Override
+    public boolean isInBounds(Point2D p){
+        return false;
     }
 
     @Override

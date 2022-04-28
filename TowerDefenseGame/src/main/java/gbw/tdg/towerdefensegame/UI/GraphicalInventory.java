@@ -18,7 +18,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     private int rows;
     private boolean enableAutoSpawn, renderBackground = true;
 
-    public GraphicalInventory(int coloumns, int rows, Point2D dim, Point2D pos, double margin, double rendPrio){
+    public GraphicalInventory(int coloumns, int rows, Point2D pos, Point2D dim, double margin, double rendPrio){
         this(coloumns,dim.getX(),dim.getY(),margin, pos,rendPrio,rows);
     }
 
