@@ -25,7 +25,7 @@ public class Path {
     public void render(GraphicsContext gc){
 
         gc.setStroke(Color.BLACK);
-        gc.setLineWidth(10 * (3840.0 / Main.canvasSize.getX()));
+        gc.setLineWidth(10 * Main.scale.getX());
 
         for(WayPoint wP : points){
             wP.render(gc);

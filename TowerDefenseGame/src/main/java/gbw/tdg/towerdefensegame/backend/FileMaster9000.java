@@ -1,7 +1,5 @@
 package gbw.tdg.towerdefensegame.backend;
 
-import javafx.scene.image.Image;
-
 import java.io.File;
 import java.util.*;
 
@@ -13,10 +11,13 @@ public class FileMaster9000 {
 
     private final String root;
     private final Map<String,File> strImageMap;
+    private final String defFileName;
+    private File defFile;
 
-    public FileMaster9000(String root){
+    public FileMaster9000(String root, String defaultFile){
         this.root = root;
         this.strImageMap = new HashMap<>();
+        this.defFileName = defaultFile;
     }
 
     private List<File> getContents(){
@@ -25,24 +26,27 @@ public class FileMaster9000 {
     }
 
     public File request(String request){
+        System.out.println("FM9 request " + request);
         request = request.toLowerCase(Locale.ROOT);
 
         if(strImageMap.get(request) != null){
+            System.out.println("FM9: Found file in Map ");
             return strImageMap.get(request);
         }
 
         for(File f : getContents()){
             if(isolateName(f).equalsIgnoreCase(request)){
                 strImageMap.put(request,f);
+                System.out.println("FM9: File found in contents");
                 return strImageMap.get(request);
             }
         }
-        return null;
+        return getDefault();
     }
 
-    public File requestOrDefault(String request, File def){
+    public File requestOrDefault(String request){
         File found = this.request(request);
-        return found == null ? def : found;
+        return found == null ? getDefault() : found;
     }
 
     private String isolateName(File f){
@@ -50,5 +54,12 @@ public class FileMaster9000 {
         int indexEnd = fName.lastIndexOf('.');
         int indexStart = fName.lastIndexOf('\\') + 1;
         return fName.substring(indexStart,indexEnd).toLowerCase();
+    }
+
+    private File getDefault(){
+        if(defFile == null){
+            defFile = request(defFileName);
+        }
+        return defFile;
     }
 }

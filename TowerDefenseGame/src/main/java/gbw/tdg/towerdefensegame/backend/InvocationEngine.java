@@ -6,11 +6,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InvocationEngine {
+public class InvocationEngine extends IOEngine {
 
     private static InvocationEngine instance;
-    private File unknownInvocationFile;
-    private FileMaster9000 fm9;
 
     public static InvocationEngine getInstance(String root){
         if(instance == null){
@@ -20,22 +18,7 @@ public class InvocationEngine {
     }
 
     private InvocationEngine(String root){
-        this.fm9 = new FileMaster9000(root);
+        super(root, "unknownInvocation");
     }
-
-    public Image getImage(String request){
-        return new Image(fm9.requestOrDefault(request,getUnknownInvocation()).toURI().toString());
-    }
-
-    private File getUnknownInvocation(){
-        if(unknownInvocationFile == null){
-            unknownInvocationFile = fm9.request("unknownInvocation");
-        }
-        return unknownInvocationFile;
-    }
-    public Image getUnknown(){
-        return new Image(getUnknownInvocation().toURI().toString());
-    }
-
 
 }

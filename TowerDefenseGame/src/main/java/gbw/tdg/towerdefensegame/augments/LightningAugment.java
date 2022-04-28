@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
+import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.UI.vfx.TopDownStrikeVFX;
 import gbw.tdg.towerdefensegame.UI.vfx.VFX;
@@ -20,7 +21,7 @@ public class LightningAugment extends Augment{
     @Override
     public void bounce(Enemy e, Bullet b){
         e.applyDamage(e.getMaxHP() * getPercentMaxHPDamage() + b.getDamage());
-        new TopDownStrikeVFX(200, VFX.DEFAULT_PRIO, e.getPosition()).spawn();
+        new TopDownStrikeVFX(200, VFX.DEFAULT_PRIO, e.getPosition(), ContentEngine.VFX.getImage("LightningVFX")).spawn();
     }
 
     @Override

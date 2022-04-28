@@ -21,4 +21,5 @@ public class ContentEngine {
     public static AugmentEngine AUGMENTS = AugmentEngine.getInstance(ressourceDir + "/augments");
     public static InvocationEngine INVOCATIONS = InvocationEngine.getInstance(ressourceDir + "/invocations");
     public static ButtonEngine BUTTONS = ButtonEngine.getInstance(ressourceDir + "/buttons");
+    public static VFXEngine VFX = VFXEngine.getInstance(ressourceDir + "/vfx");
 }
