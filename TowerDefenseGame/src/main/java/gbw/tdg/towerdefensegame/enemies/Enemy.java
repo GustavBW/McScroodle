@@ -17,7 +17,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     private WayPoint latest;
     private WayPoint next;
     private Point2D position;
-    private double ogmvspeed = 5,mvspeedToUse = ogmvspeed, minDistToPoint = 10;
+    private double ogmvspeed = 5 * Main.scale.getX(),mvspeedToUse = ogmvspeed, minDistToPoint = 10;
     private final Path path;
     private final ProgressBar hpBar;
     private double maxHP = 1, id, hp = maxHP;
@@ -28,7 +28,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     private final Color color;
     private Bullet latestHit;
     private final EnemyStatDisplay statDisplay;
-    private volatile Set<LifetimeEffect> lifetimeEffects;
+    private volatile Set<LifetimeEffect> lifetimeEffects = new HashSet<>();
     private final Set<ITower> provokers = new HashSet<>();
     private final Map<ITower, Double> provokerDamageMap = new HashMap<>();
 
@@ -45,7 +45,6 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
         enemyCount++;
         this.id = enemyCount;
         this.statDisplay = new EnemyStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
-        this.lifetimeEffects = Collections.synchronizedSet(new HashSet<>());
     }
     @Override
     public synchronized void tick(){
@@ -233,9 +232,13 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     public double getMvspeed(){
         return mvspeedToUse;
     }
-    public void setMvspeed(double newSpeed){
+    public void setTempMovespeed(double newSpeed){
         this.mvspeedToUse = newSpeed;
     }
+    public void setBaseMovespeed(double newSpeed){
+        this.ogmvspeed = newSpeed;
+    }
+
     @Override
     public double getSize(){return sizeX;}
     @Override

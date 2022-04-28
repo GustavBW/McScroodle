@@ -40,63 +40,51 @@ public class TextFormatter {
         }
         return trimStringArray(array);
     }
-    public static List<String> toLinesArray(String text, int symbolsPerLine){
+    public static List<String> toLinesArray(String text, int symbolsPerLine) {
         return toLinesArray(text, symbolsPerLine, "\n");
     }
-    public static List<String> toLinesArray(String text, double prefWidth, Font font){
-        List<String> output = new ArrayList<>();
-        if(text.isBlank()){return output;}
 
-        List<String> spacedOut = new LinkedList<>(List.of(text.split(" ")));
+    public static List<String> wordWrapCustom(String wrapMe, Font font, double wrapInPixels){
+        //Pulled from StackOverflow: https://stackoverflow.com/questions/52350922/word-wrap-in-java-swing-with-hard-wrap-pixel-limit
 
-        int i = 0;
+        //Cut the string into bits at the spaces
+        String[] split = wrapMe.split(" ");
 
-        String currentLine = text;
-        Text fullChecker = new Text(currentLine);
-        fullChecker.setFont(font);
+        ArrayList<String> lines = new ArrayList<String>(); //we will return this, each item is a line
+        if(wrapInPixels < font.getSize()){return lines;}
 
-        Text substringChecker = new Text();
-        substringChecker.setFont(font);
+        String currentLine = ""; //All contents of the currentline
+        Text fm = new Text(currentLine);
+        fm.setFont(font);
+        StringBuilder sB = new StringBuilder();
 
-        while(fullChecker.getLayoutBounds().getWidth() > prefWidth && spacedOut.size() > 1) {
 
-            while (substringChecker.getLayoutBounds().getWidth() < prefWidth && spacedOut.size() > 1) {
-
-                currentLine = concatonateArray(spacedOut.subList(0, i), " ");
-                substringChecker.setText(currentLine);
-
-                if (substringChecker.getLayoutBounds().getWidth() < prefWidth) {
-                    i++;
-
-                } else {
-
-                    currentLine = concatonateArray(spacedOut.subList(0, i), " ");
-                    output.add(currentLine);
-
-                    for (int k = 0; k < i && k < spacedOut.size(); k++) {
-                        spacedOut.remove(k);
-                    }
-
-                    i = 0;
-
-                    currentLine = "";
-                    substringChecker.setText("");
+        for(String s : split) {
+            //Try to add the next string
+            fm.setText(currentLine + " " + s);
+            if( fm.getLayoutBounds().getWidth() >= wrapInPixels ) {
+                //Too big
+                if(!currentLine.isBlank()) { //If it is still bigger with an empty string, still add at least 1 word
+                    lines.add(currentLine); //Add the line without this string
+                    currentLine = s; //Start next line with this string in it
+                    continue;
                 }
             }
+            //Still have room, or a single word that is too big
+            //add a space if not the first word
+            if(!currentLine.isBlank()) {
+                currentLine += " ";
+            }
+
+            //Append string to line
+            currentLine = currentLine + s;
         }
-        output.add(currentLine);
-
-
-        return output;
-    }
-
-    public static void main(String[] args) {
-        String text = "Lmao I really gotta white something long here. Got no ideas but todays Deadlands session was cool. Messed up a bunch though, made an, in the words of Thomas' \" super aspergers move \" which authenticity he appreciated. I didn't. There is a reason it's so authentic";
-        System.out.println(text);
-
-        for(String s : toLinesArray(text,100,Font.font("Impact",20))){
-            System.out.println(s);
+        //The last line still may need to get added
+        if(!currentLine.isBlank()) {
+            lines.add(currentLine);
         }
+
+        return lines;
     }
 
     public static List<String> trimStringArray(List<String> list) {

@@ -12,6 +12,7 @@ public class EnemyBuff {
 
     public double getBonusSpeed(){return bonusSpeed;}
     public double getHealth(){return health;}
+
     public void increment(double health, double speed){
         this.health += health;
         this.bonusSpeed += speed;

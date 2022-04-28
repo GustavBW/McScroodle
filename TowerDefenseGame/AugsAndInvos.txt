@@ -21,6 +21,7 @@ INVOCATIONS
 All towers have a "basic" attack invocation at start
 When a tower reaches max rank in a stat, it gets to choose from 3 different invocations related to that stat.
 Stats considered: DMG, RNG, SPD.
+Background colors related to stats: DMG: Red, RNG: Green, SPD Blue
 Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
 Invocations for RNG is: Slowfield,
 Invocations for SPD is: Multishot,
@@ -28,8 +29,8 @@ Invocations for SPD is: Multishot,
 
  Possible Invocations:
 G - Shotgun (grape shot), fires sprays of 4,5,6 untargeted bullets dealing 1/10 dmg to all enemies hit
-G - Multishot 2..N, the tower attacks op to X additional enemies for 100 - ((x - 1) * 15) % damage*
-G - Slow Field (Aura) 1,2,3, slows enemies by 20 * x % whilest inside a radius of tbd/tbd/tbd
+W - Multishot 2..N, the tower attacks op to X additional enemies for 100 - ((x - 1) * 15) % damage*
+W - Slow Field (Aura) 1,2,3, slows enemies by 20 * x % whilest inside a radius of tbd/tbd/tbd
 N - Ray 1,2,3, tower no longer shoots bullets but a long continous ray.**
 N - Doom Ray , no levels requires Ray N, Ray damage ramps up by 10% each 5/atkspd seconds.
 N - Burster 1,2,3 the tower, when firing the main bullet, follows up with x extra during atkDelay * 0.5 seconds. Each extra bullet deals 60 - (x * 10) % damage

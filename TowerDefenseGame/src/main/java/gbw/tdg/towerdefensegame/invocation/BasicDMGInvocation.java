@@ -18,22 +18,23 @@ public class BasicDMGInvocation extends Invocation{
     public void attack(List<Enemy> targets){
         if(getOwner() == null){return;}
 
-        Point2D position = getOwner().getPosition();
-        Point2D dim = getOwner().getDimensions();
+        Point2D position = getOwner().getOrigin();
 
         for(Enemy target : targets) {
-            Bullet b = new AugmentedBullet(position.add(dim.getX() * 0.5, dim.getY() * 0.5), target, getOwner());
-
-            for (Augment a : getOwner().getAugments()) {
-                a.applyToBullet(b);
-            }
-            b.spawn();
+            applyAugs(new AugmentedBullet(position, target, getOwner())).spawn();
         }
     }
 
     @Override
     public void evaluate() {
 
+    }
+
+    protected Bullet applyAugs(Bullet b){
+        for (Augment a : getOwner().getAugments()) {
+            a.applyToBullet(b);
+        }
+        return b;
     }
 
     @Override

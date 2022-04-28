@@ -6,6 +6,7 @@ import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import gbw.tdg.towerdefensegame.handlers.*;
+import gbw.tdg.towerdefensegame.invocation.Invocation;
 import gbw.tdg.towerdefensegame.tower.ITower;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.animation.AnimationTimer;
@@ -90,6 +91,7 @@ public class Main extends Application {
         setState(GameState.START_MENU);
 
         Tower testTower = new Tower(canvasSize.multiply(0.5),0,0.3,1000,1);
+        Invocation.getSpecific("GrapeShotInvocation").applyToTower(testTower);
         testTower.spawn();
 
         scene.setOnMouseClicked(e -> mouseHandler.onClick(e));

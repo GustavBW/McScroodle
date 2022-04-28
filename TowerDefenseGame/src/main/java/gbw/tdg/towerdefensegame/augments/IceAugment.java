@@ -9,28 +9,29 @@ public class IceAugment extends Augment {
 
     //A slow effect reduces enemy to speed to "slowness" percentage of the original
 
-    private double slowness;
     private LifetimeEffect currentEffect;
 
     public IceAugment(double value, int type, int level, int maxLevel) {
         super(value,type,level, maxLevel);
-        this.slowness = Decimals.toXDecimalPlaces(1 - (0.2 * level), 2);
     }
 
     @Override
     public synchronized void triggerEffects(Enemy e, Bullet b){
-        slowness = Decimals.toXDecimalPlaces(1 - (0.2 * getLevel()), 2);
-
         e.addLifetimeEffect(
-                (currentEffect = new SlowEffect(3_000,slowness,this))
+                (currentEffect = new SlowEffect(3_000,getSlow(),this))
         );
+    }
+
+    private double getSlow(){
+        //A "slow" percentage is what percentage of original movespeed, the enemies current movespeed is reduced to.
+        return 1 / (getLevel() * .5);
     }
 
     @Override
     public String getDesc(){
         int lifetime = currentEffect == null ? getLevel() : (int) (currentEffect.getLifetimeMS() / 1000);
-        slowness = Decimals.toXDecimalPlaces(1 - (0.2 * getLevel()), 2);
-        return "Slows enemies down by " + (100 - slowness * 100) + "% for " + lifetime + " seconds";
+        double d = Decimals.toXDecimalPlaces(getSlow(), 2);
+        return "Slows enemies down by " + (100 - d * 100) + "% for " + lifetime + " seconds";
     }
 
     @Override

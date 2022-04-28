@@ -2,11 +2,15 @@ package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
+import gbw.tdg.towerdefensegame.backend.Point2G;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.invocation.Invocation;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
+import java.util.List;
 
 public class SmallInvocationDisplay extends Button {
 
@@ -16,6 +20,8 @@ public class SmallInvocationDisplay extends Button {
     private final Font titleFont,descFont;
     private Point2D titleOffset, descOffset, imageOffset;
     private double arcThing = 15;
+    private final Color color = new Color(0,0,0,0.5);
+    private final Color color2 = new Color(1,1,1,0.8);
 
     public SmallInvocationDisplay(Point2D position, Point2D dim, Clickable root, boolean shouldRenderBackground, Invocation invocation) {
         super(position, dim.getX(),dim.getY(), RText.EMPTY, root, shouldRenderBackground);
@@ -24,7 +30,7 @@ public class SmallInvocationDisplay extends Button {
         titleFont = Font.font("Impact", Main.canvasSize.getX() * .014);
         descFont = Font.font("Verdana", Main.canvasSize.getY() * .012);
 
-        this.desc = ARText.create(invocation.getDesc(),Point2D.ZERO,1,super.renderingPriority)
+        this.desc = ARText.create(getFormattedDesc(),Point2D.ZERO,1,super.renderingPriority)
                 .setDimAR(getDescDim())
                 .setFont(descFont)
                 .setTextColor(Color.BLACK);
@@ -42,22 +48,33 @@ public class SmallInvocationDisplay extends Button {
 
     @Override
     public void render(GraphicsContext gc){
-        gc.setFill(super.getBackgroundColor());
+        gc.setFill(color);
         gc.fillRoundRect(position.getX(),position.getY(), getDimensions().getX(), getDimensions().getY(),arcThing,arcThing);
+
+        Point2D descPos = getDescBackgroundPos();
+        Point2D descDim = getDescRimDim();
+
+        gc.setFill(color2);
+        gc.fillRoundRect(descPos.getX(),descPos.getY(),descDim.getX(),descDim.getY(),arcThing,arcThing);
+
 
         title.render(gc);
         image.render(gc);
         desc.render(gc);
     }
+
+    private String getFormattedDesc(){
+        List<String> fittedDesc = TextFormatter.wordWrapCustom(invocation.getLongDesc(), descFont,getDescDim().getX());
+        return TextFormatter.concatonateArray(fittedDesc, "\n");
+    }
+
     @Override
     public void spawn(){
         super.spawn();
-        System.out.println("SmallInvocationDisplay.spawn " + invocation.getName());
     }
     @Override
     public void destroy(){
         super.destroy();
-        System.out.println("SmallInvocationDisplay.destroy " + invocation.getName());
     }
 
 
@@ -70,13 +87,26 @@ public class SmallInvocationDisplay extends Button {
     private Point2D getImageOffset(){
         return new Point2D((
                 sizeX - getImageDim().getX()) * .5,
-                getTitleOffset().getY() + getTitleDim().getY() + 5 * Main.scale.getY()
+                getTitleOffset().getY() + 15 * Main.scale.getY()
         );
     }
     private Point2D getDescOffset(){
         return new Point2D(
                 sizeX * .1,
-                getTitleOffset().getY() + getImageDim().getY() + 15 * Main.scale.getY()
+                getImageOffset().getY() + getImageDim().getY() + 30 * Main.scale.getY() + descFont.getSize()
+        );
+    }
+    private Point2D getDescBackgroundPos(){
+        Point2D descOffset = getDescOffset();
+        return position.add(
+                descOffset.getX() - 15 * Main.scale.getX(),
+                descOffset.getY() - (descFont.getSize() + 15 * Main.scale.getY()));
+    }
+    private Point2D getDescRimDim(){
+        Point2D descDim = getDescDim();
+        return new Point2D(
+                descDim.getX() + 30 * Main.scale.getY(),
+                descDim.getY() + 30 * Main.scale.getY()
         );
     }
 
@@ -91,7 +121,7 @@ public class SmallInvocationDisplay extends Button {
     private Point2D getDescDim(){
         return new Point2D(
                 sizeX - (getDescOffset().getX() * 2),
-                sizeY - (getDescOffset().getY() + 15 * Main.scale.getY())
+                sizeY - (getDescOffset().getY() + 30 * Main.scale.getY())
         );
     }
     public Invocation getInvo(){

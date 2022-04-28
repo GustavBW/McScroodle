@@ -5,8 +5,10 @@ import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.UI.buttons.InvocationSelectionButton;
+import gbw.tdg.towerdefensegame.UI.buttons.SmallInvocationDisplayButton;
 import gbw.tdg.towerdefensegame.UI.buttons.TickButton;
 import gbw.tdg.towerdefensegame.augments.Augment;
+import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.invocation.Invocation;
 import gbw.tdg.towerdefensegame.tower.StatType;
@@ -50,7 +52,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
 
         ARText rtextForUpgradeButtons = ARText.create(tower.getWorth() + "G",Point2D.ZERO,1,renderingPriority);
         upgradeButtons.addAll(List.of(
-                new TickButton<>(Point2D.ZERO,0,0,rtextForUpgradeButtons.copy(),tower,StatType.DAMAGE,true){
+                new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.DAMAGE,false){
                     @Override
                     public void update(){
                         text.setText((TextFormatter.intToKMBNotation((int) (tower.getUpgradeCost() * 1.1))) + "G");
@@ -61,8 +63,8 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
                             onMaxUpgradeReached(this.getAssociatedValue(),this);
                         }
                     }
-                }.setUpdateDelay(500),
-                new TickButton<>(Point2D.ZERO,0,0,rtextForUpgradeButtons.copy(),tower,StatType.RANGE,true){
+                }.setUpdateDelay(500).setImage2(ContentEngine.BUTTONS.getImage("DMGUP")),
+                new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.RANGE,false){
                     @Override
                     public void update(){
                         text.setText((TextFormatter.intToKMBNotation((int) (tower.getUpgradeCost() * 1.1))) + "G");
@@ -73,8 +75,8 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
                             onMaxUpgradeReached(this.getAssociatedValue(),this);
                         }
                     }
-                }.setUpdateDelay(500),
-                new TickButton<>(Point2D.ZERO,0,0,rtextForUpgradeButtons.copy(),tower,StatType.ATTACK_SPEED,true){
+                }.setUpdateDelay(500).setImage2(ContentEngine.BUTTONS.getImage("RNGUP")),
+                new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.ATTACK_SPEED,false){
                     @Override
                     public void update(){
                         text.setText((TextFormatter.intToKMBNotation((int) (tower.getUpgradeCost() * 1.1))) + "G");
@@ -85,7 +87,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
                             onMaxUpgradeReached(this.getAssociatedValue(),this);
                         }
                     }
-                }.setUpdateDelay(500)
+                }.setUpdateDelay(500).setImage2(ContentEngine.BUTTONS.getImage("SPDUP"))
         ));
         augmentDisplay.setBackgroundColor(Color.TRANSPARENT);
         upgradeButtons.setBackgroundColor(Color.TRANSPARENT);
@@ -114,7 +116,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
 
     public void onInvocationSelected(Invocation invocation, Button b){
         invocation.applyToTower(tower);
-        upgradeButtons.replace(b,invocation.getIcon());
+        upgradeButtons.replace(b,new SmallInvocationDisplayButton(b.getPosition(),b.getDimensions(),tower,invocation));
     }
 
     private Button getInvocationSelectionButton(StatType t) {

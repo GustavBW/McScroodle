@@ -21,7 +21,8 @@ public abstract class Invocation {
 
     private static final List<Invocation> dmgInvos = new ArrayList<>(List.of(
         //Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
-            new BasicDMGInvocation(1)
+            new BasicDMGInvocation(1),
+            new GrapeShotInvocation(1)
     ));
     private static final List<Invocation> rngInvos = new ArrayList<>(List.of(
             new BasicDMGInvocation(1),
@@ -107,6 +108,18 @@ public abstract class Invocation {
 
         return invosToReturn;
     }
+    public static Invocation getSpecific(String name){
+
+        for(StatType s : StatType.values()) {
+            for (Invocation i : statInvoListMap.get(s)) {
+                if (TextFormatter.getIsolatedClassName(i).equalsIgnoreCase(name)) {
+                    return i.copy();
+                }
+            }
+        }
+
+        return null;
+    }
     public String getName(){
         String s = TextFormatter.getIsolatedClassName(this);
         int index = s.indexOf("Invocation");
@@ -115,6 +128,9 @@ public abstract class Invocation {
 
     public String getDesc(){
         return "Lmao the sucker didn't impliment this for " + getName() + " Invocation";
+    }
+    public String getLongDesc(){
+        return "Lorem Ipsum Wingardium... You know this dev is so fcking lazy he didn't even just copy paste the standard long description from Augment. Incredible";
     }
 
 

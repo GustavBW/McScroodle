@@ -12,7 +12,7 @@ import java.util.*;
 
 public class ExplosiveAugment extends Augment{
 
-    private double baseRangeMultiplier = 20;
+    private double baseRangeMultiplier = 200;
 
     public ExplosiveAugment(double value, int type, int level,int maxLevel){
         super(value,type,level,maxLevel);
@@ -46,7 +46,7 @@ public class ExplosiveAugment extends Augment{
     }
 
     private double getERadius(){
-        return baseRangeMultiplier * getLevel() * (Main.canvasSize.getX() * (1.00 / 1920));
+        return baseRangeMultiplier + 100 * Math.log(getLevel()) * Main.scale.getX();
     }
 
     @Override

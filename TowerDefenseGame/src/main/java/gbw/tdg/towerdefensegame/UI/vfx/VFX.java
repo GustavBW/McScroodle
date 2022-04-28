@@ -68,6 +68,10 @@ public abstract class VFX implements Renderable, Tickable {
         this.dim = dim;
     }
 
+    public void extend(int ms){
+        this.killTimeStamp += ms;
+    }
+
     @Override
     public Point2D getDimensions(){
         return null;

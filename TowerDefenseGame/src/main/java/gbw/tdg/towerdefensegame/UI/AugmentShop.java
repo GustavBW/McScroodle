@@ -34,9 +34,9 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
 
     private AugmentBuyButton getNewOffering(){
         int cost = baseCost * 2 + amountBought;
-        return new AugmentBuyButton(new RText(
+        return new AugmentBuyButton(Point2D.ZERO, 400,400, new RText(
                 "",Point2D.ZERO,4, Color.WHITE, Font.font("Impact",Main.canvasSize.getX()*0.01)),
-                Augment.getRandom(20), this, cost);
+                Augment.getRandom(cost), this, cost);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class Bullet implements Tickable,Renderable{
     private Point2D position, velocity;
     private double sizeX = 10,sizeY = 10;
     private double spawnTime, lifeTime = 10 * 1_000;
-    protected double speed = 40, damage;
+    protected double speed = 40, damage, damagePercent = 1;
     protected Enemy target;
     protected List<Enemy> hasAlreadyHit = new ArrayList<>();
     private final List<Augment> onHitAugments = new ArrayList<>();
@@ -94,7 +94,13 @@ public class Bullet implements Tickable,Renderable{
     }
     public void addPiercingLevels(int lvl){this.piercingLevel += lvl;}
     public ITower getOwner(){return owner;}
-    public double getDamage(){return owner.getDamage();}
+    public double getDamage(){
+        return owner.getDamage() * damagePercent;
+    }
+    public Bullet setDamagePercent(double percent){
+        this.damagePercent = percent;
+        return this;
+    }
     public List<Augment> getOnHitAugments(){
         return onHitAugments;
     }

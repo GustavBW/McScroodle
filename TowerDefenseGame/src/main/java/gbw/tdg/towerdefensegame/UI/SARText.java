@@ -28,6 +28,11 @@ public class SARText extends ARText {
     public static SARText create(List<String> lines, Point2D position, Point2D dim, double dropShadowOffset, double rendPrio){
         return new SARText(lines,position,dim,dropShadowOffset, RText.STANDARD_FONT,rendPrio);
     }
+    public static SARText create(String plainText, Point2D position, Point2D dim, double dropShadowOffset, double rendPrio){
+        int dimT = dim.getX() > RText.STANDARD_FONT.getSize() ? (int) dim.getX() : (int)  RText.STANDARD_FONT.getSize();
+        dim = new Point2D(dimT, dim.getY());
+        return new SARText(TextFormatter.wordWrapCustom(plainText,RText.STANDARD_FONT, dimT),position,dim,dropShadowOffset, RText.STANDARD_FONT,rendPrio);
+    }
 
     @Override
     public void render(GraphicsContext gc){
@@ -39,31 +44,39 @@ public class SARText extends ARText {
 
     public SARText setDimSAR(Point2D dim){
         this.dim = dim;
+        recalc();
         return this;
     }
     public SARText setMargin(double margin){
         this.margin = margin;
+        recalc();
         return this;
     }
 
     public SARText setFont(Font font){
         this.font = getFittedFont(font);
+        recalc();
         return this;
     }
 
     public SARText setFittingFontSize(boolean state){
+        boolean prevState = isFitted;
         this.isFitted = state;
+        if(prevState != isFitted){
+            recalc();
+        }
         return this;
     }
 
     public SARText setPrefferedFontSize(double prefSize){
         this.prefferedFontSize = prefSize;
+        recalc();
         return this;
     }
 
     @Override
     public void setText(String s){
-        lines = new ArrayList<>(TextFormatter.toLinesArray(s,(int) (dim.getX() / font.getSize()),"\n"));
+        lines = new ArrayList<>(TextFormatter.wordWrapCustom(s,font,(int) dim.getX()));
     }
     public SARText setText(List<String> l){
         this.lines = l;
@@ -80,8 +93,13 @@ public class SARText extends ARText {
     @Override
     public void setDimensions(Point2D dim){
         this.dim = dim;
+        recalc();
+    }
+
+    private void recalc(){
         this.font = getFittedFont(font);
-        this.yAdvance = getYAdvance(dim,font);
+        this.yAdvance = getYAdvance(dim, font);
+        this.lines = TextFormatter.wordWrapCustom(TextFormatter.concatonateArray(lines, " "),font,(int) dim.getX());
     }
 
     private double getYAdvance(Point2D dim, Font font) {
@@ -94,6 +112,7 @@ public class SARText extends ARText {
     }
 
     private double getFittedFontSize(){
-       return (dim.getY() / lines.size()) - (margin * (lines.size() -1));
+        int lineSize = lines.isEmpty() ? 1 : lines.size();
+        return (dim.getY() / lineSize) - (margin * (lineSize -1));
     }
 }

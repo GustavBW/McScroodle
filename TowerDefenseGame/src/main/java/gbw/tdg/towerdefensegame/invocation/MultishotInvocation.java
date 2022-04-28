@@ -28,4 +28,10 @@ public class MultishotInvocation extends BasicSPDInvocation{
     public String getDesc(){
         return "Allows the Tower to shoot at " + getLevel() + " additional targets at once.";
     }
+
+    @Override
+    public String getLongDesc(){
+        return "The Tower will attack up to " + getLevel() + " additional targets when firing. These additional shots does apply on-hit effects and on-hit sources like Chain Lightning Augment and Explosive Augment";
+    }
+
 }

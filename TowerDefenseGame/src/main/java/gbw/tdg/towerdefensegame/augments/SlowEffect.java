@@ -16,7 +16,7 @@ public class SlowEffect extends LifetimeEffect {
 
     @Override
     public void evaluateOn(Enemy e){
-        e.setMvspeed(e.getMvspeed() * slowPercentage);
+        e.setTempMovespeed(e.getMvspeed() * slowPercentage);
         super.evalLifetime(e);
     }
 

@@ -7,6 +7,7 @@ import gbw.tdg.towerdefensegame.tower.StatType;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -24,12 +25,13 @@ public class InvocationSelectionDisplay extends Button {
                 Main.canvasSize.getY() * 0.35,
                 RText.EMPTY,
                 tower,
-                true
+                false
         );
         this.display = display;
         this.spawningButton = spawningButton;
         invocations = Invocation.getForStatType(t,3);
         contents = new GraphicalInventory<>(3,1,new Point2D(sizeX,sizeY),position,15 * Main.scale.getX(),renderingPriority);
+        contents.setRenderBackground(false);
 
         for(Invocation i : invocations){
             contents.add(new SmallInvocationDisplay(Point2D.ZERO,new Point2D(sizeX/3,sizeY),tower,true,i) {

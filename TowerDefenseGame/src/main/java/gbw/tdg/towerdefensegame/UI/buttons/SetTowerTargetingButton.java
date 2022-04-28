@@ -15,7 +15,7 @@ public class SetTowerTargetingButton extends Button{
 
     private final TowerFunctionsDisplay display;
     private final GraphicalInventory<Button> menu;
-    private boolean menuIsSpawned;
+    private boolean menuIsSpawned = true;
     private final List<Button> buttons = new ArrayList<>();
 
     public SetTowerTargetingButton(TowerFunctionsDisplay towerFunctionsDisplay) {
@@ -37,18 +37,22 @@ public class SetTowerTargetingButton extends Button{
     @Override
     public void onClick(MouseEvent event){
         if(!menuIsSpawned){
-            menu.spawn();
-            menuIsSpawned = true;
-        }else{
             menu.destroy();
+        }else{
+            menu.spawn();
         }
-
+        menuIsSpawned = !menuIsSpawned;
     }
     @Override
     public void destroy(){
         super.destroy();
         menu.destroy();
         menuIsSpawned = false;
+    }
+
+    @Override
+    public void spawn(){
+        super.spawn();
     }
 
     @Override

@@ -5,6 +5,7 @@ import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -21,6 +22,7 @@ public abstract class Button implements Clickable, Renderable {
     protected Color disabledColor = new Color(0,0,0,0.5);
     protected Color backgroundColor = enabledColor;
     private Clickable root;
+    private Image image;
 
     public Button(Button b) {
         this.renderingPriority = b.getRenderingPriority();
@@ -37,6 +39,7 @@ public abstract class Button implements Clickable, Renderable {
         this.backgroundColor = b.getBackgroundColor();
         this.root = b.getRoot();
         this.isSpawned = b.isSpawned();
+        this.image = b.getImage();
     }
 
     public Button(Point2D position, double sizeX, double sizeY, RText textUnit, Clickable root, boolean shouldRenderBackground){
@@ -47,6 +50,10 @@ public abstract class Button implements Clickable, Renderable {
         this.text = textUnit;
         this.shouldRenderBackground = shouldRenderBackground;
         rimColor = new Color(1,1,1,1);
+    }
+    public Button(Image image, Point2D position, Point2D dim, RText textUnit, Clickable root){
+        this(position,dim.getX(),dim.getY(),textUnit,root,false);
+        this.image = image;
     }
     public Button(Point2D position, double sizeX, double sizeY, RText textUnit, boolean shouldRenderBackground){
         this(position,sizeX,sizeY,textUnit,null,shouldRenderBackground);
@@ -70,6 +77,9 @@ public abstract class Button implements Clickable, Renderable {
             gc.setFill(Color.BLACK);
             gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
         }
+        if(image != null){
+            gc.drawImage(image, position.getX(),position.getY(),sizeX,sizeY);
+        }
 
         text.render(gc);
     }
@@ -78,7 +88,10 @@ public abstract class Button implements Clickable, Renderable {
     public Point2D getPosition() {
         return position;
     }
-
+    private Image getImage() {
+        return image;
+    }
+    public void setImage(Image image){this.image = image;}
     public void setBackgroundColor(Color color){
         enabledColor = color;
         backgroundColor = color;

@@ -104,7 +104,10 @@ public class Tower extends ITower{
         }
 
         switch (type) {
-            case RANGE -> setRange(val);
+            case RANGE -> {
+                setRange(val);
+                display.getRangeIndicator().setDimensions(new Point2D(getRange(),0));
+            }
 
             case DAMAGE -> damage = val;
 
@@ -160,8 +163,9 @@ public class Tower extends ITower{
         invocation.setTower(this);
     }
     public void setRNGInvocation(Invocation invocation){
-        this.spdInvocation = invocation;
+        this.rngInvocation = invocation;
         invocation.setTower(this);
+        System.out.println("Tower: setRngInvocation using " + invocation.getName() + " for " + this);
     }
     public List<Augment> getAugments(){return augments;}
 
@@ -173,6 +177,9 @@ public class Tower extends ITower{
     @Override
     public Point2D getPosition() {
         return position;
+    }
+    public Point2D getOrigin(){
+        return this.position.add(sizeX * .5,sizeY * .5);
     }
     public TowerDisplay getDisplay(){return display;}
     @Override

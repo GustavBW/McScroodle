@@ -20,7 +20,8 @@ public class FileMaster9000 {
     }
 
     private List<File> getContents(){
-        return new ArrayList<>(List.of(Objects.requireNonNull(new File(root).listFiles())));
+        List<File> list = new ArrayList<>(List.of(Objects.requireNonNull(new File(root).listFiles())));
+        return list.stream().filter(File::isFile).toList();
     }
 
     public File request(String request){
