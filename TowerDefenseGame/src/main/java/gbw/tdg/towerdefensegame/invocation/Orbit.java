@@ -1,8 +1,9 @@
-package gbw.gravityslingshot.gravityslingshot;
+package gbw.tdg.towerdefensegame.invocation;
 
 import javafx.geometry.Point2D;
 
 public class Orbit {
+    //Pulled and modified from own prior project "GravitySlingshot"
 
     private Point2D center;
     private double radius, orbitingSpeed, currentTick,offset = 0;

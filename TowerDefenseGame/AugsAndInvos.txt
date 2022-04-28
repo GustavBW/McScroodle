@@ -14,7 +14,9 @@ Possible Augments:
 W - Piercing 1,2,3, bullets will penetrate the first target and hit up to x more enemies in a straight line behind the target
 W - Hellfire 1,2,3, targets hit will take 20 * x % of b.dmg + x over 3 seconds on top of original bullet damage
 W - Icicle 1,2,3, targets hit have their mvmtspd reduced by 20 * x % for 3,3,3 seconds. Does not stack with itself on the same target.
-W - Explosive 1,2,3, the bullet explodes hitting all enemies in a tbd * x range around the initial target.
+W - Explosive 1..5, the bullet explodes hitting all enemies in a tbd * x range around the initial target.
+W - ChainLightning. The bullets spawn chain lightnings dealing damage and triggering on-hit
+W - Lightning. After some delay, a lightning strikes the enemy dealing max hp dmg.
 
 
 INVOCATIONS
@@ -23,17 +25,21 @@ When a tower reaches max rank in a stat, it gets to choose from 3 different invo
 Stats considered: DMG, RNG, SPD.
 Background colors related to stats: DMG: Red, RNG: Green, SPD Blue
 Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
-Invocations for RNG is: Slowfield,
-Invocations for SPD is: Multishot,
+Invocations for RNG is: Slowfield, Healing Aura, Hellfire Planes
+Invocations for SPD is: Multishot, Sniper
 
 
  Possible Invocations:
-G - Shotgun (grape shot), fires sprays of 4,5,6 untargeted bullets dealing 1/10 dmg to all enemies hit
+W - Shotgun (grape shot), fires sprays of 4,5,6 untargeted bullets dealing 1/10 dmg to all enemies hit
 W - Multishot 2..N, the tower attacks op to X additional enemies for 100 - ((x - 1) * 15) % damage*
 W - Slow Field (Aura) 1,2,3, slows enemies by 20 * x % whilest inside a radius of tbd/tbd/tbd
-N - Ray 1,2,3, tower no longer shoots bullets but a long continous ray.**
-N - Doom Ray , no levels requires Ray N, Ray damage ramps up by 10% each 5/atkspd seconds.
-N - Burster 1,2,3 the tower, when firing the main bullet, follows up with x extra during atkDelay * 0.5 seconds. Each extra bullet deals 60 - (x * 10) % damage
-N - Spinner 1..N the tower shoots x * 4 untargeted bullets in all directions evenly
+G - Ray 1,2,3, tower no longer shoots bullets but a long continous ray.**
+G - Doom Ray , no levels requires Ray N, Ray damage ramps up by 10% each 5/atkspd seconds.
+G - Burster 1,2,3 the tower, when firing the main bullet, follows up with x extra during atkDelay * 0.5 seconds. Each extra bullet deals 60 - (x * 10) % damage
+G - Spinner 1..N the tower shoots x * 4 untargeted bullets in all directions evenly
+G - Mass'ive. X bullets orbits around the tower dealing X * tower dmg. Orbiting speed scales with Tower atkspd. Orbit is half of tower range.
+G - Hellfire Planes. The tower will, in intervals of atkspd, put out areas that burn enemies. Each area lasts X seconds.
+N - Healing Aura. The tower will, in intervals of atkspd, heal nearby towers for
+G - Sniper. Tower atkspeed becomes 0.1. Tower damage is increased by the atk spd removed as %.
 *All towers have, functionally, multishot 1.
 **In terms of implimentation, this is done through setting the tower's atkspd to 10, reducing dmg to 1/10th and using the "Ray" bullet with a lifetime of 1/10

@@ -51,7 +51,7 @@ public class GrapeShotInvocation extends BasicDMGInvocation{
 
     @Override
     public String getLongDesc(){
-        return "Each shot fires an additional " + grapes + " grapes dealing 60% damage. The first shot will always be in the direction of the target, but the grapes will be fired within a ~45 degree angle. Do you really need precision if the air they breath is lead?";
+        return "Each shot fires an additional " + grapes + " grapes dealing 60% damage. The main bullet will always be fired in the direction of the target, but the grapes will be fired within a ~45 degree angle. \n Do you really need precision if the air they breath is lead?";
     }
 
     @Override

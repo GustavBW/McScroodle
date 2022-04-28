@@ -207,6 +207,12 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     @Override
     public double getHp(){return hp;}
     public double getMaxHP(){return maxHP;}
+    public double getPercentMissingHealth(){
+        return hp / maxHP;
+    }
+    public double getPercentMissingHealth(double offset){
+        return (Math.max(getPercentMissingHealth() + offset,0));
+    }
 
     @Override
     public void onHitByBullet(Bullet bullet, boolean appliesOnHit){

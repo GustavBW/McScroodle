@@ -10,13 +10,13 @@ public class FileMaster9000 {
     //to account for the performance drawback by using a HashMap to look up previously found files
 
     private final String root;
-    private final Map<String,File> strImageMap;
+    private final Map<String,File> strFileMap;
     private final String defFileName;
     private File defFile;
 
     public FileMaster9000(String root, String defaultFile){
         this.root = root;
-        this.strImageMap = new HashMap<>();
+        this.strFileMap = new HashMap<>();
         this.defFileName = defaultFile;
     }
 
@@ -29,16 +29,16 @@ public class FileMaster9000 {
         System.out.println("FM9 request " + request);
         request = request.toLowerCase(Locale.ROOT);
 
-        if(strImageMap.get(request) != null){
+        if(strFileMap.get(request) != null){
             System.out.println("FM9: Found file in Map ");
-            return strImageMap.get(request);
+            return strFileMap.get(request);
         }
 
         for(File f : getContents()){
             if(isolateName(f).equalsIgnoreCase(request)){
-                strImageMap.put(request,f);
+                strFileMap.put(request,f);
                 System.out.println("FM9: File found in contents");
-                return strImageMap.get(request);
+                return strFileMap.get(request);
             }
         }
         return getDefault();

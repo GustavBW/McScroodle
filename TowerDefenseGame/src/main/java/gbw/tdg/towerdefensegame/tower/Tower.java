@@ -117,14 +117,17 @@ public class Tower extends ITower{
         return upgradeMap.get(type);
     }
 
-    public double getRange(){
-        return range * rangeMultiplier;
-    }
-    public double getRangeBase(){
-        return range;
-    }
+    public void setMultishot(int val){multishot = val;}
     public void setRange(double val){
         this.range = val;
+    }
+    public double setAtkSpeed(double newSpeed){
+        this.atkSpeed = newSpeed;
+        this.attackDelayMS = 1_000 / atkSpeed;
+        return atkSpeed;
+    }
+    public void setDamage(double dmg){
+        this.damage = dmg;
     }
 
     public void render(GraphicsContext gc){
@@ -137,8 +140,14 @@ public class Tower extends ITower{
     @Override
     public double getDamage(){return damage;}
     public double getAtkSpeed(){return atkSpeed;}
+    public double getRange(){
+        return range * rangeMultiplier;
+    }
+    public double getRangeBase(){
+        return range;
+    }
     public int getMultishot(){return multishot;}
-    public void setMultishot(int val){multishot = val;}
+
     public boolean addAugment(Augment augment){
         boolean success = false;
         if(augments.size() < maxAugments){
@@ -168,11 +177,7 @@ public class Tower extends ITower{
     }
     public List<Augment> getAugments(){return augments;}
 
-    public double setAtkSpeed(double newSpeed){
-        this.atkSpeed = newSpeed;
-        this.attackDelayMS = 1_000 / atkSpeed;
-        return atkSpeed;
-    }
+
     @Override
     public Point2D getPosition() {
         return position;

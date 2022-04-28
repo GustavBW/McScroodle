@@ -9,6 +9,8 @@ import gbw.tdg.towerdefensegame.enemies.Enemy;
 
 public class LightningAugment extends Augment{
 
+    private double maxDmgAt = 0.3;
+
     protected LightningAugment(double value, int type, int level, int maxLevel) {
         super(value, type, level,maxLevel);
     }
@@ -20,7 +22,7 @@ public class LightningAugment extends Augment{
 
     @Override
     public void bounce(Enemy e, Bullet b){
-        e.applyDamage(e.getMaxHP() * getPercentMaxHPDamage() + b.getDamage());
+        e.applyDamage(e.getMaxHP() * getPercentMaxHPDamage(e) + b.getDamage());
         new TopDownStrikeVFX(200, VFX.DEFAULT_PRIO, e.getPosition(), ContentEngine.VFX.getImage("LightningVFX")).spawn();
     }
 
@@ -31,6 +33,9 @@ public class LightningAugment extends Augment{
     private double getPercentMaxHPDamage(){
         return (2 * Math.log10(getLevel()) + 1) / 10.0;
     }
+    private double getPercentMaxHPDamage(Enemy e){
+        return getPercentMaxHPDamage() * (1 - e.getPercentMissingHealth(- maxDmgAt));
+    }
 
     private int getDelayMS(){
         int toreturn = (int) ((3 * (1.0 / getLevel())) * 1000);
@@ -40,8 +45,14 @@ public class LightningAugment extends Augment{
 
     @Override
     public String getDesc(){
-        return "A lightning striking for " + Decimals.toXDecimalPlaces(getPercentMaxHPDamage() * 100,0)
-                + " % max hp damage after " + getDelayMS() / 1000 + " s";
+        return "A lightning strikes for up to " + (int) (getPercentMaxHPDamage() * 100)
+                + " % max hp damage after a " + getDelayMS() / 1000 + " s delay.";
     }
 
+    @Override
+    public String getLongDesc() {
+        return "A lightning strikes the target af a delay of " + getDelayMS() / 1000 +
+                " s. It deals up to " + (int) (getPercentMaxHPDamage() * 100) +
+                " max hp damage based on target's missing health, maxed when enemies are at or below 30% hp.";
+    }
 }

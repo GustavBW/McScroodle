@@ -18,9 +18,4 @@ public class VFXEngine extends IOEngine{
         super(root, "LightningVFX");
     }
 
-    @Override
-    public Image getImage(String request){
-        System.out.println("VFXEngine request " + request + " =========================== ");
-        return super.getImage(request);
-    }
 }

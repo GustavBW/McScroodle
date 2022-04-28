@@ -37,18 +37,17 @@ public abstract class Invocation {
         if(!contentsPrepped){
             dmgInvos = new ArrayList<>(List.of(
                     //Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
-                    new BasicDMGInvocation(1),
                     new GrapeShotInvocation(1)
             ));
             rngInvos = new ArrayList<>(List.of(
-                    new BasicDMGInvocation(1),
-                    new SlowFieldInvocation(1)
+                    new SlowFieldInvocation(1),
+                    new MassiveInvocation(40)
                     //Invocations for RNG is: Slowfield,
             ));
             spdInvos = new ArrayList<>(List.of(
                     //Invocations for SPD is: Multishot
                     new MultishotInvocation(3),
-                    new BasicSPDInvocation(1)
+                    new SniperInvocation(1)
             ));
             statInvoListMap = new HashMap<>(Map.of(
                     StatType.DAMAGE, dmgInvos,

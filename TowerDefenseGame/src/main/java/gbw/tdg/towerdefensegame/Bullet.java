@@ -65,7 +65,7 @@ public class Bullet implements Tickable,Renderable{
         }
     }
 
-    private void checkForCollision() {
+    protected void checkForCollision() {
         List<Enemy> collisionsFound = new ArrayList<>();
 
         for(IEnemy e : IEnemy.active){
@@ -78,6 +78,7 @@ public class Bullet implements Tickable,Renderable{
 
             collisionsFound.removeAll(hasAlreadyHit);
             collisionsFound.sort(Comparator.comparingDouble(o -> o.getPosition().distance(position)));
+
             for(Enemy e : collisionsFound){
                 onCollision(e);
             }
