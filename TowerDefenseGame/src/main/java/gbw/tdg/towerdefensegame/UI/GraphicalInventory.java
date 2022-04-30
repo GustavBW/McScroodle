@@ -16,7 +16,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     private HashMap<Integer, Point2D> objOffsetMap;
     private Point2D position;
     private int rows;
-    private boolean enableAutoSpawn, renderBackground = true;
+    private boolean shouldSpawn, renderBackground = true;
 
     public GraphicalInventory(int coloumns, int rows, Point2D pos, Point2D dim, double margin, double rendPrio){
         this(coloumns,dim.getX(),dim.getY(),margin, pos,rendPrio,rows);
@@ -162,7 +162,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
 
     protected void addObject(T object, int slot){
-        if(enableAutoSpawn){
+        if(shouldSpawn){
             object.spawn();
         }
         object.setPosition(objOffsetMap.get(slot));
@@ -206,7 +206,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
 
     @Override
     public void spawn() {
-        enableAutoSpawn = true;
+        shouldSpawn = true;
         Renderable.newborn.add(this);
         for(T obj : getObjects()){
             obj.spawn();
@@ -214,7 +214,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     }
     @Override
     public void destroy() {
-        enableAutoSpawn = false;
+        shouldSpawn = false;
         Renderable.expended.add(this);
         for(T obj : getObjects()){
             obj.destroy();
@@ -268,7 +268,8 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     public Point2D getDimensions(){
         return new Point2D(width,height);
     }
-    public void setAutoSpawn(boolean val){enableAutoSpawn = val;}
+    public void setAutoSpawn(boolean val){
+        shouldSpawn = val;}
 
     private void setObjectPositions(){
         for(int i = 0; i < super.slotCount; i++){

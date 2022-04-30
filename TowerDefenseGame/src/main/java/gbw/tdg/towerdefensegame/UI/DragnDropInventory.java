@@ -8,18 +8,29 @@ import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 
-public class DragnDropInventory<T extends BounceBackButton> extends GraphicalInventory<T> implements IClickableOwner, Tickable {
+public abstract class DragnDropInventory<T extends BounceBackButton<?>> extends GraphicalInventory<T> implements IClickableOwner, Tickable {
 
     private T selected;
+    private boolean dragOnGoing;
 
     public DragnDropInventory( int rows, int coloumns, double width, double height, double margin, Point2D position, double renderingPrio) {
         super(coloumns, width, height, margin, position, renderingPrio, rows);
     }
 
+    public T getSelected(){
+        return selected;
+    }
+    public void setSelected(T obj){
+        this.selected = obj;
+    }
+    public void setDragOnGoing(boolean state){
+        this.dragOnGoing = state;
+    }
+
     @Override
     public void tick() {
-        if(selected != null){
-            selected.setPosition(MouseHandler.mousePos);
+        if(dragOnGoing){
+            whilestObjHeld();
         }
     }
     @Override
@@ -39,19 +50,7 @@ public class DragnDropInventory<T extends BounceBackButton> extends GraphicalInv
         obj.setOwner(this);
     }
 
-
-    @Override
-    public void onChildPress(Clickable child, MouseEvent event) {
-        selected = (T) child;
-    }
-
-    @Override
-    public void onChildRelease(Clickable child, MouseEvent event) {
-        remove((T) child);
-        child.spawn();
-        selected = null;
-    }
-
+    public abstract void whilestObjHeld();
 
     @Override
     public void onChildClick(Clickable child, MouseEvent event) {

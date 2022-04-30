@@ -16,6 +16,15 @@ public abstract class ITower extends Button implements Clickable, Renderable, Ti
     public static Set<ITower> expended = new HashSet<>();
     public static Set<ITower> newborn = new HashSet<>();
 
+    public static Tower getOnPos(Point2D p){
+        for(ITower t : active){
+            if(t.isInBounds(p)){
+                return (Tower) t;
+            }
+        }
+        return null;
+    }
+
     public ITower(Point2D position, double sizeX, double sizeY) {
         super(position, sizeX, sizeY, RText.EMPTY, false);
     }

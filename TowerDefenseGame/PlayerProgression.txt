@@ -1,0 +1,19 @@
+{
+    "During playing games you unlock" : [
+        "Augments",
+        "Augment Levels"
+    ]
+},
+{
+    "After games the player is rewarded" : [
+        "Augment Shards",
+        "Invocation Blueprints"
+    ]
+},
+{
+    "Player is able to permanently improve" : [
+        "Augment Shop point buy start value",
+        "Invocation max level",
+        "Invocations available"
+    ]
+}

@@ -52,7 +52,6 @@ public class VFXEngine extends IOEngine{
         }else{
             return fromMap.get(0);
         }
-
     }
 
 }
