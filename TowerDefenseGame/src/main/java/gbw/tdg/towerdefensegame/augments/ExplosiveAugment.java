@@ -32,6 +32,10 @@ public class ExplosiveAugment extends Augment{
         }
     }
 
+    private double getBonusDamagePercent(){
+        return getLevel() / 10D;
+    }
+
     private Set<IEnemy> findEnemiesInRange(IEnemy enemyHit){
         Set<IEnemy> enemiesFound = new HashSet<>();
         Point2D tPos = enemyHit.getPosition();
@@ -51,7 +55,12 @@ public class ExplosiveAugment extends Augment{
 
     @Override
     public String getDesc(){
-        return "Bullets explode in a " + Decimals.toXDecimalPlaces(getERadius(),0) + " unit radius.";
+        return "Bullets explode in a " + (int) getERadius() + " unit radius.";
+    }
+
+    @Override
+    public String getLongDesc(){
+        return "Bullets explode on contact dealing " + getBonusDamagePercent() * 100 + "% bonus damage to all enemies within a " + (int) getERadius() + " unit radius. This explosion applies on-hit.";
     }
 
     @Override

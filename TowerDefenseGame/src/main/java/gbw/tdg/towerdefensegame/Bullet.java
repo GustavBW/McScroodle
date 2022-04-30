@@ -93,6 +93,9 @@ public class Bullet implements Tickable,Renderable{
             onCollision(target);
         }
     }
+    public double getFlightDistance(){
+        return owner.getPosition().distance(position);
+    }
     public void addPiercingLevels(int lvl){this.piercingLevel += lvl;}
     public ITower getOwner(){return owner;}
     public double getDamage(){

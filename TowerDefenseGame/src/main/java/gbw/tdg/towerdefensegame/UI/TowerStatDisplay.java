@@ -5,7 +5,7 @@ import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.UI.buttons.InvocationSelectionButton;
-import gbw.tdg.towerdefensegame.UI.buttons.SmallInvocationDisplayButton;
+import gbw.tdg.towerdefensegame.UI.buttons.OpenDisplayableDisplayButton;
 import gbw.tdg.towerdefensegame.UI.buttons.TickButton;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.backend.ContentEngine;
@@ -29,7 +29,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
     private final Color background = new Color(0,0,0,0.5);
     private final Point2D position;
     private final double someArcNumber = 15 * Main.scale.getX();
-    private final GraphicalInventory<ClickableIcon<Augment>> augmentDisplay;
+    private final GraphicalInventory<Button> augmentDisplay;
     private final GraphicalInventory<Button> upgradeButtons;
     private final TowerDisplay display;
 
@@ -48,7 +48,6 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
         this.augmentDisplay = new GraphicalInventory<>(1,sizeY / 3,sizeY,0,position.add(posXOfAugmentDisplay,0),renderingPriority,3);
         this.upgradeButtons = new GraphicalInventory<>(3,1,new Point2D(position.getX(),position.getY() + sizeY),new Point2D(sizeX, sizeY * 0.5),0,renderingPriority);
 
-        ARText rtextForUpgradeButtons = ARText.create(tower.getWorth() + "G",Point2D.ZERO,1,renderingPriority);
         upgradeButtons.addAll(List.of(
                 new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.DAMAGE,false){
                     @Override
@@ -103,8 +102,8 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
         text.setText(tower.getStats());
     }
 
-    public void addNewAugment(ClickableIcon<Augment> icon){
-        augmentDisplay.addIfAbsent(icon);
+    public void addNewAugment(Augment aug){
+        augmentDisplay.addIfAbsent(new OpenDisplayableDisplayButton<>(Point2D.ZERO,Point2D.ZERO,tower,aug));
         display.requestGUIReset(true);
     }
 
@@ -114,7 +113,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
 
     public void onInvocationSelected(Invocation invocation, Button b){
         invocation.applyToTower(tower);
-        upgradeButtons.replace(b,new SmallInvocationDisplayButton(b.getPosition(),b.getDimensions(),tower,invocation));
+        upgradeButtons.replace(b,new OpenDisplayableDisplayButton<>(b.getPosition(),b.getDimensions(),tower,invocation));
     }
 
     private Button getInvocationSelectionButton(StatType t) {

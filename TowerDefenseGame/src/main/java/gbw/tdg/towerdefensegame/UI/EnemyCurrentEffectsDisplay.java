@@ -1,12 +1,10 @@
 package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
-import gbw.tdg.towerdefensegame.enemies.LifetimeEffect;
+import gbw.tdg.towerdefensegame.augments.LifetimeEffect;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 

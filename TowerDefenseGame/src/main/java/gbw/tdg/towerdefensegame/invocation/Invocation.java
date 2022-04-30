@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.invocation;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.UI.ClickableIcon;
+import gbw.tdg.towerdefensegame.UI.Displayable;
 import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Invocation {
+public abstract class Invocation implements Displayable {
 
     public static EmptyInvocation EMPTY = new EmptyInvocation(1);
 
@@ -41,13 +42,14 @@ public abstract class Invocation {
             ));
             rngInvos = new ArrayList<>(List.of(
                     new SlowFieldInvocation(1),
-                    new MassiveInvocation(40)
+                    new MassiveInvocation(3)
                     //Invocations for RNG is: Slowfield,
             ));
             spdInvos = new ArrayList<>(List.of(
                     //Invocations for SPD is: Multishot
                     new MultishotInvocation(3),
-                    new SniperInvocation(1)
+                    new SniperInvocation(1),
+                    new TempoInvocation(1)
             ));
             statInvoListMap = new HashMap<>(Map.of(
                     StatType.DAMAGE, dmgInvos,

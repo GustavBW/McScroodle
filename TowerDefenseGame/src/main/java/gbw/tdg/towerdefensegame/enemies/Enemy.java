@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame.enemies;
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
 import gbw.tdg.towerdefensegame.augments.Augment;
+import gbw.tdg.towerdefensegame.augments.LifetimeEffect;
 import gbw.tdg.towerdefensegame.tower.ITower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,7 +29,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     private final Color color;
     private Bullet latestHit;
     private final EnemyStatDisplay statDisplay;
-    private volatile Set<LifetimeEffect> lifetimeEffects = new HashSet<>();
+    private volatile List<LifetimeEffect> lifetimeEffects = Collections.synchronizedList(new ArrayList<>());
     private final Set<ITower> provokers = new HashSet<>();
     private final Map<ITower, Double> provokerDamageMap = new HashMap<>();
 
@@ -77,6 +78,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
 
     private void onKilled(boolean byBullet) {
         alive = false;
+        lifetimeEffects.clear();
         if(byBullet && latestHit != null){
             for(int i = 0; i < 10; i++){
                 Point2D attackedDirection = position.subtract(latestHit.getPosition()).normalize();

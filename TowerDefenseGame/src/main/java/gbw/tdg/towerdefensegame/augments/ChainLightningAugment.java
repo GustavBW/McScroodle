@@ -6,7 +6,7 @@ import gbw.tdg.towerdefensegame.enemies.Enemy;
 
 public class ChainLightningAugment extends Augment implements BounceReciever<Enemy,Bullet> {
 
-    private final double baseSearchRangeMultiplier = 20, baseSearchRange = 100;
+    private final double baseSearchRangeMultiplier = 10, baseSearchRange = 100;
     private final int baseJumpCount = 2;
 
     protected ChainLightningAugment(double value, int type, int level, int maxLevel) {
@@ -28,7 +28,7 @@ public class ChainLightningAugment extends Augment implements BounceReciever<Ene
     }
 
     private double getJumpRadius(){
-        return ((baseSearchRangeMultiplier * getLevel()) + baseSearchRange) * (Main.canvasSize.getX() * (1.00 / 1920));
+        return ((baseSearchRangeMultiplier * getLevel()) + baseSearchRange) * Main.scale.getX();
     }
     private int getJumpCount(){
         return baseJumpCount + getLevel() * 2;
@@ -40,6 +40,11 @@ public class ChainLightningAugment extends Augment implements BounceReciever<Ene
     @Override
     public String getDesc(){
         return "A lightning strikes up to " + getJumpCount() + " nearby enemies for " + (getDamagePercentage() * 100)  + "% of damage";
+    }
+
+    @Override
+    public String getLongDesc(){
+        return "Arcs of electricity tears through up to " + getJumpCount() + " nearby enemies dealing " + (getDamagePercentage() * 100) + "% of bullet damage. The chain-lightning will only hit each enemy once and fail at jumping if the nearest, fresh enemy is further than "  + getJumpRadius() + " units away.";
     }
 
     @Override

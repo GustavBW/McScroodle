@@ -1,28 +1,34 @@
-package gbw.tdg.towerdefensegame.enemies;
+package gbw.tdg.towerdefensegame.augments;
 
-public class LifetimeEffect implements Comparable<LifetimeEffect>{
+import gbw.tdg.towerdefensegame.enemies.Enemy;
 
-    protected long lifetimeMS,spawnTime,lastCall;
+public class LifetimeEffect{
+
+    protected long lifetimeMS,spawnTime,lastCall,timeRemaining;
     protected Object owner;
 
     public LifetimeEffect(Object owner){
         this.owner = owner;
     }
+    public LifetimeEffect(Object owner, long lifetimeMS){
+        this(owner);
+        this.lifetimeMS = lifetimeMS;
+        this.timeRemaining = lifetimeMS;
+    }
 
     protected void evalLifetime(Enemy toWhomAmIApplied){
-        if(System.currentTimeMillis() >= spawnTime + lifetimeMS) {
+        timeRemaining = (spawnTime + lifetimeMS) - System.currentTimeMillis();
+        if(timeRemaining <= 0) {
             toWhomAmIApplied.removeLifetimeEffect(this);
         }
     }
 
-    public void evaluateOn(Enemy e){}
+    public synchronized void evaluateOn(Enemy e){
+        evalLifetime(e);
+    }
 
     public String getEffectString(){return "unknown";}
 
-    @Override
-    public int compareTo(LifetimeEffect o) {
-        return this.owner.equals(o.owner) ? 0 : -1;
-    }
     public Object getOwner(){
         return owner;
     }

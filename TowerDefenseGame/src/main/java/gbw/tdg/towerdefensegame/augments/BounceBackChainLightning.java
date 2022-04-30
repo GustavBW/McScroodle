@@ -9,7 +9,9 @@ import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class BounceBackChainLightning extends Bouncer<Enemy,Bullet> implements Tickable {
@@ -17,7 +19,7 @@ public class BounceBackChainLightning extends Bouncer<Enemy,Bullet> implements T
     private double searchRange;
     private int maxJumps, jumps, lifetime = 1000;
     private IEnemy currentEnemy;
-    private final Set<IEnemy> enemiesHit = new HashSet<>();
+    private final List<IEnemy> enemiesHit = new ArrayList<>();
     private final Bullet sourceBullet;
 
     public BounceBackChainLightning(Enemy start, double searchRange, int maxJumps, ChainLightningAugment sourceAug, Bullet sourceBullet){
@@ -50,23 +52,21 @@ public class BounceBackChainLightning extends Bouncer<Enemy,Bullet> implements T
         }
     }
 
-    private Set<IEnemy> findInRange(){
-        Set<IEnemy> enemiesFound = new HashSet<>();
+    private List<IEnemy> findInRange(){
+        List<IEnemy> enemiesFound = new ArrayList<>();
 
         for(IEnemy e : IEnemy.active){
             if(currentEnemy.getPosition().distance(e.getPosition()) <= searchRange){
                 enemiesFound.add(e);
             }
         }
+
         return enemiesFound;
     }
-    private IEnemy filter(Set<IEnemy> set){
-        for(IEnemy e : set){
-            if(!enemiesHit.contains(e)){
-                return e;
-            }
-        }
-        return null;
+
+    private IEnemy filter(List<IEnemy> list){
+        list.removeAll(enemiesHit);
+        return list.isEmpty() ? null : list.get(0);
     }
 
     public BounceBackChainLightning setLifetime(int ms){

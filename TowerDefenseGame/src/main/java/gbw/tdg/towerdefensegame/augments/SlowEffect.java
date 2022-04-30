@@ -2,7 +2,6 @@ package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
-import gbw.tdg.towerdefensegame.enemies.LifetimeEffect;
 
 public class SlowEffect extends LifetimeEffect {
 
@@ -15,7 +14,7 @@ public class SlowEffect extends LifetimeEffect {
     }
 
     @Override
-    public void evaluateOn(Enemy e){
+    public synchronized void evaluateOn(Enemy e){
         e.setTempMovespeed(e.getMvspeed() * slowPercentage);
         super.evalLifetime(e);
     }

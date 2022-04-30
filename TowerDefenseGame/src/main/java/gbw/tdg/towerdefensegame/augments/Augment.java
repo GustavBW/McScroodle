@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.UI.Displayable;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import gbw.tdg.towerdefensegame.tower.Tower;
@@ -13,19 +14,21 @@ import javafx.scene.image.Image;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Augment implements Comparable<Augment>, BounceReciever<Enemy,Bullet>{
+public abstract class Augment implements Comparable<Augment>, BounceReciever<Enemy,Bullet>, Displayable {
 
     //Creating new augments (read: instantiating) is done through calling Augment.getRandom(double) or Augment.getSpecific(int).
     //this will return one of the static Augments which itself uses the protected constructor below.
     //These Augments below are loaded through the Augment.getAugs() method.
 
-    private static final List<Augment> contents = new ArrayList<>(List.of(
+    private static final List<Augment> contents = new ArrayList<Augment>(List.of(
             new ExplosiveAugment(10,0,1,5),
             new PiercingAugment(5,1,1,10),
-            new HellfireAugment(3,2,1, 7),
-            new IceAugment(3,3,1, 5),
+            new HellfireAugment(3,2,1, 20),
+            new IceAugment(3,3,1, 20),
             new ChainLightningAugment(10,4,1,5),
-            new LightningAugment(8,5,1,3)
+            new LightningAugment(8,5,1,3),
+            new VelocityAugment(3,6,1,20),
+            new MagnumAugment(5, 7, 1, 20)
     ));
 
     private int level, maxLevel = 3;
@@ -103,6 +106,7 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
     public void applyToBullet(Bullet bullet){
         bullet.addOnHitAug(this);
     }
+
     public boolean applyToTower(Tower tower){
         boolean success = false;
         if(requirement != -1){

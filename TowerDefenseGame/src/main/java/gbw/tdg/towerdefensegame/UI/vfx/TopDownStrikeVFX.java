@@ -23,10 +23,12 @@ public class TopDownStrikeVFX extends VFX{
         this(lifetime,rendPrio,position);
         if(image == null){return;}
 
+        double drawHeight = position.getY();
+        double proportion = drawHeight / image.getHeight();
         this.image = image;
         this.rendersImage = true;
-        imageWidth = image.getWidth() * Main.scale.getX();
-        imageHeight = image.getHeight() * Main.scale.getY();
+        imageWidth = image.getWidth() * proportion * Main.scale.getX();
+        imageHeight = drawHeight;
         this.position = new Point2D(
                 position.getX() - (imageWidth * 0.5),
                 position.getY() - imageHeight
@@ -36,7 +38,7 @@ public class TopDownStrikeVFX extends VFX{
     @Override
     public void render(GraphicsContext gc){
         if(rendersImage) {
-            gc.drawImage(image, position.getX(), position.getY(), imageWidth,imageHeight);
+            gc.drawImage(image, position.getX(), 0, imageWidth,imageHeight);
         }else{
             gc.setFill(Color.AQUA);
             gc.fillRect(position.getX() - dim.getX(), 0, dim.getX() * 2, position.getY());

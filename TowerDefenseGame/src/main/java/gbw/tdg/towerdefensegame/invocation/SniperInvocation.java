@@ -15,7 +15,7 @@ public class SniperInvocation extends BasicSPDInvocation{
     }
 
     private double getNewSpeed(){
-        return .1;
+        return getLevel() / 10D;
     }
 
     @Override
@@ -28,11 +28,11 @@ public class SniperInvocation extends BasicSPDInvocation{
 
     @Override
     public String getDesc(){
-        return "Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But damage is multiplied by the difference.";
+        return "The Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But damage is greatly increased.";
     }
 
     @Override
     public String getLongDesc(){
-        return "Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But damage is multiplied by the difference + 1 and then further increased by the difference.";
+        return "The Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But Tower base damage is multiplied by the attack speed lost plus 100%, and then further increased by this amount.";
     }
 }

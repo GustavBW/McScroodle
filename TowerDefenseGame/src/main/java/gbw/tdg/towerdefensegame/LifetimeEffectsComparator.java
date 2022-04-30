@@ -1,6 +1,6 @@
 package gbw.tdg.towerdefensegame;
 
-import gbw.tdg.towerdefensegame.enemies.LifetimeEffect;
+import gbw.tdg.towerdefensegame.augments.LifetimeEffect;
 
 import java.util.Comparator;
 

@@ -103,6 +103,8 @@ public class Tower extends ITower{
             return 0;
         }
 
+        Main.alterGoldAmount(-getUpgradeCost());
+
         switch (type) {
             case RANGE -> {
                 setRange(val);
@@ -154,7 +156,7 @@ public class Tower extends ITower{
             if(augment.applyToTower(this)) {
                 augments.add(augment);
                 success = true;
-                display.getStatDisplay().addNewAugment(augment.getIcon());
+                display.getStatDisplay().addNewAugment(augment);
             }else{
                 new OnScreenWarning("Augmentation Failed! - Requirements Not Met", Main.canvasSize.multiply(0.4),3).spawn();
             }

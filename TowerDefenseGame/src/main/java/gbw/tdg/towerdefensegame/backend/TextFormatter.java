@@ -44,6 +44,12 @@ public class TextFormatter {
         return toLinesArray(text, symbolsPerLine, "\n");
     }
 
+    public static double getWidthOf(String text, Font font){
+        Text fm = new Text(text);
+        fm.setFont(font);
+        return fm.getLayoutBounds().getWidth();
+    }
+
     public static List<String> wordWrapCustom(String wrapMe, Font font, double wrapInPixels){
         //Pulled from StackOverflow: https://stackoverflow.com/questions/52350922/word-wrap-in-java-swing-with-hard-wrap-pixel-limit
 

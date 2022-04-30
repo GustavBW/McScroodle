@@ -17,13 +17,20 @@ public class LightningAugment extends Augment{
 
     @Override
     public void triggerEffects(Enemy enemyHit, Bullet bullet) {
-        new BounceBackImpulse<>(getDelayMS(), this, enemyHit, bullet).spawn();
+        int delayMS = getDelayMS();
+        new BounceBackImpulse<>(delayMS, this, enemyHit, bullet).spawn();
+        enemyHit.addLifetimeEffect(new LifetimeEffect(this,delayMS){
+            @Override
+            public String getEffectString(){
+                return "IMPENDING DOOM " + timeRemaining / 1000;
+            }
+        });
     }
 
     @Override
     public void bounce(Enemy e, Bullet b){
         e.applyDamage(e.getMaxHP() * getPercentMaxHPDamage(e) + b.getDamage());
-        new TopDownStrikeVFX(200, VFX.DEFAULT_PRIO, e.getPosition(), ContentEngine.VFX.getImage("LightningVFX")).spawn();
+        new TopDownStrikeVFX(200, VFX.DEFAULT_PRIO, e.getPosition(), ContentEngine.VFX.getRandom("/lightnings")).spawn();
     }
 
     @Override
@@ -51,8 +58,8 @@ public class LightningAugment extends Augment{
 
     @Override
     public String getLongDesc() {
-        return "A lightning strikes the target af a delay of " + getDelayMS() / 1000 +
+        return "A lightning strikes the target after a delay of " + getDelayMS() / 1000 +
                 " s. It deals up to " + (int) (getPercentMaxHPDamage() * 100) +
-                " max hp damage based on target's missing health, maxed when enemies are at or below 30% hp.";
+                "% max hp damage based on target's missing health, maxed when enemies are at or below 30% hp.";
     }
 }

@@ -2,9 +2,7 @@ package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
-import gbw.tdg.towerdefensegame.backend.Point2G;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
-import gbw.tdg.towerdefensegame.invocation.Invocation;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -12,38 +10,47 @@ import javafx.scene.text.Font;
 
 import java.util.List;
 
-public class SmallInvocationDisplay extends Button {
+public class SmallDisplayableDisplay<T extends Displayable> extends Button {
 
-    private final Invocation invocation;
+    //Renders and adjusts from top -> down (title > image > desc). Initialization order is important
+
+    private final T obj;
     private final ARText desc,title;
     private final RenderableImage image;
-    private final Font titleFont,descFont;
-    private Point2D titleOffset, descOffset, imageOffset;
-    private double arcThing = 15;
+    private final Font titleFont = Font.font("Impact", Main.canvasSize.getX() * .014);
+    private final Font descFont = Font.font("Verdana", Main.canvasSize.getY() * .012);
+    private double arcThing = 15 * Main.scale.getX();
     private final Color color = new Color(0,0,0,0.5);
     private final Color color2 = new Color(1,1,1,0.8);
 
-    public SmallInvocationDisplay(Point2D position, Point2D dim, Clickable root, boolean shouldRenderBackground, Invocation invocation) {
+    public SmallDisplayableDisplay(Point2D position, Point2D dim, Clickable root, boolean shouldRenderBackground, T t) {
         super(position, dim.getX(),dim.getY(), RText.EMPTY, root, shouldRenderBackground);
-        this.invocation = invocation;
+        this.obj = t;
 
-        titleFont = Font.font("Impact", Main.canvasSize.getX() * .014);
-        descFont = Font.font("Verdana", Main.canvasSize.getY() * .012);
+        this.title = ARText.create(t.getName(), Point2D.ZERO,4,super.renderingPriority)
+                .setDimAR(getTitleDim())
+                .setFont(titleFont)
+                .setTextColor(Color.ORANGE);
 
         this.desc = ARText.create(getFormattedDesc(),Point2D.ZERO,1,super.renderingPriority)
                 .setDimAR(getDescDim())
                 .setFont(descFont)
                 .setTextColor(Color.BLACK);
 
-        this.title = ARText.create(invocation.getName(), Point2D.ZERO,4,super.renderingPriority)
-                .setDimAR(getImageDim())
-                .setFont(titleFont)
-                .setTextColor(Color.ORANGE);
-
-        this.image = new RenderableImage(invocation.getImage(),super.renderingPriority,dim,Point2D.ZERO,true);
+        this.image = new RenderableImage(t.getImage(),super.renderingPriority,dim,Point2D.ZERO,true);
         this.image.setDimensions(getImageDim());
 
         setPosition(position);
+    }
+
+    public void update(){
+        update(obj);
+    }
+
+    public void update(T newSource){
+        desc.setText(newSource.getLongDesc());
+        title.setText(newSource.getName());
+        image.setImage(newSource.getImage());
     }
 
     @Override
@@ -64,7 +71,7 @@ public class SmallInvocationDisplay extends Button {
     }
 
     private String getFormattedDesc(){
-        List<String> fittedDesc = TextFormatter.wordWrapCustom(invocation.getLongDesc(), descFont,getDescDim().getX());
+        List<String> fittedDesc = TextFormatter.wordWrapCustom(obj.getLongDesc(), descFont,getDescDim().getX());
         return TextFormatter.concatonateArray(fittedDesc, "\n");
     }
 
@@ -80,7 +87,7 @@ public class SmallInvocationDisplay extends Button {
 
     private Point2D getTitleOffset(){
         return new Point2D(
-                5 * Main.scale.getX() + ((sizeX - getTitleDim().getX()) * 0.5),
+                TextFormatter.getWidthOf(title.getText(),titleFont) * 0.5,
                 5 * Main.scale.getY() + getTitleDim().getY()
         );
     }
@@ -124,8 +131,8 @@ public class SmallInvocationDisplay extends Button {
                 sizeY - (getDescOffset().getY() + 30 * Main.scale.getY())
         );
     }
-    public Invocation getInvo(){
-        return invocation;
+    public T getInvo(){
+        return obj;
     }
 
     @Override

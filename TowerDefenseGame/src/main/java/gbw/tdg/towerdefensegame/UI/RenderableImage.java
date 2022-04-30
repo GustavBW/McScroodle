@@ -23,6 +23,10 @@ public class RenderableImage implements Renderable {
         this(image,0,new Point2D(image.getWidth(),image.getHeight()),position,true);
     }
 
+    public void setImage(Image image){
+        this.image = image;
+    }
+
     @Override
     public void spawn() {
         Renderable.newborn.add(this);

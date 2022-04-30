@@ -22,6 +22,11 @@ public class PiercingAugment extends Augment{
         return "Allows bullets to penetrate through " + getLevel() + " enemies";
     }
 
+    @Override
+    public String getLongDesc(){
+        return "Allows bullets to penetrate through " + getLevel() + " enemies";
+    }
+
 
     @Override
     public Augment copy() {

@@ -7,14 +7,13 @@ import gbw.tdg.towerdefensegame.tower.StatType;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 import java.util.List;
 
 public class InvocationSelectionDisplay extends Button {
 
     private final List<Invocation> invocations;
-    private final GraphicalInventory<SmallInvocationDisplay> contents;
+    private final GraphicalInventory<SmallDisplayableDisplay> contents;
     private final TowerStatDisplay display;
     private final Button spawningButton;
 
@@ -34,7 +33,7 @@ public class InvocationSelectionDisplay extends Button {
         contents.setRenderBackground(false);
 
         for(Invocation i : invocations){
-            contents.add(new SmallInvocationDisplay(Point2D.ZERO,new Point2D(sizeX/3,sizeY),tower,true,i) {
+            contents.add(new SmallDisplayableDisplay<>(Point2D.ZERO,new Point2D(sizeX/3,sizeY),tower,true,i) {
                 @Override
                 public void onClick(MouseEvent event) {
                     InvocationSelectionDisplay.this.getDisplay().onInvocationSelected(getInvo(), InvocationSelectionDisplay.this.getSpawningButton());

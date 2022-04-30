@@ -2,7 +2,6 @@ package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
-import gbw.tdg.towerdefensegame.enemies.LifetimeEffect;
 
 public class BurnEffect extends LifetimeEffect {
 
