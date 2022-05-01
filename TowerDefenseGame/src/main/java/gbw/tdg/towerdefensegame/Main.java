@@ -90,11 +90,13 @@ public class Main extends Application {
         uiController.spawn();
         setState(GameState.START_MENU);
 
-        Tower testTower = new Tower(canvasSize.multiply(0.5),0,0.3,300,1);
+        Tower testTower = new Tower(canvasSize.multiply(0.5),1,0.3,300,1);
         testTower.spawn();
 
         scene.setOnMouseClicked(e -> mouseHandler.onClick(e));
         scene.setOnMouseMoved(e -> mouseHandler.updateMousePos(e));
+        //JavaFX doesn't consider holding down right click and moving the mouse as moving the mouse.
+        scene.setOnMouseDragged(e -> mouseHandler.updateMousePos(e));
         scene.setOnMousePressed(e -> mouseHandler.onPress(e));
         scene.setOnMouseReleased(e -> mouseHandler.onRelease(e));
         scene.setOnKeyPressed(e -> keyHandler.press(e));

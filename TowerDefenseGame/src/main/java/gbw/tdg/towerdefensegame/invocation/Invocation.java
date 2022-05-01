@@ -38,7 +38,8 @@ public abstract class Invocation implements Displayable {
         if(!contentsPrepped){
             dmgInvos = new ArrayList<>(List.of(
                     //Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
-                    new GrapeShotInvocation(1)
+                    new GrapeShotInvocation(1),
+                    new ComboInvocation(1)
             ));
             rngInvos = new ArrayList<>(List.of(
                     new SlowFieldInvocation(1),

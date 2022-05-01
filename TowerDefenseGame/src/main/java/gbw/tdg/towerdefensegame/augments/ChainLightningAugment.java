@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame.augments;
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
+import gbw.tdg.towerdefensegame.tower.Tower;
 
 public class ChainLightningAugment extends Augment implements BounceReciever<Enemy,Bullet> {
 
@@ -14,6 +15,11 @@ public class ChainLightningAugment extends Augment implements BounceReciever<Ene
         needsToNotHaveRequirement = true;
         requirement = type;
         this.appliesOnHit = true;
+    }
+
+    @Override
+    public void onSuccesfullApplication(Tower t) {
+
     }
 
     @Override

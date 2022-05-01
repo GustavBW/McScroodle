@@ -25,6 +25,7 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
     private final double sizeX = Main.canvasSize.getX()*0.15, sizeY = Main.canvasSize.getY() * 0.3;
     private Point2D position = new Point2D(Main.canvasSize.getX() - sizeX, Main.canvasSize.getY() * 0.1);
     private boolean shopLocked = false;
+    private final Font baseFont = Font.font("Impact",Main.canvasSize.getX()*0.01);
     private int baseCost = 5, amountBought = 0,  reloadCost = 100;
     private AugmentBuyButton selectedOffering;
 
@@ -36,12 +37,10 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
         this.storedAugs = new DragnDropInventory<>(6,1, sizeX * 0.9, sizeY, 10, position.add(0, sizeY + margin), 87D) {
             @Override
             public void whilestObjHeld() {
-                System.out.println("DnDGI: Updating position of " + getSelected());
                 this.getSelected().setPosition(MouseHandler.mousePos);
             }
             @Override
             public void onChildPress(Clickable child, MouseEvent event) {
-                System.out.println("DnDGIO: Child clicked is " + child);
                 this.setSelected((BounceBackButton<Augment>) child);
                 this.setDragOnGoing(true);
             }
@@ -51,13 +50,9 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
                 Tower t = ITower.getOnPos(MouseHandler.mousePos);
                 boolean success = false;
 
-                System.out.println("DnDGI: Child release. Tower is " + t);
-
                 if(t != null){
                     success = t.addAugment(getSelected().getAssociatedObj());
                 }
-
-                System.out.println("DnDGI: Success: " + success);
 
                 this.remove(getSelected());
                 getSelected().destroy();
@@ -74,9 +69,9 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
 
     private AugmentBuyButton getNewOffering(){
         int cost = baseCost * 2 + amountBought;
-        return new AugmentBuyButton(Point2D.ZERO, 400,400, new RText(
-                "",Point2D.ZERO,4, Color.WHITE, Font.font("Impact",Main.canvasSize.getX()*0.01)),
-                Augment.getRandom(cost), this, cost);
+        return new AugmentBuyButton(Point2D.ZERO, 400,400,
+                new RText("", Point2D.ZERO, 4, Color.ORANGE, baseFont),
+                Augment.getRandom(cost / 2D), this, cost);
     }
 
     @Override
@@ -114,12 +109,7 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
             augmentBought(selectedOffering);
 
             if(!success){
-                BounceBackButton<Augment> asBounce = new BounceBackButton<>(
-                        Point2D.ZERO, Point2D.ZERO ,RText.EMPTY, storedAugs, selectedOffering.getAugment()
-                );
-                asBounce.setImage(selectedOffering.getAugment().getImage());
-
-                storedAugs.add(asBounce);
+                storedAugs.add(getABBasBounce(selectedOffering));
             }
 
             selectedOffering.getIcon().destroy();
@@ -127,6 +117,19 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
         }
         ClickListener.expended.add(this);
     }
+
+    private BounceBackButton<Augment> getABBasBounce(AugmentBuyButton aBB){
+        Augment aug = aBB.getAugment();
+        RText text = new RText(aug.getName(),Point2D.ZERO,2,Color.WHITE,baseFont);
+        BounceBackButton<Augment> asBounce = new BounceBackButton<>(
+                Point2D.ZERO, Point2D.ZERO ,text, storedAugs, aug
+        );
+        asBounce.setImage(selectedOffering.getAugment().getImage());
+        asBounce.setImageOffsetRatios(new Point2D(2.35 / 3D,0));
+        asBounce.setImageDimRatios(new Point2D(0.65 / 3D, 1));
+        return asBounce;
+    }
+
 
     @Override
     public void onChildPress(Clickable child, MouseEvent event) {

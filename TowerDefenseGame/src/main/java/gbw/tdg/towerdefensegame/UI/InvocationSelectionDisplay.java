@@ -36,7 +36,7 @@ public class InvocationSelectionDisplay extends Button {
             contents.add(new SmallDisplayableDisplay<>(Point2D.ZERO,new Point2D(sizeX/3,sizeY),tower,true,i) {
                 @Override
                 public void onClick(MouseEvent event) {
-                    InvocationSelectionDisplay.this.getDisplay().onInvocationSelected(getInvo(), InvocationSelectionDisplay.this.getSpawningButton());
+                    InvocationSelectionDisplay.this.getDisplay().onInvocationSelected(getObj(), InvocationSelectionDisplay.this.getSpawningButton());
                     InvocationSelectionDisplay.this.destroy();
                 }
             });

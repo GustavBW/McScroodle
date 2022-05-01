@@ -88,17 +88,19 @@ public class MoveTowerButton extends Button implements Tickable, ClickListener {
 
     @Override
     public void trigger(MouseEvent event) {
-        whereToPosition = MouseHandler.mousePos.add(towerToMove.getDimensions().multiply(0.5));
-        moveAlongVector = whereToPosition.subtract(ogTowerPosition);
-        lengthToMove = moveAlongVector.magnitude();
-        Point2D moveAlongVectorNorm = moveAlongVector.normalize();
-        double howMuchToMoveAMS = lengthToMove / moveLengthMS;
-        singleMoveStep = moveAlongVectorNorm.multiply(howMuchToMoveAMS);
+        if(towerToMove != null) {
+            whereToPosition = MouseHandler.mousePos.add(towerToMove.getDimensions().multiply(0.5));
+            moveAlongVector = whereToPosition.subtract(ogTowerPosition);
+            lengthToMove = moveAlongVector.magnitude();
+            Point2D moveAlongVectorNorm = moveAlongVector.normalize();
+            double howMuchToMoveAMS = lengthToMove / moveLengthMS;
+            singleMoveStep = moveAlongVectorNorm.multiply(howMuchToMoveAMS);
 
 
-        moveStartTime = System.currentTimeMillis();
-        moveStarted = true;
-        new ConnectingLine(moveLengthMS, display.getRenderingPriority(),towerToMove,whereToPosition).spawn();
+            moveStartTime = System.currentTimeMillis();
+            moveStarted = true;
+            new ConnectingLine(moveLengthMS, display.getRenderingPriority(), towerToMove, whereToPosition).spawn();
+        }
         ClickListener.expended.add(this);
     }
 

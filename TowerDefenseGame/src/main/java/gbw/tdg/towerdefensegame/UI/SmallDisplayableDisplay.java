@@ -30,15 +30,15 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
         this.title = ARText.create(t.getName(), Point2D.ZERO,4,super.renderingPriority)
                 .setDimAR(getTitleDim())
                 .setFont(titleFont)
-                .setTextColor(Color.ORANGE);
+                .setTextColor2(Color.ORANGE);
 
         this.desc = ARText.create(getFormattedDesc(),Point2D.ZERO,1,super.renderingPriority)
                 .setDimAR(getDescDim())
                 .setFont(descFont)
-                .setTextColor(Color.BLACK);
+                .setTextColor2(Color.BLACK);
 
         this.image = new RenderableImage(t.getImage(),super.renderingPriority,dim,Point2D.ZERO,true);
-        this.image.setDimensions(getImageDim());
+        this.image.setDimensions(getImageDimP());
 
         setPosition(position);
     }
@@ -91,16 +91,16 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
                 5 * Main.scale.getY() + getTitleDim().getY()
         );
     }
-    private Point2D getImageOffset(){
+    private Point2D getImageOffsetP(){
         return new Point2D((
-                sizeX - getImageDim().getX()) * .5,
+                sizeX - getImageDimP().getX()) * .5,
                 getTitleOffset().getY() + 15 * Main.scale.getY()
         );
     }
     private Point2D getDescOffset(){
         return new Point2D(
                 sizeX * .1,
-                getImageOffset().getY() + getImageDim().getY() + 30 * Main.scale.getY() + descFont.getSize()
+                getImageOffsetP().getY() + getImageDimP().getY() + 30 * Main.scale.getY() + descFont.getSize()
         );
     }
     private Point2D getDescBackgroundPos(){
@@ -121,7 +121,7 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
         return new Point2D(sizeX * 0.75, titleFont.getSize());
     }
 
-    private Point2D getImageDim(){
+    private Point2D getImageDimP(){
         return new Point2D(sizeY * (1/3D), sizeY * (1/3D));
     }
 
@@ -131,7 +131,8 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
                 sizeY - (getDescOffset().getY() + 30 * Main.scale.getY())
         );
     }
-    public T getInvo(){
+
+    public T getObj(){
         return obj;
     }
 
@@ -139,7 +140,7 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
     public void setPosition(Point2D p){
         super.setPosition(p);
         title.setPosition(p.add(getTitleOffset())); //2
-        image.setPosition(p.add(getImageOffset())); //8
+        image.setPosition(p.add(getImageOffsetP())); //8
         desc.setPosition(p.add(getDescOffset())); //10
     }
     @Override
@@ -147,7 +148,7 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
         super.setDimensions(dim);
         this.setPosition(super.position); //20
         title.setDimensions(getTitleDim()); //0
-        image.setDimensions(getImageDim()); //0
+        image.setDimensions(getImageDimP()); //0
         desc.setDimensions(getDescDim()); //20
     }
 

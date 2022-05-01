@@ -4,11 +4,17 @@ import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
+import gbw.tdg.towerdefensegame.tower.Tower;
 
 public class VelocityAugment extends Augment{
 
     protected VelocityAugment(double value, int type, int level, int maxLevel) {
         super(value, type, level, maxLevel);
+    }
+
+    @Override
+    public void onSuccesfullApplication(Tower t) {
+
     }
 
     @Override
@@ -40,7 +46,9 @@ public class VelocityAugment extends Augment{
 
     @Override
     public String getLongDesc() {
-        return "Bullets deal extra damage on hit if they've traveled further than" + 200 * Main.scale.getX() + " units. Generally double damage is achieved at around " + 1000 * Main.scale.getX() + " units and there is no restriction on how much bonus damage can be achieved this way.";
+        return "Bullets deal extra damage on hit if they've traveled further than " + 200 * Main.scale.getX()
+                + " units. Generally double damage is achieved at around " + 1000 * Main.scale.getX()
+                + " units and there is no restriction on how much bonus damage can be achieved this way.";
     }
 
     @Override

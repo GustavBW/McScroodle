@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
+import gbw.tdg.towerdefensegame.tower.Tower;
 
 public class PiercingAugment extends Augment{
 
@@ -12,6 +13,11 @@ public class PiercingAugment extends Augment{
     @Override
     public void applyToBullet(Bullet b){
         b.addPiercingLevels(getLevel());
+    }
+
+    @Override
+    public void onSuccesfullApplication(Tower t) {
+
     }
 
     @Override

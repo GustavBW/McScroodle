@@ -94,6 +94,10 @@ public class Tower extends ITower{
             }
         }
     }
+    public void render(GraphicsContext gc){
+        gc.setFill(Color.BLUE);
+        gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
+    }
     public int upgrade(StatType type, double val){
         boolean possible = upgradeMap.getOrDefault(type, 1) <= MAX_UPGRADE_LEVEL;
 
@@ -123,47 +127,18 @@ public class Tower extends ITower{
     public void setRange(double val){
         this.range = val;
     }
-    public double setAtkSpeed(double newSpeed){
+    public void setAtkSpeed(double newSpeed){
         this.atkSpeed = newSpeed;
         this.attackDelayMS = 1_000 / atkSpeed;
-        return atkSpeed;
     }
     public void setDamage(double dmg){
         this.damage = dmg;
     }
-
-    public void render(GraphicsContext gc){
-        gc.setFill(Color.BLUE);
-        gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
-    }
     public void setActive(boolean newState){
         this.isActive = newState;
     }
-    @Override
-    public double getDamage(){return damage;}
-    public double getAtkSpeed(){return atkSpeed;}
-    public double getRange(){
-        return range * rangeMultiplier;
-    }
-    public double getRangeBase(){
-        return range;
-    }
-    public int getMultishot(){return multishot;}
-
-    public boolean addAugment(Augment augment){
-        boolean success = false;
-        if(augments.size() < maxAugments){
-            if(augment.applyToTower(this)) {
-                augments.add(augment);
-                success = true;
-                display.getStatDisplay().addNewAugment(augment);
-            }else{
-                new OnScreenWarning("Augmentation Failed! - Requirements Not Met", Main.canvasSize.multiply(0.4),3).spawn();
-            }
-        }else {
-            new OnScreenWarning("Augmentation Failed!", Main.canvasSize.multiply(0.4), 3).spawn();
-        }
-        return success;
+    public void setTargetingType(TargetingType type){
+        this.targetingType = type;
     }
     public void setSPDInvocation(BasicSPDInvocation invocation){
         this.spdInvocation = invocation;
@@ -177,8 +152,41 @@ public class Tower extends ITower{
         this.rngInvocation = invocation;
         invocation.setTower(this);
     }
-    public List<Augment> getAugments(){return augments;}
 
+    public List<Invocation> getInvocations(){
+        return new ArrayList<>(List.of(dmgInvocation,spdInvocation,rngInvocation));
+    }
+    public TargetingType getTargetingType(){return targetingType;}
+    @Override
+    public double getDamage(){return damage;}
+    public double getAtkSpeed(){return atkSpeed;}
+    public double getAttackDelayMS(){
+        return attackDelayMS;
+    }
+    public double getRange(){
+        return range * rangeMultiplier;
+    }
+    public double getRangeBase(){
+        return range;
+    }
+    public int getMultishot(){return multishot;}
+    public boolean addAugment(Augment augment){
+        boolean success = false;
+        if(augments.size() < maxAugments){
+            if(augment.applyToTower(this)) {
+                augments.add(augment);
+                success = true;
+                display.getStatDisplay().addNewAugment(augment);
+            }else{
+                new OnScreenWarning("Augmentation Failed! - Requirements Not Met", Main.canvasSize.multiply(0.4),3).spawn();
+            }
+        }else {
+            new OnScreenWarning("Augmentation Failed! - Max Augments Reached", Main.canvasSize.multiply(0.4), 3).spawn();
+        }
+        return success;
+    }
+
+    public List<Augment> getAugments(){return augments;}
 
     @Override
     public Point2D getPosition() {
@@ -211,11 +219,6 @@ public class Tower extends ITower{
         display.setRenderingPriority(newPrio);
     }
 
-    public void setTargetingType(TargetingType type){
-        this.targetingType = type;
-    }
-
-    public TargetingType getTargetingType(){return targetingType;}
 
     @Override
     public void spawn() {

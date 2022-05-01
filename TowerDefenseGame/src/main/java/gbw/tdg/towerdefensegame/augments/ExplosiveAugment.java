@@ -6,6 +6,7 @@ import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.UI.vfx.CircleVFX;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
+import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 
 import java.util.*;
@@ -19,6 +20,11 @@ public class ExplosiveAugment extends Augment{
         needsToNotHaveRequirement = true;
         appliesOnHit = true;
         requirement = type;
+    }
+
+    @Override
+    public void onSuccesfullApplication(Tower t) {
+
     }
 
     @Override

@@ -17,15 +17,18 @@ W - Icicle 1,2,3, targets hit have their mvmtspd reduced by 20 * x % for 3,3,3 s
 W - Explosive 1..5, the bullet explodes hitting all enemies in a tbd * x range around the initial target.
 W - ChainLightning. The bullets spawn chain lightnings dealing damage and triggering on-hit
 W - Lightning 1..N. After some delay, a lightning strikes the enemy dealing max hp dmg.
-W - Perpetual Velocity 1..N. Bullet damage is multiplied by ( (ln(X) + 1) - (flightDistance / Main.canvasSize.getX()) based on flight distance on hit.
-W - Magnum 1..N. Bullet damage is multiplied by 1 + ((-X * flightDistance + X * 300) / 100). No damage increase is gained after 300 flight distance
+W - Perpetual Velocity 1..N. Bullet damage is multiplied by APPENDING based on flight distance on hit.
+W - Magnum 1..N. Bullet damage is multiplied by APPENDING. No damage increase is gained after 300 flight distance
+W - DamageUP 1..N. Increases Tower BASE DAMAGE by x
+W - SpeedUP 1..N. Multiplies Tower Attack Speed by 1 + (x / 10)
+W - RangeUP 1..N. Multiplies Tower Range by 1 + (x / 10)
 
 INVOCATIONS
 All towers have a "basic" attack- & speed invocation at start
 When a tower reaches max rank in a stat, it gets to choose from 3 different invocations related to that stat.
 Stats considered: DMG, RNG, SPD.
 Background colors related to stats: DMG: Red, RNG: Green, SPD Blue
-Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster, Altruist (Damage), Missiles
+Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster, Altruist (Damage), Missiles, Combo
 Invocations for RNG is: Slowfield, Healing Aura, Hellfire Planes, Altruist (Range)
 Invocations for SPD is: Multishot, Sniper, Altruist (Atk Speed), Lethal Tempo
 
@@ -44,5 +47,6 @@ W - Sniper. Tower atkspeed becomes 0.1. Tower damage is increased by the atk spd
 G - Altruist (Stat). Stat becomes 0 but every tower in 200 * X units gains the stat value as a buff
 W - Lethal Tempo. Switching every 5 seconds: Either Atk speed is halved or doubled. Levels increase double duration
 G - Missiles. Shots now await new enemies and have  their own range (scaling with tower range)
+G - Combo. Each consecutive shot extends duration by .5 sec adding 1 stack of increasing damage too. If it ever times out, stacks are reset to 0
 *All towers have, functionally, multishot 1.
-**In terms of implimentation, this is done through setting the tower's atkspd to 10, reducing dmg to 1/10th and using the "Ray" bullet with a lifetime of 1/10
+**In terms of implementation, this is done through setting the tower's atkspd to 10, reducing dmg to 1/10th and using the "Ray" bullet with a lifetime of 1/10

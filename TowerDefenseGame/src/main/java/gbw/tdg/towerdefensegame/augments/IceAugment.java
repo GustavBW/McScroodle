@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame.augments;
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
+import gbw.tdg.towerdefensegame.tower.Tower;
 
 public class IceAugment extends Augment {
 
@@ -12,6 +13,11 @@ public class IceAugment extends Augment {
 
     public IceAugment(double value, int type, int level, int maxLevel) {
         super(value,type,level, maxLevel);
+    }
+
+    @Override
+    public void onSuccesfullApplication(Tower t) {
+
     }
 
     @Override
@@ -31,6 +37,11 @@ public class IceAugment extends Augment {
         int lifetime = currentEffect == null ? getLevel() : (int) (currentEffect.getLifetimeMS() / 1000);
         double d = Decimals.toXDecimalPlaces(getSlow(), 2);
         return "Slows enemies down by " + (100 - d * 100) + "% for " + lifetime + " seconds";
+    }
+
+    @Override
+    public String getLongDesc(){
+        return getDesc();
     }
 
     @Override

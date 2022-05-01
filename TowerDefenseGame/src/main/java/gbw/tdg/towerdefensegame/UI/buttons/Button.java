@@ -3,17 +3,23 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.UI.Clickable;
 import gbw.tdg.towerdefensegame.UI.RText;
+import gbw.tdg.towerdefensegame.backend.Point2G;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ZoomEvent;
 import javafx.scene.paint.Color;
 
 public abstract class Button implements Clickable, Renderable {
 
-    public static final Point2D STANDARD_TEXT_OFFSET = new Point2D(1,1);
+    //The positions and dimensions of the image can be set through the respective offset and dimension "ratios"
+    //these ratios are in comparison to the buttons position and size. E.g. a ratio 2 / 3rds for the image
+    //offset ratio, would mean that the image is drawn from the position of the button + 2 / 3rds of the buttons dimension.
+
+    public static final Point2D STANDARD_TEXT_OFFSET = Point2G.DOWN_RIGHT;
     protected double renderingPriority = 85D, rimOffset = 5;
-    protected Point2D position;
+    protected Point2D position, imageOffsetRatios = Point2D.ZERO, imageOffset = Point2G.ONE, imageDimRatios = Point2G.ONE;
     protected double sizeX, sizeY;
     protected final RText text;
     protected boolean disabled, shouldRenderBackground,isSpawned = false;
@@ -40,6 +46,9 @@ public abstract class Button implements Clickable, Renderable {
         this.root = b.getRoot();
         this.isSpawned = b.isSpawned();
         this.image = b.getImage();
+        this.imageOffsetRatios = b.getImageOffsetRatios();
+        this.imageDimRatios = b.getImageDimRatios();
+        this.imageOffset = b.getImageOffset();
     }
 
     public Button(Point2D position, double sizeX, double sizeY, RText textUnit, Clickable root, boolean shouldRenderBackground){
@@ -78,7 +87,10 @@ public abstract class Button implements Clickable, Renderable {
             gc.fillRect(position.getX(), position.getY(), sizeX, sizeY);
         }
         if(image != null){
-            gc.drawImage(image, position.getX(),position.getY(),sizeX,sizeY);
+            gc.drawImage(
+                    image, position.getX() + imageOffset.getX(),position.getY() + imageOffset.getY(),
+                    sizeX * imageDimRatios.getX(),sizeY * imageDimRatios.getY()
+            );
         }
 
         text.render(gc);
@@ -95,6 +107,25 @@ public abstract class Button implements Clickable, Renderable {
     public void setBackgroundColor(Color color){
         enabledColor = color;
         backgroundColor = color;
+    }
+    public void setImageOffsetRatios(Point2D ratios){
+        this.imageOffsetRatios = ratios;
+        this.setPosition(position);
+    }
+    public void setImageOffset(Point2D offset){
+        this.imageOffset = offset;
+    }
+    public void setImageDimRatios(Point2D ratios){
+        imageDimRatios = ratios;
+    }
+    private Point2D getImageDimRatios() {
+        return this.imageDimRatios;
+    }
+    public Point2D getImageOffsetRatios(){
+        return imageOffsetRatios;
+    }
+    public Point2D getImageOffset(){
+        return this.imageOffset;
     }
     public void setDisabledColor(Color color){disabledColor = color;}
     public void setRimColor(Color color){
@@ -136,6 +167,10 @@ public abstract class Button implements Clickable, Renderable {
     @Override
     public void setPosition(Point2D p) {
         this.position = p;
+        this.imageOffset = new Point2D(
+                sizeX * imageOffsetRatios.getX(),
+                sizeY * imageOffsetRatios.getY()
+        );
         text.setPosition(p.add(STANDARD_TEXT_OFFSET.multiply(text.getSize())));
     }
 

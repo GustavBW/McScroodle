@@ -4,11 +4,15 @@ import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.augments.LifetimeEffect;
+import gbw.tdg.towerdefensegame.backend.Decimals;
+import gbw.tdg.towerdefensegame.backend.Point2G;
 import gbw.tdg.towerdefensegame.tower.ITower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 import java.util.*;
 
@@ -32,6 +36,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     private volatile List<LifetimeEffect> lifetimeEffects = Collections.synchronizedList(new ArrayList<>());
     private final Set<ITower> provokers = new HashSet<>();
     private final Map<ITower, Double> provokerDamageMap = new HashMap<>();
+    private final TimedEventBuffer<Double,OnScreenWarning> damageNumbersBuffer;
 
     public Enemy(Point2D position, Path path){
         super(position,sizeX,sizeY);
@@ -46,6 +51,29 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
         enemyCount++;
         this.id = enemyCount;
         this.statDisplay = new EnemyStatDisplay(this, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3));
+
+        this.damageNumbersBuffer = new TimedEventBuffer<>(500) {
+            @Override
+            public OnScreenWarning evaluate(Deque<Double> buffer) {
+                double accNum = 0;
+
+                for(Double d : buffer){
+                    accNum += d;
+                }
+
+                Double numCompressed = Decimals.toXDecimalPlaces(accNum,1);
+                Point2D pos = Enemy.this.position.add(Point2G.getRandomVector().multiply(10));
+                OnScreenWarning oSW = new OnScreenDamageNumber(
+                        numCompressed + "", pos, 1);
+
+                return oSW;
+            }
+
+            @Override
+            public void execute(OnScreenWarning accumulated) {
+                accumulated.spawn();
+            }
+        };
     }
     @Override
     public synchronized void tick(){
@@ -82,10 +110,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
         if(byBullet && latestHit != null){
             for(int i = 0; i < 10; i++){
                 Point2D attackedDirection = position.subtract(latestHit.getPosition()).normalize();
-                Point2D velocity = new Point2D(
-                        attackedDirection.getX() + (1 * (Main.random.nextDouble() - 0.5)),
-                        attackedDirection.getY() + (1 * (Main.random.nextDouble() - 0.5))
-                ).normalize();
+                Point2D velocity = Point2G.getRandomlyScewedVector(attackedDirection,1);
                 new Coin(maxHP * 0.1, position,velocity, 200, renderingPriority - .1).spawn();
             }
         }else {
@@ -93,6 +118,8 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
                 new Coin(maxHP * 0.1, position, 100, renderingPriority - .1).spawn();
             }
         }
+        damageNumbersBuffer.trigger();
+        damageNumbersBuffer.destroy();
         Main.alterSoulsAmount(1);
         destroy();
     }
@@ -109,7 +136,6 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
 
         hpBar.render(gc);
     }
-
     private Point2D checkDistanceToNext(){
         double distX = (next.x - position.getX()) * (next.x - position.getX());
         double distY = (next.y - position.getY()) * (next.y - position.getY());
@@ -149,6 +175,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     }
     public void applyDamage(double amount){
         this.hp -= amount;
+        damageNumbersBuffer.add(amount);
     }
     private void completedRun(){
         Main.HP--;
@@ -225,7 +252,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
             a.triggerEffects(this,bullet);
         }
 
-        hp -= bullet.getDamage();
+        applyDamage(bullet.getDamage());
         latestHit = bullet;
     }
     public void onHitByOnHit(Augment source,Bullet sourceBullet){

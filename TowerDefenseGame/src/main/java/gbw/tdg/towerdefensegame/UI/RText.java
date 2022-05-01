@@ -60,6 +60,9 @@ public class RText {
         defaulWidth = getDefaulWidth();
         return this;
     }
+    public void setTextColor(Color color){
+        this.textColor = color;
+    }
     public void setMaxTextWidth(double width){
         defaulWidth = width;
     }

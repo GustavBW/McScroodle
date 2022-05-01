@@ -27,7 +27,7 @@ public class ARText extends RText implements Renderable {
         gc.fillRoundRect(position.getX(),position.getY(),sizeX,sizeY,cornerWidth,cornerWidth);
     }
 
-    public ARText setTextColor(Color newColor){
+    public ARText setTextColor2(Color newColor){
         super.textColor = newColor;
         return this;
     }
@@ -95,7 +95,7 @@ public class ARText extends RText implements Renderable {
     public ARText copy(){
         return ARText.create(getText(),getPosition(),getDropShadowOffset(),getRenderingPriority())
                 .setBackgroundColor(this.getBackgroundColor())
-                .setTextColor(this.getTextColor())
+                .setTextColor2(this.getTextColor())
                 .setFont(this.getFont());
     }
 }

@@ -2,7 +2,10 @@ package gbw.tdg.towerdefensegame.augments;
 
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Main;
+import gbw.tdg.towerdefensegame.backend.Decimals;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
+import gbw.tdg.towerdefensegame.tower.Tower;
 
 public class MagnumAugment extends Augment{
 
@@ -23,21 +26,25 @@ public class MagnumAugment extends Augment{
         super.applyToBullet(bullet);
     }
 
+    @Override
+    public void onSuccesfullApplication(Tower t) {
+
+    }
+
     private double getFactor(Bullet bullet){
         return getFactor(bullet.getFlightDistance());
 
     }
     private double getFactor(double dist){
         //Reminder to self: Multiplying damage multiplicatively might be a bad idea.
-        //Function: ((-level * dist + level * C) / 100) + level. Linear decrease
-        double d = ((-getLevel() * dist + getLevel() * (getNoDmgAt())) / 100D) + 1;
-        return Math.max(d,0);
+        //Function: ln(level * 3) / (dist + 100) * 200. Logarithmic decrease
+        return (Math.log(getLevel() * 3) / dist + 100) * localScaleFactor();
     }
-    private double getNoDmgAt(){
-        return 300 * Main.scale.getX();
+    private double localScaleFactor(){
+        return 200 * Main.scale.getX();
     }
     private double getBDmgAtX0(){
-        return ((getLevel() * (getNoDmgAt())) / 100D) + 1;
+        return getFactor(0);
     }
 
     @Override
@@ -52,6 +59,9 @@ public class MagnumAugment extends Augment{
 
     @Override
     public String getLongDesc() {
-        return "Bullets size are increased and they deal up to " + (getBDmgAtX0() - 1) + " times normal damage as bonus damage. However, if the target is more than " + getNoDmgAt() + " units away, the Tower gains no bonus damage and the bonus also decreases towards this point";
+        return "Bullets size are increased and they deal up to " + Decimals.toXDecimalPlaces(getBDmgAtX0() - 1,1)
+                + " times normal damage as bonus damage. However, this bonus damage decreases the further the bullet travels. At "
+                + Main.scale.getX() * 300 + " units, the bullet only deals " + Decimals.toXDecimalPlaces(getFactor(Main.scale.getX() * 300) - 1,1)
+                + " times bonus damage.";
     }
 }

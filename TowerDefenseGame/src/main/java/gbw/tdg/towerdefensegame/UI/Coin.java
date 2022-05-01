@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame.UI;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
+import gbw.tdg.towerdefensegame.backend.Point2G;
 import gbw.tdg.towerdefensegame.handlers.MouseHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,7 +23,7 @@ public class Coin implements Renderable, Tickable {
     private long killTimestamp;
 
     public Coin(double value, Point2D p, double maxRollLength, double renderPrio){
-        this(value,p,getRandomVelocity(),maxRollLength,renderPrio);
+        this(value,p, Point2G.getRandomVector(),maxRollLength,renderPrio);
     }
     public Coin(double value, Point2D p, Point2D velocity, double maxRollLength, double renderPrio){
         this.value = value;
@@ -44,13 +45,6 @@ public class Coin implements Renderable, Tickable {
     public void destroy() {
         Renderable.expended.add(this);
         Tickable.expended.add(this);
-    }
-
-    private static Point2D getRandomVelocity(){
-        return new Point2D(
-                Main.random.nextDouble() - 0.5,
-                Main.random.nextDouble() - 0.5
-        ).normalize();
     }
 
     @Override

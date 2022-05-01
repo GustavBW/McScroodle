@@ -6,6 +6,7 @@ import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.UI.vfx.TopDownStrikeVFX;
 import gbw.tdg.towerdefensegame.UI.vfx.VFX;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
+import gbw.tdg.towerdefensegame.tower.Tower;
 
 public class LightningAugment extends Augment{
 
@@ -13,6 +14,11 @@ public class LightningAugment extends Augment{
 
     protected LightningAugment(double value, int type, int level, int maxLevel) {
         super(value, type, level,maxLevel);
+    }
+
+    @Override
+    public void onSuccesfullApplication(Tower t) {
+
     }
 
     @Override
@@ -29,6 +35,7 @@ public class LightningAugment extends Augment{
 
     @Override
     public void bounce(Enemy e, Bullet b){
+        if(!e.isAlive()){return;}
         e.applyDamage(e.getMaxHP() * getPercentMaxHPDamage(e) + b.getDamage());
         new TopDownStrikeVFX(200, VFX.DEFAULT_PRIO, e.getPosition(), ContentEngine.VFX.getRandom("/lightnings")).spawn();
     }
@@ -45,9 +52,7 @@ public class LightningAugment extends Augment{
     }
 
     private int getDelayMS(){
-        int toreturn = (int) ((3 * (1.0 / getLevel())) * 1000);
-
-        return toreturn;
+        return (int) ((3 * (1.0 / getLevel())) * 1000);
     }
 
     @Override

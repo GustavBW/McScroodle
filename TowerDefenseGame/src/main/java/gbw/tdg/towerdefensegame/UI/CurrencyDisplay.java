@@ -13,10 +13,10 @@ public class CurrencyDisplay extends UpdatingMenu<ARText> {
     public CurrencyDisplay(Point2D pos, Point2D dim, double rendPrio, int coloumns, int rows) {
         super(pos, dim, rendPrio, coloumns, rows);
         this.gold = ARText.create(Main.getGold() + "G",Point2D.ZERO,3,rendPrio)
-                .setTextColor(InGameScreen.goldColor)
+                .setTextColor2(InGameScreen.goldColor)
                 .setFont(Font.font("Impact", textSize));
         this.souls = ARText.create(Main.getSouls() + "S",Point2D.ZERO,3,rendPrio)
-                .setTextColor(InGameScreen.soulColor)
+                .setTextColor2(InGameScreen.soulColor)
                 .setFont(Font.font("Impact", textSize));
         add(gold);
         add(souls);

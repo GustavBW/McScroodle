@@ -28,7 +28,10 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
             new ChainLightningAugment(10,4,1,5),
             new LightningAugment(8,5,1,3),
             new VelocityAugment(3,6,1,20),
-            new MagnumAugment(5, 7, 1, 20)
+            new MagnumAugment(5, 7, 1, 20),
+            new DamageUpAugment(3, 8,1,20),
+            new SpeedUPAugment(3,9,1,20),
+            new RangeUpAugment(3,10,1,20)
     ));
 
     private int level, maxLevel = 3;
@@ -133,8 +136,14 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
             this.tower = tower;
             success = true;
         }
+
+        if(success){
+            onSuccesfullApplication(tower);
+        }
+
         return success;
     }
+    public abstract void onSuccesfullApplication(Tower t);
     public abstract void triggerEffects(Enemy enemyHit, Bullet bullet);
 
     public int getType(){
