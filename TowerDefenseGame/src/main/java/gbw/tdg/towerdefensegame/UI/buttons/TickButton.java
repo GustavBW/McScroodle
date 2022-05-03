@@ -7,35 +7,35 @@ import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
-public abstract class TickButton<T> extends Button implements Tickable {
+public abstract class TickButton<T> extends AssociatedButton<T> implements Tickable {
 
-    private T associatedValue;
     private int updateDelayMS = 1000;
     private long lastcall;
 
-    public TickButton(Point2D position, double sizeX, double sizeY, RText textUnit, Clickable root, T t, boolean shouldRenderBackground) {
-        super(position, sizeX, sizeY, textUnit, root, shouldRenderBackground);
-        associatedValue = t;
-    }
-    public TickButton(Image image, Point2D position, Point2D dim, RText textUnit, Clickable root){
-        super(image, position, dim, textUnit, root);
+    public TickButton(AssociatedButton<T> b) {
+        super(b);
     }
 
-    public TickButton(Point2D position, double sizeX, double sizeY, RText textUnit, boolean shouldRenderBackground) {
-        super(position, sizeX, sizeY, textUnit, shouldRenderBackground);
+    public TickButton(Point2D position, Point2D dim, RText textUnit, Clickable root, boolean shouldRenderBackground, T t) {
+        super(position, dim, textUnit, root, shouldRenderBackground, t);
     }
 
-    public TickButton(Point2D position, double sizeX, double sizeY) {
-        super(position, sizeX, sizeY);
+    public TickButton(Image image, Point2D position, Point2D dim, RText textUnit, Clickable root, T t) {
+        super(image, position, dim, textUnit, root, t);
     }
 
-    public TickButton(Point2D position, double sizeX, double sizeY, RText textUnit) {
-        super(position, sizeX, sizeY, textUnit);
+    public TickButton(Point2D position, double sizeX, double sizeY, RText textUnit, boolean shouldRenderBackground, T t) {
+        super(position, sizeX, sizeY, textUnit, shouldRenderBackground, t);
     }
 
-    public T getAssociatedValue(){
-        return associatedValue;
+    public TickButton(Point2D position, double sizeX, double sizeY, T t) {
+        super(position, sizeX, sizeY, t);
     }
+
+    public TickButton(Point2D position, double sizeX, double sizeY, RText textUnit, T t) {
+        super(position, sizeX, sizeY, textUnit, t);
+    }
+
 
     @Override
     public void tick() {

@@ -29,8 +29,8 @@ public class SlowFieldInvocation extends BasicSPDInvocation {
     }
 
     @Override
-    public Invocation copy() {
-        return new SlowFieldInvocation(getLevel());
+    public Invocation copy(int i){
+        return new SlowFieldInvocation(Math.min(i, getMaxLevel()));
     }
 
     @Override

@@ -14,10 +14,7 @@ public class MassiveInvocation extends Invocation{
         super(level);
     }
 
-    @Override
-    public Invocation copy() {
-        return new MassiveInvocation(getLevel());
-    }
+
 
     @Override
     public void attack(List<Enemy> possibleTargets) {}
@@ -42,6 +39,7 @@ public class MassiveInvocation extends Invocation{
         double radians = (2 * Math.PI) / getLevel();
         for(int i = 0; i < getLevel(); i++){
             OrbitingRock rock = new OrbitingRock(t.getOrigin(),t.getRange() , t,100, radians * i);
+            rock.setDmgMultiplier(getLevel());
             rocks.add(rock);
             rock.spawn();
         }
@@ -54,6 +52,11 @@ public class MassiveInvocation extends Invocation{
     }
 
     @Override
+    public Invocation copy(int i){
+        return new MassiveInvocation(Math.min(i, getMaxLevel()));
+    }
+
+    @Override
     public String getDesc(){
         return "The Tower attracts " + getLevel() + " rocks that orbit around it. Each dealing 10 x Tower damage.";
     }
@@ -62,7 +65,7 @@ public class MassiveInvocation extends Invocation{
     public String getLongDesc(){
         return "The Tower attracts " + getLevel()
                 + " rocks that orbit around it at half of Tower range, "
-                + "each dealing 10 x Tower damage. The speed of the orbit scales with Tower attack speed."
+                + "each dealing " + getLevel() + " x Tower damage. The speed of the orbit scales with Tower attack speed."
                 + "\n \"It's never too late to get swole.\"";
     }
 }

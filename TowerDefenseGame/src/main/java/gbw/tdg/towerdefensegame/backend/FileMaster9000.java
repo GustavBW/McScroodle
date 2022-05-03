@@ -77,6 +77,10 @@ public class FileMaster9000 {
         return findFile(request,getFiles());
     }
 
+    public File request(String name) {
+        return findFile(name, getFiles());
+    }
+
     private File findFile(String name, List<File> files){
         for(File f : files){
             if(isolateFileName(f).equalsIgnoreCase(name)){
@@ -152,4 +156,6 @@ public class FileMaster9000 {
         }
         return defFile;
     }
+
+
 }

@@ -4,6 +4,7 @@ import gbw.tdg.towerdefensegame.BounceBackBullet;
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.augments.BounceReciever;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
@@ -61,14 +62,13 @@ public class ComboInvocation extends BasicDMGInvocation implements BounceRecieve
         boost = (int) Math.min(boost,t.getAttackDelayMS()) + gracePeriod;
         return super.applyToTower(t);
     }
-
     @Override
-    public Invocation copy(){
-        return new ComboInvocation(getLevel());
+    public Invocation copy(int i){
+        return new ComboInvocation(Math.min(i, getMaxLevel()));
     }
 
     public String getName(){
-        return "Combo";
+        return "Combo " + TextFormatter.toRomanNumerals(getLevel());
     }
 
     public String getDesc(){

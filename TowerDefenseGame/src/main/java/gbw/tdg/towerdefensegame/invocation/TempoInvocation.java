@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame.invocation;
 
 import gbw.tdg.towerdefensegame.Tickable;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.tower.Tower;
 
 public class TempoInvocation extends BasicSPDInvocation implements Tickable {
@@ -53,8 +54,8 @@ public class TempoInvocation extends BasicSPDInvocation implements Tickable {
 
 
     @Override
-    public Invocation copy(){
-        return new TempoInvocation(getLevel());
+    public Invocation copy(int i){
+        return new TempoInvocation(Math.min(i, getMaxLevel()));
     }
 
     @Override
@@ -78,7 +79,7 @@ public class TempoInvocation extends BasicSPDInvocation implements Tickable {
 
     @Override
     public String getName(){
-        return "Lethal Tempo";
+        return "Lethal Tempo " + TextFormatter.toRomanNumerals(getLevel());
     }
 
     @Override

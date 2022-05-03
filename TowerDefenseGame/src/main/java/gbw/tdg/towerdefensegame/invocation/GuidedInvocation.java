@@ -32,9 +32,10 @@ public class GuidedInvocation extends BasicDMGInvocation{
     }
 
     @Override
-    public Invocation copy(){
-        return new GuidedInvocation(getLevel());
+    public Invocation copy(int i){
+        return new GuidedInvocation(Math.min(i, getMaxLevel()));
     }
+
 
     public String getName(){
         return "Guided";

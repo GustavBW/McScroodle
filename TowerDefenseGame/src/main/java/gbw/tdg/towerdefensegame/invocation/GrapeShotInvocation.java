@@ -60,8 +60,9 @@ public class GrapeShotInvocation extends BasicDMGInvocation{
     }
 
     @Override
-    public Invocation copy(){
-        return new GrapeShotInvocation(getLevel());
+    public Invocation copy(int i){
+        return new GrapeShotInvocation(Math.min(i, getMaxLevel()));
     }
+
 
 }

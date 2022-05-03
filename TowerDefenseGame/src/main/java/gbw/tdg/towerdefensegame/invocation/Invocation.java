@@ -29,28 +29,30 @@ public abstract class Invocation implements Displayable {
     private final static Invocation spdBase = new BasicSPDInvocation(1);
     private static boolean contentsPrepped = false;
 
-    private final int level;
+    private int level;
     private Tower owner;
     private ClickableIcon<Invocation> icon;
     private Image image;
 
     private static void prepContent(){
+        Map<String, Integer> nameLevelMap = ContentEngine.TEXT.getInvocationLevels();
+
         if(!contentsPrepped){
             dmgInvos = new ArrayList<>(List.of(
                     //Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
-                    new GrapeShotInvocation(1),
-                    new ComboInvocation(1)
+                    new GrapeShotInvocation(nameLevelMap.get("GrapeShotInvocation")),
+                    new ComboInvocation(nameLevelMap.get("ComboInvocation"))
             ));
             rngInvos = new ArrayList<>(List.of(
-                    new SlowFieldInvocation(1),
-                    new MassiveInvocation(3)
+                    new SlowFieldInvocation(nameLevelMap.get("SlowFieldInvocation")),
+                    new MassiveInvocation(nameLevelMap.get("MassiveInvocation"))
                     //Invocations for RNG is: Slowfield,
             ));
             spdInvos = new ArrayList<>(List.of(
                     //Invocations for SPD is: Multishot
-                    new MultishotInvocation(3),
-                    new SniperInvocation(1),
-                    new TempoInvocation(1)
+                    new MultishotInvocation(nameLevelMap.get("MultishotInvocation")),
+                    new SniperInvocation(nameLevelMap.get("SniperInvocation")),
+                    new TempoInvocation(nameLevelMap.get("TempoInvocation"))
             ));
             statInvoListMap = new HashMap<>(Map.of(
                     StatType.DAMAGE, dmgInvos,
@@ -59,6 +61,10 @@ public abstract class Invocation implements Displayable {
             ));
             contentsPrepped = true;
         }
+    }
+    public static void reloadContent(){
+        contentsPrepped = false;
+        prepContent();
     }
 
     protected Invocation(int level){
@@ -76,6 +82,13 @@ public abstract class Invocation implements Displayable {
     }
     public Tower getOwner(){return owner;}
     public int getLevel(){return level <= 0 ? 1 : level;}
+    public boolean setLevel(int i){
+        this.level = Math.min(i, getMaxLevel());
+        return this.level == i;
+    }
+    public int getMaxLevel() {
+        return 101;
+    }
     public ClickableIcon<Invocation> getIcon(){
         if(icon == null){
             icon = new ClickableIcon<>(getImage(),100, Point2D.ZERO,Point2D.ZERO,true,this);
@@ -88,7 +101,10 @@ public abstract class Invocation implements Displayable {
         }
         return image;
     }
-    public abstract Invocation copy();
+    public Invocation copy(){
+        return copy(getLevel());
+    }
+    public abstract Invocation copy(int newLevel);
 
     public abstract void attack(List<Enemy> possibleTargets);
     public abstract void evaluate();
@@ -134,11 +150,19 @@ public abstract class Invocation implements Displayable {
         }
         return null;
     }
+    public static List<Invocation> getAll(){
+        prepContent();
+        List<Invocation> toReturn = new ArrayList<>();
+        toReturn.addAll(dmgInvos);
+        toReturn.addAll(spdInvos);
+        toReturn.addAll(rngInvos);
+        return toReturn;
+    }
 
     public String getName(){
         String s = TextFormatter.getIsolatedClassName(this);
         int index = s.indexOf("Invocation");
-        return s.substring(0,index);
+        return s.substring(0,index) + " " + TextFormatter.toRomanNumerals(getLevel());
     }
 
     public String getDesc(){

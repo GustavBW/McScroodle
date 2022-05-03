@@ -13,8 +13,8 @@ public class MultishotInvocation extends BasicSPDInvocation{
     }
 
     @Override
-    public Invocation copy() {
-        return new MultishotInvocation(this.getLevel());
+    public Invocation copy(int i){
+        return new MultishotInvocation(Math.min(i, getMaxLevel()));
     }
 
     @Override

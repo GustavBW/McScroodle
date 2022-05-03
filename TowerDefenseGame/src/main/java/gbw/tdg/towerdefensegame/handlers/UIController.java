@@ -2,24 +2,24 @@ package gbw.tdg.towerdefensegame.handlers;
 
 import gbw.tdg.towerdefensegame.GameState;
 import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
-import gbw.tdg.towerdefensegame.UI.scenes.DevInfoScreen;
-import gbw.tdg.towerdefensegame.UI.scenes.GameOverScreen;
-import gbw.tdg.towerdefensegame.UI.scenes.InGameScreen;
-import gbw.tdg.towerdefensegame.UI.scenes.StartMenuScreen;
+import gbw.tdg.towerdefensegame.UI.scenes.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UIController implements Tickable{
 
+    private final static List<GameState> stateTracker = new ArrayList<>();
     private final Main game;
-    private Renderable screenToShow;
+    private GScene screenToShow;
     private StartMenuScreen startMenuScreen;
     private GameOverScreen gameOverScreen;
     private InGameScreen inGameScreen;
     private DevInfoScreen devInfoScreen;
+    private InvocationManagementScene invoManWindow;
     private boolean showInfo = false;
     private WaveManager waveManager;
-
 
     public UIController(Main game, WaveManager waveManager){
         this.game = game;
@@ -42,14 +42,17 @@ public class UIController implements Tickable{
         gameOverScreen = new GameOverScreen();
         inGameScreen = new InGameScreen(waveManager);
         devInfoScreen = new DevInfoScreen();
+        invoManWindow = new InvocationManagementScene(0);
     }
 
     public void changeScene(GameState state){
         removeCurrentUI();
+        stateTracker.add(state);
         switch (state){
             case START_MENU -> screenToShow = startMenuScreen;
             case IN_GAME -> screenToShow = inGameScreen;
             case GAME_OVER -> screenToShow = gameOverScreen;
+            case INVOCATION_MANAGEMENT -> screenToShow = invoManWindow;
         }
         screenToShow.spawn();
     }
@@ -58,6 +61,13 @@ public class UIController implements Tickable{
         if(screenToShow != null) {
             screenToShow.destroy();
         }
+    }
+
+    public static GameState getPrevious(){
+        if(stateTracker.size() - 2 < 0){
+            return GameState.VOID;
+        }
+        return stateTracker.get(stateTracker.size() - 2);
     }
 
     @Override

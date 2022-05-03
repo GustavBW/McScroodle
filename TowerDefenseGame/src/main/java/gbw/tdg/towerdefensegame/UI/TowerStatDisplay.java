@@ -50,9 +50,9 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
 
         Font upgradeCostTextFont = Font.font("Impact", 30 * Main.scale.getX());
         this.upgradeCostText = new TickButton<>(
-                position.add(0,sizeY + upgradeButtons.getDimensions().getY()), sizeX,sizeY/5,
+                position.add(0,sizeY + upgradeButtons.getDimensions().getY()), new Point2D( sizeX,sizeY/5),
                 new RText("Cost: ",Point2D.ZERO,3, new Color(255 / 255D,200/255D,100/255D,1),upgradeCostTextFont),
-                tower,null,false)
+                tower,false,null)
         {
             @Override
             public void update() {
@@ -67,33 +67,33 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
         this.upgradeCostText.setTextAlignments(0.5,0.3);
 
         upgradeButtons.addAll(List.of(
-                new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.DAMAGE,false){
+                new TickButton<>(Point2D.ZERO,Point2D.ZERO,RText.EMPTY,tower,false,StatType.DAMAGE){
                     @Override
                     public void update(){}
                     @Override
                     public void onClick(MouseEvent event){
                         if(tower.upgrade(StatType.DAMAGE,tower.getDamage() * 1.1) == Tower.MAX_UPGRADE_LEVEL){
-                            onMaxUpgradeReached(this.getAssociatedValue(),this);
+                            onMaxUpgradeReached(super.getAssociatedObj(),this);
                         }
                     }
                 }.setUpdateDelay(500).setImage2(ContentEngine.BUTTONS.getImage("DMGUP")),
-                new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.RANGE,false){
+                new TickButton<>(Point2D.ZERO,Point2D.ZERO,RText.EMPTY,tower,false,StatType.RANGE){
                     @Override
                     public void update(){}
                     @Override
                     public void onClick(MouseEvent event){
                         if(tower.upgrade(StatType.RANGE,tower.getRangeBase() * 1.1) == Tower.MAX_UPGRADE_LEVEL){
-                            onMaxUpgradeReached(this.getAssociatedValue(),this);
+                            onMaxUpgradeReached(this.getAssociatedObj(),this);
                         }
                     }
                 }.setUpdateDelay(500).setImage2(ContentEngine.BUTTONS.getImage("RNGUP")),
-                new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.ATTACK_SPEED,false){
+                new TickButton<>(Point2D.ZERO,Point2D.ZERO,RText.EMPTY,tower,false,StatType.ATTACK_SPEED){
                     @Override
                     public void update(){}
                     @Override
                     public void onClick(MouseEvent event){
                         if(tower.upgrade(StatType.ATTACK_SPEED,tower.getAtkSpeed() * 1.1) == Tower.MAX_UPGRADE_LEVEL){
-                            onMaxUpgradeReached(this.getAssociatedValue(),this);
+                            onMaxUpgradeReached(this.getAssociatedObj(),this);
                         }
                     }
                 }.setUpdateDelay(500).setImage2(ContentEngine.BUTTONS.getImage("SPDUP"))

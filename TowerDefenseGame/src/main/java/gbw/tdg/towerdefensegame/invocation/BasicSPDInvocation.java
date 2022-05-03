@@ -73,8 +73,8 @@ public class BasicSPDInvocation extends Invocation {
     }
 
     @Override
-    public Invocation copy(){
-        return new BasicSPDInvocation(getLevel());
+    public Invocation copy(int i){
+        return new BasicSPDInvocation(Math.min(i, getMaxLevel()));
     }
 
     @Override

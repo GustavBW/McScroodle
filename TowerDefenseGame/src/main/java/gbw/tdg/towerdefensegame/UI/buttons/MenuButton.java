@@ -14,8 +14,6 @@ public class MenuButton extends Button{
 
     @Override
     public void onClick(MouseEvent event){
-        Main.onStartMenu();
-        Main.onGameOver();
-        System.out.println("Menu button pressed");
+
     }
 }

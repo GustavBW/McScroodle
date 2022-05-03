@@ -224,6 +224,9 @@ public class Main extends Application {
         isRunning = true;
         setState(GameState.IN_GAME);
     }
+    public static void onInvoMenu(){
+        setState(GameState.INVOCATION_MANAGEMENT);
+    }
     public static void onStartMenu(){
         setState(GameState.START_MENU);
     }
@@ -231,11 +234,14 @@ public class Main extends Application {
         return instance;
     }
 
-    private static void setState(GameState newState){
+    public static void setState(GameState newState){
         if(state != newState) {
             System.out.println("Main.state changed to: " + newState + " from " + state);
             state = newState;
             uiController.changeScene(state);
         }
+    }
+    public static GameState getState(){
+        return state;
     }
 }

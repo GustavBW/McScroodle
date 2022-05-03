@@ -2,7 +2,7 @@ package gbw.tdg.towerdefensegame.backend;
 
 import javafx.scene.image.Image;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
 
 public abstract class IOEngine {
@@ -49,6 +49,43 @@ public abstract class IOEngine {
         }
 
         return files;
+    }
+
+    public List<String> readFile(File f){
+        List<String> toReturn = new ArrayList<>();
+
+        try{
+            String line = "";
+            BufferedReader br = new BufferedReader(new FileReader(f));
+
+            while((line = br.readLine()) != null){
+                toReturn.add(line);
+            }
+
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return toReturn;
+    }
+    public void writeToFile(File f, List<String> list){
+        String s = TextFormatter.concatonateArray(list, "\n");
+        writeToFile(f,s);
+    }
+    public void writeToFile(File f, String s){
+        try{
+            BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+            bw.write(s);
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public File request(String name){
+        return fm9.request(name);
     }
 
     public File getDefault(){

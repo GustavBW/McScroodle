@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame.invocation;
 
+import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.tower.Tower;
 
 public class SniperInvocation extends BasicSPDInvocation{
@@ -10,8 +11,8 @@ public class SniperInvocation extends BasicSPDInvocation{
 
 
     @Override
-    public Invocation copy(){
-        return new SniperInvocation(getLevel());
+    public Invocation copy(int i){
+        return new SniperInvocation(Math.min(i, getMaxLevel()));
     }
 
     private double getNewSpeed(){
@@ -29,12 +30,12 @@ public class SniperInvocation extends BasicSPDInvocation{
 
     @Override
     public String getDesc(){
-        return "The Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But damage and range is greatly increased.";
+        return "The Tower attacks once every " + Decimals.toXDecimalPlaces((1_000 / getNewSpeed()) / 1_000,2) + " s. But damage and range is greatly increased.";
     }
 
     @Override
     public String getLongDesc(){
-        return "The Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But Tower base damage is multiplied by the attack speed lost plus 100%, and then further increased by this amount." +
+        return "The Tower attacks once every " + Decimals.toXDecimalPlaces((1_000 / getNewSpeed()) / 1_000,2) + " s. But Tower base damage is multiplied by the attack speed lost plus 100%, and then further increased by this amount." +
                 " Range is increased by 50%";
     }
 }

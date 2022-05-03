@@ -5,6 +5,7 @@ import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -17,8 +18,8 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
     private final T obj;
     private final ARText desc,title;
     private final RenderableImage image;
-    private final Font titleFont = Font.font("Impact", Main.canvasSize.getX() * .014);
-    private final Font descFont = Font.font("Verdana", Main.canvasSize.getY() * .012);
+    private Font titleFont = Font.font("Impact", Main.canvasSize.getX() * .014);
+    private Font descFont = Font.font("Verdana", Main.canvasSize.getY() * .012);
     private double arcThing = 15 * Main.scale.getX();
     private final Color color = new Color(0,0,0,0.5);
     private final Color color2 = new Color(1,1,1,0.8);
@@ -70,9 +71,14 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
         desc.render(gc);
     }
 
-    private String getFormattedDesc(){
-        List<String> fittedDesc = TextFormatter.wordWrapCustom(obj.getLongDesc(), descFont,getDescDim().getX());
-        return TextFormatter.concatonateArray(fittedDesc, "\n");
+    public ARText getTitle(){
+        return title;
+    }
+    public RenderableImage getImage(){
+        return image;
+    }
+    public ARText getDesc(){
+        return desc;
     }
 
     @Override
@@ -84,10 +90,16 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
         super.destroy();
     }
 
-
+    private String getFormattedDesc(){
+        return getFormattedDesc(obj.getLongDesc(),descFont,getDescDim().getX());
+    }
+    private String getFormattedDesc(String s, Font font, double width){
+        List<String> fittedDesc = TextFormatter.wordWrapCustom(s, font, width);
+        return TextFormatter.concatonateArray(fittedDesc, "\n");
+    }
     private Point2D getTitleOffset(){
         return new Point2D(
-                TextFormatter.getWidthOf(title.getText(),titleFont) * 0.5,
+                (sizeX - TextFormatter.getWidthOf(title.getText(),titleFont)) * 0.5,
                 5 * Main.scale.getY() + getTitleDim().getY()
         );
     }
@@ -120,11 +132,9 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
     private Point2D getTitleDim(){
         return new Point2D(sizeX * 0.75, titleFont.getSize());
     }
-
     private Point2D getImageDimP(){
         return new Point2D(sizeY * (1/3D), sizeY * (1/3D));
     }
-
     private Point2D getDescDim(){
         return new Point2D(
                 sizeX - (getDescOffset().getX() * 2),
@@ -136,6 +146,13 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
         return obj;
     }
 
+    private void updateFontSizes(double relY){
+        this.titleFont = Font.font(titleFont.getFamily(),titleFont.getSize() * relY);
+        this.descFont = Font.font(descFont.getFamily(),descFont.getSize() * relY);
+        this.title.setFont(titleFont);
+        this.desc.setFont(descFont);
+    }
+
     @Override
     public void setPosition(Point2D p){
         super.setPosition(p);
@@ -143,6 +160,7 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
         image.setPosition(p.add(getImageOffsetP())); //8
         desc.setPosition(p.add(getDescOffset())); //10
     }
+
     @Override
     public void setDimensions(Point2D dim){
         super.setDimensions(dim);
@@ -150,6 +168,8 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
         title.setDimensions(getTitleDim()); //0
         image.setDimensions(getImageDimP()); //0
         desc.setDimensions(getDescDim()); //20
+
+        desc.setText(getFormattedDesc());
     }
 
 }

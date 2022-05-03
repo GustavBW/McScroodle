@@ -13,11 +13,6 @@ public class EmptyInvocation extends Invocation{
     }
 
     @Override
-    public Invocation copy() {
-        return null;
-    }
-
-    @Override
     public void attack(List<Enemy> possibleTargets) {
 
     }
@@ -36,4 +31,10 @@ public class EmptyInvocation extends Invocation{
     public boolean applyToTower(Tower t) {
         return false;
     }
+
+    @Override
+    public Invocation copy(int i){
+        return new EmptyInvocation(Math.min(i, getMaxLevel()));
+    }
+
 }

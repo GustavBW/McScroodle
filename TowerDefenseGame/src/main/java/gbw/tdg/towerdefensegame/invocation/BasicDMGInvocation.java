@@ -49,9 +49,10 @@ public class BasicDMGInvocation extends Invocation{
     }
 
     @Override
-    public Invocation copy(){
-        return new BasicDMGInvocation(getLevel());
+    public Invocation copy(int i){
+        return new BasicDMGInvocation(Math.min(i, getMaxLevel()));
     }
+
 
     @Override
     public String getDesc(){

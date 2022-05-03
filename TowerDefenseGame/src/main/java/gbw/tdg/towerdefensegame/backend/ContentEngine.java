@@ -22,4 +22,5 @@ public class ContentEngine {
     public static InvocationEngine INVOCATIONS = InvocationEngine.getInstance(ressourceDir + "/invocations");
     public static ButtonEngine BUTTONS = ButtonEngine.getInstance(ressourceDir + "/buttons");
     public static VFXEngine VFX = VFXEngine.getInstance(ressourceDir + "/vfx");
+    public static TextEngine TEXT = TextEngine.getInstance(ressourceDir + "/config");
 }

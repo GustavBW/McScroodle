@@ -14,6 +14,7 @@ import java.util.List;
 public class OrbitingRock extends Bullet {
 
     private Orbit orbit;
+    private int dmgMultiplier = 1;
 
     public OrbitingRock(Point2D center, double radius, Tower owner, double orbitingSpeed, double orbitOffset) {
         super(center, Point2D.ZERO, owner);
@@ -47,9 +48,13 @@ public class OrbitingRock extends Bullet {
         return collisionsFound;
     }
 
+    public void setDmgMultiplier(int i){
+        this.dmgMultiplier = i;
+    }
+
     private void applyDamageTo(List<Enemy> list){
         for(Enemy e : list){
-            e.applyDamage(owner.getDamage() * 10);
+            e.applyDamage(owner.getDamage() * dmgMultiplier);
         }
     }
 
