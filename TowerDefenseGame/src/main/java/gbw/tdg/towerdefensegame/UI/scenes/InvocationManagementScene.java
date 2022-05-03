@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.UI.scenes;
 
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.UI.GraphicalInventory;
+import gbw.tdg.towerdefensegame.UI.OnScreenWarning;
 import gbw.tdg.towerdefensegame.UI.RText;
 import gbw.tdg.towerdefensegame.UI.SmallDisplayableDisplay;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
@@ -86,14 +87,22 @@ public class InvocationManagementScene extends GScene{
 
     private void attemptUpgrade(){
         //Order of operations: Write to file. reloadInvocations. Reload gui
-        if(shards >= cost && selectedInvocation != null) {
-            if(selectedInvocation.setLevel(selectedInvocation.getLevel() + 1)) {
-                ContentEngine.TEXT.updateInvocationLevels(invocations);
-                ContentEngine.TEXT.setPersistentGameplayValue("invocation_upgrade_count", upgradeCount + 1);
-                ContentEngine.TEXT.setPersistentGameplayValue("invocation_shards",shards-cost);
-                Invocation.reloadContent();
-                reload();
+        if(shards >= cost) {
+            if(selectedInvocation != null) {
+                if (selectedInvocation.setLevel(selectedInvocation.getLevel() + 1)) {
+                    ContentEngine.TEXT.updateInvocationLevels(invocations);
+                    ContentEngine.TEXT.setPersistentGameplayValue("invocation_upgrade_count", upgradeCount + 1);
+                    ContentEngine.TEXT.setPersistentGameplayValue("invocation_shards", shards - cost);
+                    Invocation.reloadContent();
+                    reload();
+                }else{
+                    new OnScreenWarning("Max Level Reached!", Main.canvasSize.multiply(.5),3).spawn();
+                }
+            }else{
+                new OnScreenWarning("No Invocation Selected!", Main.canvasSize.multiply(.5),3).spawn();
             }
+        }else{
+            new OnScreenWarning("Not Enough Funds!", Main.canvasSize.multiply(.5),3).spawn();
         }
     }
 
