@@ -15,7 +15,7 @@ public class SlowEffect extends LifetimeEffect {
 
     @Override
     public synchronized void evaluateOn(Enemy e){
-        e.setTempMovespeed(e.getMvspeed() * slowPercentage);
+        e.setTempMovespeed(e.getMvspeed() * (1 - slowPercentage));
         super.evalLifetime(e);
     }
 
@@ -25,6 +25,6 @@ public class SlowEffect extends LifetimeEffect {
 
     @Override
     public String getEffectString() {
-        return "Slowed " + Decimals.toXDecimalPlaces(slowPercentage * 100,2) + "%";
+        return "Slowed " + Decimals.toXDecimalPlaces((slowPercentage) * 100,2) + "%";
     }
 }

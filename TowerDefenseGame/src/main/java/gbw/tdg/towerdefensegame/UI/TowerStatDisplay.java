@@ -7,8 +7,10 @@ import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.UI.buttons.InvocationSelectionButton;
 import gbw.tdg.towerdefensegame.UI.buttons.OpenDisplayableDisplayButton;
 import gbw.tdg.towerdefensegame.UI.buttons.TickButton;
+import gbw.tdg.towerdefensegame.UI.scenes.InGameScreen;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.backend.ContentEngine;
+import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.invocation.Invocation;
 import gbw.tdg.towerdefensegame.tower.StatType;
@@ -31,8 +33,8 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
     private final double someArcNumber = 15 * Main.scale.getX();
     private final GraphicalInventory<Button> augmentDisplay;
     private final GraphicalInventory<Button> upgradeButtons;
+    private final Button upgradeCostText;
     private final TowerDisplay display;
-
 
     public TowerStatDisplay(Tower t, Point2D position, TowerDisplay display){
         super(position, Main.canvasSize.getX() * 0.1 - ((Main.canvasSize.getY() * 0.1) / 3),Main.canvasSize.getY() * 0.1);
@@ -43,17 +45,31 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
         this.position = position;
         this.display = display;
 
-        double posXOfAugmentDisplay = Main.canvasSize.getX() * 0.1 - (sizeY / 3);
-
-        this.augmentDisplay = new GraphicalInventory<>(1,sizeY / 3,sizeY,0,position.add(posXOfAugmentDisplay,0),renderingPriority,3);
+        this.augmentDisplay = new GraphicalInventory<>(1,sizeY / 3,sizeY,0,position.add(sizeX,0),renderingPriority,3);
         this.upgradeButtons = new GraphicalInventory<>(3,1,new Point2D(position.getX(),position.getY() + sizeY),new Point2D(sizeX, sizeY * 0.5),0,renderingPriority);
+
+        Font upgradeCostTextFont = Font.font("Impact", 30 * Main.scale.getX());
+        this.upgradeCostText = new TickButton<>(
+                position.add(0,sizeY + upgradeButtons.getDimensions().getY()), sizeX,sizeY/5,
+                new RText("Cost: ",Point2D.ZERO,3, new Color(255 / 255D,200/255D,100/255D,1),upgradeCostTextFont),
+                tower,null,false)
+        {
+            @Override
+            public void update() {
+                String toWrite = "Cost: "  + Decimals.toXDecimalPlaces(tower.getUpgradeCost(),1) + "G";
+                if(tower.getInvoCount() >= 3){
+                    toWrite = "Worth: " + Decimals.toXDecimalPlaces(tower.getWorth(),1) + "G";
+                }
+                this.text.setText(toWrite);
+                super.alignText(text);
+            }
+        }.setUpdateDelay(200).setImage2(ContentEngine.BUTTONS.getImage("BottomBeveledUpgradeFill"));
+        this.upgradeCostText.setTextAlignments(0.5,0.3);
 
         upgradeButtons.addAll(List.of(
                 new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.DAMAGE,false){
                     @Override
-                    public void update(){
-                        text.setText((TextFormatter.intToKMBNotation((int) (tower.getUpgradeCost() * 1.1))) + "G");
-                    }
+                    public void update(){}
                     @Override
                     public void onClick(MouseEvent event){
                         if(tower.upgrade(StatType.DAMAGE,tower.getDamage() * 1.1) == Tower.MAX_UPGRADE_LEVEL){
@@ -63,9 +79,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
                 }.setUpdateDelay(500).setImage2(ContentEngine.BUTTONS.getImage("DMGUP")),
                 new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.RANGE,false){
                     @Override
-                    public void update(){
-                        text.setText((TextFormatter.intToKMBNotation((int) (tower.getUpgradeCost() * 1.1))) + "G");
-                    }
+                    public void update(){}
                     @Override
                     public void onClick(MouseEvent event){
                         if(tower.upgrade(StatType.RANGE,tower.getRangeBase() * 1.1) == Tower.MAX_UPGRADE_LEVEL){
@@ -75,9 +89,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
                 }.setUpdateDelay(500).setImage2(ContentEngine.BUTTONS.getImage("RNGUP")),
                 new TickButton<>(Point2D.ZERO,0,0,RText.EMPTY,tower,StatType.ATTACK_SPEED,false){
                     @Override
-                    public void update(){
-                        text.setText((TextFormatter.intToKMBNotation((int) (tower.getUpgradeCost() * 1.1))) + "G");
-                    }
+                    public void update(){}
                     @Override
                     public void onClick(MouseEvent event){
                         if(tower.upgrade(StatType.ATTACK_SPEED,tower.getAtkSpeed() * 1.1) == Tower.MAX_UPGRADE_LEVEL){
@@ -145,6 +157,7 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
         Tickable.newborn.add(this);
         augmentDisplay.spawn();
         upgradeButtons.spawn();
+        upgradeCostText.spawn();
         isSpawned = true;
     }
 
@@ -154,17 +167,18 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
         Tickable.expended.add(this);
         augmentDisplay.destroy();
         upgradeButtons.destroy();
+        upgradeCostText.destroy();
         isSpawned = false;
     }
 
     public Point2D getExtremeties() {
         return new Point2D(
-                position.getX() + sizeX + augmentDisplay.getDimensions().getX(),
-                position.getY()+  sizeY + upgradeButtons.getDimensions().getY()
+                sizeX,
+                position.getY() + sizeY + upgradeButtons.getDimensions().getY() + upgradeCostText.getDimensions().getY()
         );
     }
 
-    public void setText(String newText) {
+    public void setStatText(String newText) {
         text.setText(newText);
     }
 

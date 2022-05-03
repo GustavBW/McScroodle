@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Renderable;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -10,10 +11,13 @@ public class ARText extends RText implements Renderable {
 
     private double rendPrio,sizeX,sizeY,cornerWidth;
     private Color background = Color.BLACK;
+    private boolean renderBackground = false;
 
     protected ARText(String text, Point2D position, double dropShadowOffset, Font font, double rendPrio){
         super(text,position,dropShadowOffset,Color.WHITE,font);
         this.rendPrio = rendPrio;
+        this.sizeX = TextFormatter.getWidthOf(text,font);
+        this.sizeY = font.getSize();
     }
 
     public static ARText create(String text, Point2D position, double dropShadowOffset, double rendPrio){
@@ -22,9 +26,11 @@ public class ARText extends RText implements Renderable {
 
     @Override
     public void render(GraphicsContext gc){
+        if(renderBackground) {
+            gc.setFill(background);
+            gc.fillRoundRect(position.getX(), position.getY() - super.getFont().getSize(), sizeX, sizeY, cornerWidth, cornerWidth);
+        }
         super.render(gc);
-        gc.setFill(background);
-        gc.fillRoundRect(position.getX(),position.getY(),sizeX,sizeY,cornerWidth,cornerWidth);
     }
 
     public ARText setTextColor2(Color newColor){
@@ -37,9 +43,12 @@ public class ARText extends RText implements Renderable {
     public Font getFont(){
         return super.font;
     }
+    public ARText setRenderBackground(boolean state){
+        this.renderBackground = state;
+        return this;
+    }
     public ARText setBackgroundColor(Color newColor){
         this.background = newColor;
-
         return this;
     }
     public ARText setFont(Font font){

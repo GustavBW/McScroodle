@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.TargetingType;
 import gbw.tdg.towerdefensegame.UI.*;
+import gbw.tdg.towerdefensegame.backend.ContentEngine;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -26,10 +27,18 @@ public class SetTowerTargetingButton extends Button{
         super.setRimColor(Color.TRANSPARENT);
 
         for(TargetingType type : TargetingType.values()){
-            buttons.add(new SetTargetingButton(display.getTower(),type));
+            buttons.add(new SetTargetingButton(display.getTower(),type)
+                    .setTextAlignments(0,0.3)
+                    .setImage(ContentEngine.BUTTONS.getImage("ArrowedButtonRightFillBlack"))
+                    .setTextAlignConstants(15,0)
+                    .setShouldRenderBackground(false)
+            );
         }
 
-        this.menu = new GraphicalInventory<>(1,sizeX,Main.canvasSize.getY()*0.15,2,position.add(sizeX,0),57,buttons.size());
+        this.menu = new GraphicalInventory<>(
+                1,buttons.size(),position.add(sizeX,0),Point2D.ZERO,
+                2,57);
+
         menu.setBackgroundColor(Color.TRANSPARENT);
         menu.addAll(buttons);
     }
@@ -69,7 +78,10 @@ public class SetTowerTargetingButton extends Button{
     @Override
     public void setDimensions(Point2D dim){
         super.setDimensions(dim);
-        menu.setDimensions(new Point2D(dim.getX(), Main.canvasSize.getY()*0.15));
+        menu.setDimensions(new Point2D(
+                dim.getX() * .7,
+                menu.size() * dim.getY()
+        ));
     }
     @Override
     public Clickable getRoot(){

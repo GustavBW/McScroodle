@@ -34,7 +34,7 @@ public class RangeUpAugment extends Augment{
 
     @Override
     public String getDesc(){
-        return "Increased Tower range by " + Decimals.toXDecimalPlaces(getIncreasePercent(),1) + "%.";
+        return "Increases Tower range by " + Decimals.toXDecimalPlaces(getIncreasePercent(),1) * 100 + "%.";
     }
 
     @Override

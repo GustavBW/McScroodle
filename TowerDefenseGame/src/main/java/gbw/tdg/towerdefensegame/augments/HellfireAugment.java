@@ -39,6 +39,11 @@ public class HellfireAugment extends Augment{
     }
 
     @Override
+    public String getLongDesc(){
+        return getDesc();
+    }
+
+    @Override
     public Augment copy() {
         return new HellfireAugment(this.getValue(), this.getType(), this.getLevel(), this.getMaxLevel());
     }

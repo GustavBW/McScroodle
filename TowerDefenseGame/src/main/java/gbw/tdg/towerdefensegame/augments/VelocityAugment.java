@@ -41,18 +41,18 @@ public class VelocityAugment extends Augment{
 
     @Override
     public String getDesc(){
-        return "Bullets deal bonus damage based on distance flown. Bonus dmg for 1k flown: " + (int) (getFactor(1000) * 10) + " %";
+        return "Bullets deal bonus damage based on distance flown. Bonus dmg for 1k flown: " + (int) (getFactor(1000) * 100) + " %";
     }
 
     @Override
     public String getLongDesc() {
         return "Bullets deal extra damage on hit if they've traveled further than " + 200 * Main.scale.getX()
-                + " units. Generally double damage is achieved at around " + 1000 * Main.scale.getX()
-                + " units and there is no restriction on how much bonus damage can be achieved this way.";
+                + " units. At 1000 units away, the bonus damage becomes " + (int) (getFactor(1000) * 100) + "%"
+                + " and there is no restriction on how much bonus damage can be achieved this way.";
     }
 
     @Override
     public String getName(){
-        return "Perpetual Velocity " + TextFormatter.toRomanNumerals(getLevel());
+        return "Perpetual Momentum " + TextFormatter.toRomanNumerals(getLevel());
     }
 }

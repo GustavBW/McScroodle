@@ -6,13 +6,11 @@ import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.augments.LifetimeEffect;
 import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.backend.Point2G;
-import gbw.tdg.towerdefensegame.tower.ITower;
+import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 import java.util.*;
 
@@ -22,7 +20,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     private WayPoint latest;
     private WayPoint next;
     private Point2D position;
-    private double ogmvspeed = 5 * Main.scale.getX(),mvspeedToUse = ogmvspeed, minDistToPoint = 10;
+    private double ogmvspeed = 5 * Main.scale.getX(),mvspeedToUse = ogmvspeed, minDistToPoint = mvspeedToUse;
     private final Path path;
     private final ProgressBar hpBar;
     private double maxHP = 1, id, hp = maxHP;
@@ -33,9 +31,11 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     private final Color color;
     private Bullet latestHit;
     private final EnemyStatDisplay statDisplay;
-    private volatile List<LifetimeEffect> lifetimeEffects = Collections.synchronizedList(new ArrayList<>());
-    private final Set<ITower> provokers = new HashSet<>();
-    private final Map<ITower, Double> provokerDamageMap = new HashMap<>();
+    private final List<LifetimeEffect> lifetimeEffects = new ArrayList<>();
+    private final List<LifetimeEffect> lfToAdd = new ArrayList<>();
+    private final List<LifetimeEffect> lfToRemove = new ArrayList<>();
+    private final Set<Tower> provokers = new HashSet<>();
+    private final Map<Tower, Double> provokerDamageMap = new HashMap<>();
     private final TimedEventBuffer<Double,OnScreenWarning> damageNumbersBuffer;
 
     public Enemy(Point2D position, Path path){
@@ -85,6 +85,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
             for(LifetimeEffect lE : lifetimeEffects){
                 lE.evaluateOn(this);
             }
+            cleanUpLF();
 
             Point2D dir = checkDistanceToNext();
 
@@ -102,6 +103,13 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
 
             mvspeedToUse = ogmvspeed;
         }
+    }
+
+    private void cleanUpLF() {
+        lifetimeEffects.removeAll(lfToRemove);
+        lifetimeEffects.addAll(lfToAdd);
+        lfToAdd.clear();
+        lfToRemove.clear();
     }
 
     private void onKilled(boolean byBullet) {
@@ -165,10 +173,10 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
             }
         }
         lE.resetSpawntime();
-        lifetimeEffects.add(lE);
+        lfToAdd.add(lE);
     }
     public synchronized  void removeLifetimeEffect(LifetimeEffect lE){
-        lifetimeEffects.remove(lE);
+        lfToRemove.add(lE);
     }
     public synchronized List<LifetimeEffect> getLifetimeEffects(){
         return new ArrayList<>(lifetimeEffects);

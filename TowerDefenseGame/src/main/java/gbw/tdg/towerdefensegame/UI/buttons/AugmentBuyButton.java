@@ -26,7 +26,8 @@ public class AugmentBuyButton extends BounceBackButton{
 
     public AugmentBuyButton(Point2D position, double sizeX, double sizeY, RText textUnit, Augment augment, IClickableOwner owner, double price) {
         super(position, sizeX, sizeY, textUnit,null);
-        super.setBackgroundColor(new Color(0,0,0,0.5));
+        super.setShouldRenderBackground(true);
+        super.setBackgroundColor(Color.BLACK);
         this.augment = augment;
         augment.getIcon().setDimensions(new Point2D(sizeY - (2 * rimOffset),sizeY - (2 * rimOffset)));
         this.iconOffset = new Point2D((sizeX) - (rimOffset + augment.getIcon().getDimensions().getX()), rimOffset);
@@ -40,7 +41,7 @@ public class AugmentBuyButton extends BounceBackButton{
     }
 
     private String getFormattedDesc(){
-        List<String> fittedDesc = TextFormatter.wordWrapCustom(augment.getDesc(), descFont,sizeX);
+        List<String> fittedDesc = TextFormatter.wordWrapCustom(augment.getDesc(), descFont,sizeX - titleOffset.getX());
         fittedDesc.add(this.price + " S");
         return TextFormatter.concatonateArray(fittedDesc, "\n");
     }

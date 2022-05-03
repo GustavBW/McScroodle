@@ -7,7 +7,9 @@ public enum TargetingType {
     BEEFIEST("Beefiest"),
     WEAKEST("Weakest"),
     FASTEST("Fastest"),
-    RANDOM("Random");
+    RANDOM("Random"),
+    CLOSEST("Closest"),
+    FURTHEST("Furthest");
 
 
     public String asString;

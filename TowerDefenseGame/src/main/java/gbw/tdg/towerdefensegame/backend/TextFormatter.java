@@ -1,5 +1,6 @@
 package gbw.tdg.towerdefensegame.backend;
 
+import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -49,6 +50,11 @@ public class TextFormatter {
         fm.setFont(font);
         return fm.getLayoutBounds().getWidth();
     }
+
+    public static double getWidthOf(RText rtext){
+        return getWidthOf(rtext.getText(),rtext.getFont());
+    }
+
 
     public static List<String> wordWrapCustom(String wrapMe, Font font, double wrapInPixels){
         //Pulled from StackOverflow: https://stackoverflow.com/questions/52350922/word-wrap-in-java-swing-with-hard-wrap-pixel-limit

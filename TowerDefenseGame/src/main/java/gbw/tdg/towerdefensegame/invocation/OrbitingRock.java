@@ -3,7 +3,7 @@ package gbw.tdg.towerdefensegame.invocation;
 import gbw.tdg.towerdefensegame.Bullet;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
-import gbw.tdg.towerdefensegame.tower.ITower;
+import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -15,7 +15,7 @@ public class OrbitingRock extends Bullet {
 
     private Orbit orbit;
 
-    public OrbitingRock(Point2D center, double radius, ITower owner, double orbitingSpeed, double orbitOffset) {
+    public OrbitingRock(Point2D center, double radius, Tower owner, double orbitingSpeed, double orbitOffset) {
         super(center, Point2D.ZERO, owner);
         this.orbit = new Orbit(center,radius,orbitingSpeed,orbitOffset);
     }

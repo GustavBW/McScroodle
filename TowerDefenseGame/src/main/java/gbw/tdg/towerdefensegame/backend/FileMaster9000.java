@@ -11,7 +11,6 @@ public class FileMaster9000 {
     //and is thus most effective in applications that requires a lot of the same files to be loaded / accessed
     //during runtime.
     //It is capabable to access files further than 1 directy in compared to it's assigned root
-    //but the access times for those wont get optimised
 
     private final String root;
     private final Map<String,File> knownFileMap;
@@ -71,8 +70,11 @@ public class FileMaster9000 {
         request = request.toLowerCase(Locale.ROOT);
 
         File known = knownFileMap.get(request);
+        if(known != null){
+            return known;
+        }
 
-        return known == null ? findFile(request,getFiles()) : known;
+        return findFile(request,getFiles());
     }
 
     private File findFile(String name, List<File> files){

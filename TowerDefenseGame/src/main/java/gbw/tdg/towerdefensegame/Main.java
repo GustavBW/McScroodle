@@ -1,13 +1,7 @@
 package gbw.tdg.towerdefensegame;
 
-import gbw.tdg.towerdefensegame.UI.Clickable;
-import gbw.tdg.towerdefensegame.augments.Augment;
-import gbw.tdg.towerdefensegame.backend.ContentEngine;
-import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
 import gbw.tdg.towerdefensegame.handlers.*;
-import gbw.tdg.towerdefensegame.invocation.Invocation;
-import gbw.tdg.towerdefensegame.tower.ITower;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -174,10 +168,10 @@ public class Main extends Application {
     }
 
     private void cleanUp(){
-        ITower.active.addAll(ITower.newborn);
-        ITower.active.removeAll(ITower.expended);
-        ITower.expended.clear();
-        ITower.newborn.clear();
+        Tower.active.addAll(Tower.newborn);
+        Tower.active.removeAll(Tower.expended);
+        Tower.expended.clear();
+        Tower.newborn.clear();
 
         Tickable.active.addAll(Tickable.newborn);
         Tickable.active.removeAll(Tickable.expended);

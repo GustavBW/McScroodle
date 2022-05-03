@@ -33,7 +33,7 @@ public class SpeedUPAugment extends Augment{
 
     @Override
     public String getDesc(){
-        return "Ramps up Tower Attack Speed by " + Decimals.toXDecimalPlaces(getIncreasePercent(),1) + "%.";
+        return "Ramps up Tower Attack Speed by " + Decimals.toXDecimalPlaces(getIncreasePercent(),1) * 100 + "%.";
     }
 
     @Override

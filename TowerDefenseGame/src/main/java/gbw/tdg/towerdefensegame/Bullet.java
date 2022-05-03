@@ -3,7 +3,7 @@ package gbw.tdg.towerdefensegame;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import gbw.tdg.towerdefensegame.enemies.IEnemy;
-import gbw.tdg.towerdefensegame.tower.ITower;
+import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -24,11 +24,11 @@ public class Bullet implements Tickable,Renderable{
     private final List<Augment> onHitAugments = new ArrayList<>();
     private final List<Augment> inFlightAugments = new ArrayList<>();
     private final List<Augment> onSpawnAugments = new ArrayList<>();
-    protected ITower owner;
+    protected Tower owner;
     private boolean targeted;
     private int piercingLevel = 1;
 
-    public Bullet(Point2D position, Enemy target, ITower owner){
+    public Bullet(Point2D position, Enemy target, Tower owner){
         this.position = position;
         this.velocity = new Point2D(0,0);
         this.target = target;
@@ -37,7 +37,7 @@ public class Bullet implements Tickable,Renderable{
         targeted = target != null;
     }
 
-    public Bullet(Point2D position, Point2D velocity, ITower owner){
+    public Bullet(Point2D position, Point2D velocity, Tower owner){
         this(position, (Enemy) null,owner);
         this.velocity = velocity;
     }
@@ -97,7 +97,7 @@ public class Bullet implements Tickable,Renderable{
         return owner.getPosition().distance(position);
     }
     public void addPiercingLevels(int lvl){this.piercingLevel += lvl;}
-    public ITower getOwner(){return owner;}
+    public Tower getOwner(){return owner;}
     public double getDamage(){
         return owner.getDamage() * damagePercent;
     }

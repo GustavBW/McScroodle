@@ -1,10 +1,9 @@
-package gbw.tdg.towerdefensegame.UI.Screens;
+package gbw.tdg.towerdefensegame.UI.scenes;
 
 import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.UI.RText;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
-import gbw.tdg.towerdefensegame.UI.buttons.StartGameButton;
+import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -15,14 +14,17 @@ public class StartMenuScreen extends GScene {
 
     private final Button startGameButton;
     private final RText titleText;
+    private final Font titleFont = Font.font("Impact", Main.canvasSize.getX() * 0.06);
 
     public StartMenuScreen(){
         super(75);
         Point2D sGBPos = new Point2D(Main.canvasSize.getX() * 0.5,Main.canvasSize.getY() * 0.65);
         RText sGBText = new RText("PLAY", Point2D.ZERO,5, Color.WHITE, Font.font("Impact", Main.canvasSize.getX() * 0.05));
 
-        Point2D titlePos = new Point2D(Main.canvasSize.getX() * 0.42, Main.canvasSize.getY() * 0.15);
-        titleText = new RText("\t\t Σ\nTOWER DEFENCE", titlePos, 5, Color.WHITE, Font.font("Impact", Main.canvasSize.getX() * 0.0537));
+
+        double titleWidth = TextFormatter.getWidthOf("Σ TOWER DEFENCE", titleFont);
+        Point2D titlePos = new Point2D((Main.canvasSize.getX() - titleWidth) * .6, Main.canvasSize.getY() * 0.15);
+        titleText = new RText("Σ TOWER DEFENCE", titlePos, 20, Color.WHITE, titleFont);
 
         this.startGameButton = new Button(sGBPos, Main.canvasSize.getX() * 0.2,Main.canvasSize.getY() * 0.1,sGBText,true){
             @Override
@@ -31,6 +33,7 @@ public class StartMenuScreen extends GScene {
             }
         };
         startGameButton.setPosition(sGBPos.subtract(startGameButton.getDimensions().multiply(0.5)));
+        startGameButton.setTextAlignments(0.5,0);
     }
 
 

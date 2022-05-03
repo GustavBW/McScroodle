@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.tower;
 
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
+import gbw.tdg.towerdefensegame.UI.buttons.Button;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
@@ -15,7 +16,20 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
-public class Tower extends ITower{
+public class Tower extends Button implements Clickable, Renderable, Tickable{
+
+    public static Set<Tower> active = new HashSet<>();
+    public static Set<Tower> expended = new HashSet<>();
+    public static Set<Tower> newborn = new HashSet<>();
+
+    public static Tower getOnPos(Point2D p){
+        for(Tower t : active){
+            if(t.isInBounds(p)){
+                return t;
+            }
+        }
+        return null;
+    }
 
     public static int MAX_UPGRADE_LEVEL = 10;
     private double renderingPriority = 55D, rangeMultiplier = 100;
@@ -33,6 +47,7 @@ public class Tower extends ITower{
     private Invocation dmgInvocation = Invocation.getDMGBase();
     private Invocation spdInvocation = Invocation.getSPDBase();
     private Invocation rngInvocation = Invocation.EMPTY;
+    private int invoCount = 0;
 
     public Tower(int points){
         super(Point2D.ZERO,40,40);
@@ -143,21 +158,26 @@ public class Tower extends ITower{
     public void setSPDInvocation(BasicSPDInvocation invocation){
         this.spdInvocation = invocation;
         invocation.setTower(this);
+        invoCount++;
     }
     public void setDMGInvocation(BasicDMGInvocation invocation){
         this.dmgInvocation = invocation;
         invocation.setTower(this);
+        invoCount++;
     }
     public void setRNGInvocation(Invocation invocation){
         this.rngInvocation = invocation;
         invocation.setTower(this);
+        invoCount++;
     }
 
     public List<Invocation> getInvocations(){
         return new ArrayList<>(List.of(dmgInvocation,spdInvocation,rngInvocation));
     }
+    public int getInvoCount(){
+        return invoCount;
+    }
     public TargetingType getTargetingType(){return targetingType;}
-    @Override
     public double getDamage(){return damage;}
     public double getAtkSpeed(){return atkSpeed;}
     public double getAttackDelayMS(){
@@ -225,11 +245,11 @@ public class Tower extends ITower{
         Clickable.newborn.add(this);
         Tickable.newborn.add(this);
         Renderable.newborn.add(this);
-        ITower.newborn.add(this);
+        Tower.newborn.add(this);
     }
     @Override
     public void destroy(){
-        ITower.expended.add(this);
+        Tower.expended.add(this);
         Tickable.expended.add(this);
         Renderable.expended.add(this);
         Clickable.expended.add(this);

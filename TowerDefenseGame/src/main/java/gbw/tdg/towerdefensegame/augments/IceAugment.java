@@ -28,15 +28,13 @@ public class IceAugment extends Augment {
     }
 
     private double getSlow(){
-        //A "slow" percentage is what percentage of original movespeed, the enemies current movespeed is reduced to.
-        return 1 / (getLevel() * .5);
+        //(log(x) / 2) + 0.1
+        return (Math.log10(getLevel()) / 2) + 0.1;
     }
 
     @Override
     public String getDesc(){
-        int lifetime = currentEffect == null ? getLevel() : (int) (currentEffect.getLifetimeMS() / 1000);
-        double d = Decimals.toXDecimalPlaces(getSlow(), 2);
-        return "Slows enemies down by " + (100 - d * 100) + "% for " + lifetime + " seconds";
+        return "Slows enemies down by " + Decimals.toXDecimalPlaces(getSlow(), 1) * 100 + "% for " + 3 + " seconds";
     }
 
     @Override

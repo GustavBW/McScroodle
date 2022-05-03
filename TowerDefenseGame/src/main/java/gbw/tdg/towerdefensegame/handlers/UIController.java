@@ -4,13 +4,10 @@ import gbw.tdg.towerdefensegame.GameState;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
-import gbw.tdg.towerdefensegame.UI.FancyProgressBar;
-import gbw.tdg.towerdefensegame.UI.Screens.DevInfoScreen;
-import gbw.tdg.towerdefensegame.UI.Screens.GameOverScreen;
-import gbw.tdg.towerdefensegame.UI.Screens.InGameScreen;
-import gbw.tdg.towerdefensegame.UI.Screens.StartMenuScreen;
-
-import java.util.ArrayList;
+import gbw.tdg.towerdefensegame.UI.scenes.DevInfoScreen;
+import gbw.tdg.towerdefensegame.UI.scenes.GameOverScreen;
+import gbw.tdg.towerdefensegame.UI.scenes.InGameScreen;
+import gbw.tdg.towerdefensegame.UI.scenes.StartMenuScreen;
 
 public class UIController implements Tickable{
 

@@ -23,16 +23,18 @@ public class SniperInvocation extends BasicSPDInvocation{
         double atkspdRemoved = t.getAtkSpeed() - getNewSpeed();
         t.setAtkSpeed(getNewSpeed());
         t.setDamage(t.getDamage() * (1 + atkspdRemoved) + atkspdRemoved);
+        t.setRange(t.getRangeBase() * 1.5);
         return super.applyToTower(t);
     }
 
     @Override
     public String getDesc(){
-        return "The Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But damage is greatly increased.";
+        return "The Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But damage and range is greatly increased.";
     }
 
     @Override
     public String getLongDesc(){
-        return "The Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But Tower base damage is multiplied by the attack speed lost plus 100%, and then further increased by this amount.";
+        return "The Tower attacks once every " + (1_000 / getNewSpeed()) / 1_000 + " s. But Tower base damage is multiplied by the attack speed lost plus 100%, and then further increased by this amount." +
+                " Range is increased by 50%";
     }
 }

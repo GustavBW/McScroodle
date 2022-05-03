@@ -1,7 +1,6 @@
-package gbw.tdg.towerdefensegame.UI.Screens;
+package gbw.tdg.towerdefensegame.UI.scenes;
 
 import gbw.tdg.towerdefensegame.Main;
-import gbw.tdg.towerdefensegame.Renderable;
 import gbw.tdg.towerdefensegame.Tickable;
 import gbw.tdg.towerdefensegame.UI.RText;
 import javafx.geometry.Point2D;

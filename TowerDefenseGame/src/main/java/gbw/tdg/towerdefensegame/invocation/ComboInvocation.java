@@ -52,7 +52,7 @@ public class ComboInvocation extends BasicDMGInvocation implements BounceRecieve
     @Override
     public void bounce(Enemy enemy, Bullet bullet) {
         extendTimeout();
-        stacks++;
+        stacks += getLevel();
     }
 
     @Override
@@ -60,6 +60,11 @@ public class ComboInvocation extends BasicDMGInvocation implements BounceRecieve
         spawn();
         boost = (int) Math.min(boost,t.getAttackDelayMS()) + gracePeriod;
         return super.applyToTower(t);
+    }
+
+    @Override
+    public Invocation copy(){
+        return new ComboInvocation(getLevel());
     }
 
     public String getName(){

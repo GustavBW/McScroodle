@@ -69,7 +69,7 @@ public class WaveManager implements Tickable {
         new OnScreenWarning("WAVE " + (waveCounter +1) + " WON", Main.canvasSize.multiply(0.6),3).spawn();
         if(isDoneWaiting()) {
             waveCounter++;
-            currentBuff.increment((Main.totalGoldEarned / 500.0) + 1,(Main.totalGoldEarned / 5000.0) + 0.1);
+            currentBuff.increment((Main.totalGoldEarned / 500.0) + 1,0);
             currentWave = new EnemyWave(waveCounter, path, this);
             onNewWaveStart();
         }

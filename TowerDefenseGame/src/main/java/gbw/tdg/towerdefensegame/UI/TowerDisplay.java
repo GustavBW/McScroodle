@@ -17,7 +17,7 @@ public class TowerDisplay implements Renderable {
     public TowerDisplay(Tower tower){
         this.statDisplay = new TowerStatDisplay(tower, new Point2D(Main.canvasSize.getX()*.01, Main.canvasSize.getY()*.3),this);
         this.rangeIndicator = new TowerRangeIndicator(tower,tower.getPosition().add(tower.getDimensions().multiply(0.5)));
-        this.functionsDisplay = new TowerFunctionsDisplay(tower,new Point2D(Main.canvasSize.getX()*.01,statDisplay.getExtremeties().getY()));
+        this.functionsDisplay = new TowerFunctionsDisplay(tower,new Point2D(Main.canvasSize.getX()*.01,statDisplay.getExtremeties().getY()),statDisplay.getExtremeties().getX());
         this.tower = tower;
     }
 

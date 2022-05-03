@@ -30,9 +30,9 @@ public class SupportTower extends Tower{
         }
     }
 
-    private List<ITower> findTowersInRange(){
-        List<ITower> towersInRange = new ArrayList<>();
-        for(ITower t : ITower.active){
+    private List<Tower> findTowersInRange(){
+        List<Tower> towersInRange = new ArrayList<>();
+        for(Tower t : Tower.active){
             if(t == this){continue;}
             if(super.position.distance(t.getPosition()) <= super.range){
                 towersInRange.add(t);
@@ -42,8 +42,8 @@ public class SupportTower extends Tower{
         return towersInRange;
     }
 
-    private void buffTowers(List<ITower> towers){
-        for(ITower t : towers){
+    private void buffTowers(List<Tower> towers){
+        for(Tower t : towers){
 
         }
     }

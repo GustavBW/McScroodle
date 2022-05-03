@@ -114,4 +114,8 @@ public class Inventory<T extends IGameObject> {
         }
         return toReturn;
     }
+
+    public int size(){
+        return objects.size();
+    }
 }

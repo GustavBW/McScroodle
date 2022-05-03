@@ -22,6 +22,8 @@ public class BasicSPDInvocation extends Invocation {
         List<Enemy> list = new LinkedList<>(set);
         if(getOwner() == null){return list;}
 
+        Point2D ownerPos = getOwner().getPosition();
+
         if(!list.isEmpty()) {
 
             switch (getOwner().getTargetingType()) {
@@ -36,6 +38,10 @@ public class BasicSPDInvocation extends Invocation {
                 case BEEFIEST -> list.sort(Comparator.comparingDouble(IEnemy::getHp).reversed());
 
                 case FASTEST -> list.sort(Comparator.comparingDouble(IEnemy::getMvspeed));
+
+                case CLOSEST -> list.sort(Comparator.comparingDouble(o -> o.getPosition().distance(ownerPos)));
+
+                case FURTHEST -> list.sort((o1,o2) -> Double.compare(o2.getPosition().distance(ownerPos), o1.getPosition().distance(ownerPos)));
             }
         }
 

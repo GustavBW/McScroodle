@@ -23,16 +23,16 @@ public class TowerFunctionsDisplay implements Renderable {
     private final GraphicalInventory<Button> menu;
     private double sizeX,sizeY;
 
-    public TowerFunctionsDisplay(Tower t,Point2D pos){
-        this.sizeX = Main.canvasSize.getX() * 0.1;
+    public TowerFunctionsDisplay(Tower t,Point2D pos, double width){
+        this.sizeX = width;
         this.sizeY = Main.canvasSize.getY() * 0.1;
         this.menu = new GraphicalInventory<>(1,sizeX,sizeY,5,pos,renderingPriority,3);
         this.tower = t;
         this.position = pos;
         menu.addAll(List.of(
-                new MoveTowerButton(this),
-                new DeleteTowerButton(this),
-                new SetTowerTargetingButton(this)
+                new MoveTowerButton(this).setTextAlignments(0.05,0.3),
+                new DeleteTowerButton(this).setTextAlignments(0.05,0.3),
+                new SetTowerTargetingButton(this).setTextAlignments(0.1,0.3)
         ));
         menu.setBackgroundColor(Color.TRANSPARENT);
     }

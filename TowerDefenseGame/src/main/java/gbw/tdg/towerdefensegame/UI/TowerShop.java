@@ -13,8 +13,8 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 public class TowerShop implements IClickableOwner, Tickable, ClickListener {
-    private final Point2D position = new Point2D(0, Main.canvasSize.getY() * 0.8);
-    private final double sizeX = Main.canvasSize.getX()*0.6, sizeY = Main.canvasSize.getY() - position.getY();
+    private final double sizeX = Main.canvasSize.getX() * 0.6, sizeY = Main.canvasSize.getY() * 0.2;
+    private final Point2D position = new Point2D((Main.canvasSize.getX() - sizeX) * .5, Main.canvasSize.getY() * 0.8);
     private final GraphicalInventory<TowerBuyButton> shop;
     private boolean shopLocked = false;
     private int pointBuyPoints = 5, amountBought = 0,  reloadCost = 100;
