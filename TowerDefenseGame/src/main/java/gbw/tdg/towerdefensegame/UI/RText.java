@@ -24,7 +24,7 @@ public class RText {
     public RText(String text, Point2D position, double dropShadowOffset, Color textColor, Font font){
         this.text = text;
         this.position = position;
-        this.dropShadowOffset = dropShadowOffset;
+        this.dropShadowOffset = dropShadowOffset * Main.scale.getX();
         this.textColor = textColor;
         this.font = font;
         this.defaulWidth = getDefaulWidth();
