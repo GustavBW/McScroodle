@@ -59,16 +59,16 @@ public class StartMenuScreen extends GScene {
         ){
             @Override
             public void onClick(MouseEvent event){
-                Main.setState(GameState.GAME_OVER);
+                Main.setState(GameState.AUGMENT_MANAGEMENT);
             }
         }.setTextAlignments(0.5,0.3);
 
-        super.group.is(new ArrayList<>(List.of(
+        super.group.is(List.of(
                 startGameButton,
                 invocationsButton,
                 augmentsButton
             )
-        ));
+        );
     }
 
 

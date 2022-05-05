@@ -38,7 +38,7 @@ public class MagnumAugment extends Augment{
     private double getFactor(double dist){
         //Reminder to self: Multiplying damage multiplicatively might be a bad idea.
         //Function: ln(level * 3) / (dist + 100) * 200. Logarithmic decrease
-        return (Math.log(getLevel() * 3) / dist + 100) * localScaleFactor();
+        return (Math.log(getLevel() * 3) / (dist + 100)) * localScaleFactor();
     }
     private double localScaleFactor(){
         return 200 * Main.scale.getX();

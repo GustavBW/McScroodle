@@ -18,6 +18,7 @@ public class UIController implements Tickable{
     private InGameScreen inGameScreen;
     private DevInfoScreen devInfoScreen;
     private InvocationManagementScene invoManWindow;
+    private AugmentManagementScene augManWindow;
     private boolean showInfo = false;
     private WaveManager waveManager;
 
@@ -43,6 +44,7 @@ public class UIController implements Tickable{
         inGameScreen = new InGameScreen(waveManager);
         devInfoScreen = new DevInfoScreen();
         invoManWindow = new InvocationManagementScene(0);
+        augManWindow = new AugmentManagementScene();
     }
 
     public void changeScene(GameState state){
@@ -53,6 +55,7 @@ public class UIController implements Tickable{
             case IN_GAME -> screenToShow = inGameScreen;
             case GAME_OVER -> screenToShow = gameOverScreen;
             case INVOCATION_MANAGEMENT -> screenToShow = invoManWindow;
+            case AUGMENT_MANAGEMENT -> screenToShow = augManWindow;
         }
         screenToShow.spawn();
     }

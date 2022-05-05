@@ -7,7 +7,6 @@ import javafx.scene.paint.Color;
 
 public class FancyProgressBar extends ProgressBar implements Tickable{
 
-    private static final double renderingPriority = 80D;
     private final double sizeX, sizeY;
     private final Color colorBackdrop, color1, color2;
     private double prevCurrent;
@@ -48,11 +47,6 @@ public class FancyProgressBar extends ProgressBar implements Tickable{
 
         gc.setFill(color2);
         gc.fillRect(bar2Xpos,position.getY(), bar2Width, sizeY);
-    }
-
-    @Override
-    public double getRenderingPriority() {
-        return renderingPriority;
     }
 
     @Override

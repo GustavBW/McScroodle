@@ -29,6 +29,7 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
                 Main.canvasSize.getX() - 10, Main.canvasSize.getY() * 0.02629,
                 new Point2D(0,0), new Color(31 / 255.0,122 / 255.0,4 / 255.0,1),
                 new Color(255 / 255.0,69 / 255.0,0,1));
+        mainHealthBar.setRenderingPriority(80);
         roundDisplay = new WaveRoundDisplay(waveManager,
                 new Point2D(Main.canvasSize.getX() * 0.5 - (roundDisplayDim.getX() * 0.5), 0),
                 roundDisplayDim);

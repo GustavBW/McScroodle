@@ -25,7 +25,7 @@ public class Button implements Clickable, Renderable {
     //at once. The constant method is automatically scaled with Main.scale.
 
     public static final Point2D STANDARD_TEXT_OFFSET = Point2G.DOWN_RIGHT;
-    protected double renderingPriority = 85D, rimOffset = 5;
+    protected double renderingPriority = 85D, rimOffset = 5 * Main.scale.getX();
     protected Point2D position, imageOffsetRatios = Point2D.ZERO, imageOffset = Point2G.ONE, imageDimRatios = Point2G.ONE;
     protected double sizeX, sizeY;
     protected final RText text;

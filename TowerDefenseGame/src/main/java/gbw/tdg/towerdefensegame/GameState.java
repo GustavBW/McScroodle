@@ -6,6 +6,7 @@ public enum GameState {
     START_MENU,
     GAME_OVER,
     INVOCATION_MANAGEMENT,
+    AUGMENT_MANAGEMENT,
     VOID;
 
 }

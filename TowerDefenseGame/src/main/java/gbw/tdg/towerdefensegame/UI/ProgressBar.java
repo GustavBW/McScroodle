@@ -70,8 +70,6 @@ public class ProgressBar implements Renderable {
         this.renderingPriority = newPrio;
     }
 
-
-
     @Override
     public void spawn() {
         Renderable.newborn.add(this);

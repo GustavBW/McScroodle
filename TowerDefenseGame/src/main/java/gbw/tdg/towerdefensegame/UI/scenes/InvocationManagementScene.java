@@ -39,8 +39,8 @@ public class InvocationManagementScene extends GScene{
 
     public InvocationManagementScene(double rP) {
         super(rP);
-        this.invoMenu = new GraphicalInventory<>(6,3,menuPos,menuDim,10,rP);
-        this.upgradeShowcaseMenu = new GraphicalInventory<>(1,2,showcasePos,showcaseDim,offset100,rP);
+        this.invoMenu = new GraphicalInventory<>(6,3,menuPos,menuDim,10,70);
+        this.upgradeShowcaseMenu = new GraphicalInventory<>(1,2,showcasePos,showcaseDim,offset100,70);
         this.upgradeShowcaseMenu.setRenderBackground(true);
         this.invocations = Invocation.getAll();
 

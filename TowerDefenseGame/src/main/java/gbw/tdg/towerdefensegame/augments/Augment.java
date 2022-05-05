@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Augment implements Comparable<Augment>, BounceReciever<Enemy,Bullet>, Displayable {
 
@@ -20,19 +21,7 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
     //this will return one of the static Augments which itself uses the protected constructor below.
     //These Augments below are loaded through the Augment.getAugs() method.
 
-    private static final List<Augment> contents = new ArrayList<Augment>(List.of(
-            new ExplosiveAugment(10,0,1,5),
-            new PiercingAugment(5,1,1,10),
-            new HellfireAugment(3,2,1, 20),
-            new IceAugment(3,3,1, 20),
-            new ChainLightningAugment(10,4,1,5),
-            new LightningAugment(8,5,1,3),
-            new VelocityAugment(3,6,1,20),
-            new MagnumAugment(5, 7, 1, 20),
-            new DamageUpAugment(3, 8,1,20),
-            new SpeedUPAugment(3,9,1,20),
-            new RangeUpAugment(3,10,1,20)
-    ));
+    private static List<Augment> contents;
 
     private int level, maxLevel = 3;
     protected Tower tower;
@@ -44,12 +33,35 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
     private int type;
     private final int id;
     private static int amountOfAugmentObjects = 0;
+    private static boolean contentPrepped = false;
 
     public static Augment getRandom(double value){
         return getRandomAugment(value);
     }
     public static Augment getSpecific(int type, int level){
         return getSpecificAugment(type,level);
+    }
+
+    private static void prepContent(){
+        if(!contentPrepped) {
+            Map<String, Integer> levelMap = ContentEngine.TEXT.getAugmentStartingLevels();
+
+            contents = new ArrayList<>(List.of(
+                    new ExplosiveAugment(10, 0, levelMap.getOrDefault("ExplosiveAugment", 1), 5),
+                    new PiercingAugment(5, 1, levelMap.getOrDefault("PiercingAugment", 1), 10),
+                    new HellfireAugment(3, 2, levelMap.getOrDefault("HellfireAugment", 1), 20),
+                    new IceAugment(3, 3, levelMap.getOrDefault("IceAugment", 1), 20),
+                    new ChainLightningAugment(10, 4, levelMap.getOrDefault("ChainLightningAugment", 1), 5),
+                    new LightningAugment(8, 5, levelMap.getOrDefault("LightningAugment", 1), 3),
+                    new VelocityAugment(3, 6, levelMap.getOrDefault("VelocityAugment", 1), 20),
+                    new MagnumAugment(5, 7, levelMap.getOrDefault("MagnumAugment", 1), 20),
+                    new DamageUpAugment(3, 8, levelMap.getOrDefault("DamageUpAugment", 1), 20),
+                    new SpeedUPAugment(3, 9, levelMap.getOrDefault("SpeedUpAugment", 1), 20),
+                    new RangeUpAugment(3, 10, levelMap.getOrDefault("RangeUpAugment", 1), 20)
+            ));
+
+            contentPrepped = true;
+        }
     }
 
     private static Augment getRandomAugment(double value){
@@ -82,6 +94,7 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
         return val >= min && val <= max;
     }
     public static List<Augment> getAugs(){
+        prepContent();
         return contents;
     }
     private static Augment getSpecificAugment(int type, int level){
@@ -118,6 +131,7 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
                     if (a.getType() == requirement) {
                         this.tower = tower;
                         success = true;
+                        break;
                     }
                 }
             }else{
@@ -125,6 +139,7 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
                 for(Augment a : tower.getAugments()){
                     if(a.getType() == requirement){
                         hasIt = true;
+                        break;
                     }
                 }
                 if(!hasIt){

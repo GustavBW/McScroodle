@@ -61,15 +61,18 @@ public class TextEngine extends IOEngine{
     }
 
     public Map<String,Integer> getInvocationLevels(){
-        File file = super.request("invocationLevels");
+        return extractKVPairs(super.readFile(super.request("invocationLevels")));
+    }
+
+    public Map<String, Integer> getAugmentStartingLevels(){
+        return extractKVPairs(super.readFile(super.request("augmentStartingLevels")));
+    }
+
+    private Map<String,Integer> extractKVPairs(List<String> lines){
         Map<String,Integer> toReturn = new HashMap<>();
-
-        List<String> lines = super.readFile(file);
-
         for(String s : lines){
             toReturn.put(getAttrName(s),Integer.parseInt(getAttrVal(s)));
         }
-
         return toReturn;
     }
 
@@ -80,8 +83,7 @@ public class TextEngine extends IOEngine{
     }
     private String getAttrName(String s){
         int indexEnd = s.lastIndexOf('=');
-        String t = s.substring(0,indexEnd);
-        return t;
+        return s.substring(0,indexEnd);
     }
 
     public void updateInvocationLevels(List<Invocation> invocations) {

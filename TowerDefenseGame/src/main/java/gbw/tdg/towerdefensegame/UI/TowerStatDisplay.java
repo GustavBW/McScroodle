@@ -57,9 +57,6 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
             @Override
             public void update() {
                 String toWrite = "Cost: "  + Decimals.toXDecimalPlaces(tower.getUpgradeCost(),1) + "G";
-                if(tower.getInvoCount() >= 3){
-                    toWrite = "Worth: " + Decimals.toXDecimalPlaces(tower.getWorth(),1) + "G";
-                }
                 this.text.setText(toWrite);
                 super.alignText(text);
             }
