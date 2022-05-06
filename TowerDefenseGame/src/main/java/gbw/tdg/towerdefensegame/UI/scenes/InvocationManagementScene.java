@@ -28,9 +28,9 @@ public class InvocationManagementScene extends GScene{
     private final Point2D backButtonPos = new Point2D(menuDim.getX() + menuPos.getX() + offset15,Main.canvasSize.getY() - shardsDim.getY() + offset15);
     private final Point2D backButtonDim = Main.canvasSize.subtract(backButtonPos.add(2 * offset15,2 * offset15));
     private final Point2D upgradeButtonPos = backButtonPos.subtract(0, 2 * backButtonDim.getY());
-    private final Point2D showcasePos = new Point2D(menuPos.getX() + menuDim.getX() + offset15, menuPos.getY());
-    private final Point2D showcaseDim = new Point2D(Main.canvasSize.getX() - (menuDim.getX() + 2 * offset15),(upgradeButtonPos.getY() - menuPos.getY()) - 2 * offset15);
-    private final Point2D upgradeTextPos = new Point2D(showcasePos.getX() + (showcaseDim.getX() * .5), showcasePos.getY());
+    private final Point2D showcasePos = new Point2D(menuPos.getX() + menuDim.getX() + offset15 + offset100 , menuPos.getY() + offset100);
+    private final Point2D showcaseDim = new Point2D(Main.canvasSize.getX() - (menuDim.getX() + 2 * (offset15+ offset100)),(upgradeButtonPos.getY() - menuPos.getY()) - 2 * (offset15 + offset100) );
+    private final Point2D upgradeTextPos = new Point2D(showcasePos.getX() + (showcaseDim.getX() * .5), menuPos.getY());
     private final Point2D upgradeTextDim = new Point2D(0, offset100);
     private final List<Invocation> invocations;
     private Invocation selectedInvocation;

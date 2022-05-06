@@ -9,6 +9,8 @@ import java.util.*;
 
 public class TextFormatter {
 
+    private static final Text sampleText = new Text();
+
     public static List<String> toLinesArray(String text, int symbolsPerLine, String splitBy) {
 
         List<String> array = new ArrayList<>();        //Array of strings returned
@@ -46,9 +48,9 @@ public class TextFormatter {
     }
 
     public static double getWidthOf(String text, Font font){
-        Text fm = new Text(text);
-        fm.setFont(font);
-        return fm.getLayoutBounds().getWidth();
+        sampleText.setText(text);
+        sampleText.setFont(font);
+        return sampleText.getLayoutBounds().getWidth();
     }
 
     public static double getWidthOf(RText rtext){

@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame.UI;
 
 import gbw.tdg.towerdefensegame.Inventory;
+import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.Renderable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,7 +17,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
     private HashMap<Integer, Point2D> objOffsetMap;
     private Point2D position;
     private int rows;
-    private boolean shouldSpawn, renderBackground = true;
+    private boolean shouldSpawn = false, renderBackground = true;
 
     public GraphicalInventory(int coloumns, int rows, Point2D pos, Point2D dim, double margin, double rendPrio){
         this(coloumns,dim.getX(),dim.getY(),margin, pos,rendPrio,rows);
@@ -32,7 +33,7 @@ public class GraphicalInventory<T extends Renderable> extends Inventory<T> imple
         this.coloumns = coloumns;
         this.width = width;
         this.height = height;
-        this.margin = margin;
+        this.margin = margin * Main.scale.getX();
         this.position = position;
         this.slotWidth =  getSlotWidth();
         this.slotHeight = getSlotHeight();

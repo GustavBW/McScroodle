@@ -37,15 +37,19 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
         this.storedAugs = new DragnDropInventory<>(6,1, sizeX * 0.9, sizeY, 10, position.add(0, sizeY + margin), 87D) {
             @Override
             public void whilestObjHeld() {
-                this.getSelected().setPosition(MouseHandler.mousePos);
+                getMoving().setPosition(MouseHandler.mousePos);
             }
             @Override
             public void onChildPress(Clickable child, MouseEvent event) {
                 this.setSelected((BounceBackButton<Augment>) child);
+                ClickableIcon<Augment> icon = getSelected().getAssociatedObj().getIcon();
+                setMoving(icon);
+                icon.spawn();
+                getDestroyOnRelease().add(icon);
                 this.setDragOnGoing(true);
             }
             @Override
-            public void onChildRelease(Clickable child, MouseEvent event) {
+            public void onDrop(Clickable child, MouseEvent event) {
                 this.setDragOnGoing(false);
                 Tower t = Tower.getOnPos(MouseHandler.mousePos);
                 boolean success = false;
