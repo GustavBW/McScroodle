@@ -40,19 +40,19 @@ public abstract class Invocation implements Displayable {
         if(!contentsPrepped){
             dmgInvos = new ArrayList<>(List.of(
                     //Invocations for DMG is: Shotgun, Ray, DoomRay, Spinner, Burster
-                    new GrapeShotInvocation(nameLevelMap.get("GrapeShotInvocation")),
-                    new ComboInvocation(nameLevelMap.get("ComboInvocation"))
+                    new GrapeShotInvocation(nameLevelMap.getOrDefault("GrapeShotInvocation",1)),
+                    new ComboInvocation(nameLevelMap.getOrDefault("ComboInvocation",1))
             ));
             rngInvos = new ArrayList<>(List.of(
-                    new SlowFieldInvocation(nameLevelMap.get("SlowFieldInvocation")),
-                    new MassiveInvocation(nameLevelMap.get("MassiveInvocation"))
+                    new SlowFieldInvocation(nameLevelMap.getOrDefault("SlowFieldInvocation",1)),
+                    new MassiveInvocation(nameLevelMap.getOrDefault("MassiveInvocation",1))
                     //Invocations for RNG is: Slowfield,
             ));
             spdInvos = new ArrayList<>(List.of(
                     //Invocations for SPD is: Multishot
-                    new MultishotInvocation(nameLevelMap.get("MultishotInvocation")),
-                    new SniperInvocation(nameLevelMap.get("SniperInvocation")),
-                    new TempoInvocation(nameLevelMap.get("TempoInvocation"))
+                    new MultishotInvocation(nameLevelMap.getOrDefault("MultishotInvocation",1)),
+                    new SniperInvocation(nameLevelMap.getOrDefault("SniperInvocation",1)),
+                    new TempoInvocation(nameLevelMap.getOrDefault("TempoInvocation",1))
             ));
             statInvoListMap = new HashMap<>(Map.of(
                     StatType.DAMAGE, dmgInvos,

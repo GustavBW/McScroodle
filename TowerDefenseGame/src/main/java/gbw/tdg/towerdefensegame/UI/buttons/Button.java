@@ -113,6 +113,13 @@ public class Button implements Clickable, Renderable {
         ).add(position));
     }
 
+    public void alignText(){
+        if(text == null){
+            return;
+        }
+        alignText(text);
+    }
+
     @Override
     public Point2D getPosition() {
         return position;

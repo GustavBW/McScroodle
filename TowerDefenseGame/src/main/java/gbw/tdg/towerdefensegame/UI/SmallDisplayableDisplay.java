@@ -49,7 +49,7 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
     }
 
     public void update(T newSource){
-        desc.setText(newSource.getLongDesc());
+        desc.setText(getFormattedDesc(newSource.getLongDesc(), descFont,getDescDim().getX()));
         title.setText(newSource.getName());
         image.setImage(newSource.getImage());
     }
@@ -171,5 +171,7 @@ public class SmallDisplayableDisplay<T extends Displayable> extends Button {
 
         desc.setText(getFormattedDesc());
     }
+
+
 
 }

@@ -72,10 +72,10 @@ public class AugmentShop implements IClickableOwner,Tickable, ClickListener {
     }
 
     private AugmentBuyButton getNewOffering(){
-        int cost = baseCost * 2 + amountBought;
+        int cost = baseCost + amountBought;
         AugmentBuyButton aBB = new AugmentBuyButton(Point2D.ZERO, 400,400,
                 new RText("", Point2D.ZERO, 6, InGameScreen.soulColor, baseFont),
-                Augment.getRandom(cost / 2D), this, cost);
+                Augment.getRandom(cost), this, cost * 2);
         aBB.setTextAlignments(0.5,0);
         aBB.setTextAlignConstants(0,10);
         return aBB;

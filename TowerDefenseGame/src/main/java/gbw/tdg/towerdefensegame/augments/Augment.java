@@ -63,32 +63,29 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
             contentPrepped = true;
         }
     }
+    public static void reloadContent(){
+        contentPrepped = false;
+        prepContent();
+    }
 
     private static Augment getRandomAugment(double value){
         List<Augment> augs = getAugs();
 
         int size = augs.size();
-        int startAt = Main.random.nextInt(0,size);
-        Augment foundAug = null;
 
-        int i = startAt;
+        Augment current = augs.get(Main.random.nextInt(0,size) % size);
+        double eValue = current.getValue();
 
-        while(foundAug == null){
-            Augment current = augs.get(i % size);
-            //System.out.println("Augment.getRandomAugment() considering \t" + current.baseStats());
-            for(int j = 1; j <= current.getMaxLevel(); j++) {
-                current = current.getModified(j);
-                double currentWorth = current.getWorth();
+        for(int j = current.getMaxLevel(); j > current.getLevel(); j--) {
 
-                if (isValInRange(value, currentWorth * 0.7, currentWorth * 1.3)) {
-                    foundAug = current;
-                }
+            double worthAtLevelJ = eValue * j;
+
+            if (isValInRange(value, worthAtLevelJ * 0.7, worthAtLevelJ * 1.3)) {
+                return current.getModified(j);
             }
-
-            i++;
         }
-        //System.out.println("Augment.getRandomAugment() chose:\t\t" + foundAug.baseStats());
-        return foundAug;
+
+        return current.copy();
     }
     private static boolean isValInRange(double val, double min, double max){
         return val >= min && val <= max;
@@ -175,6 +172,18 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
     public int getMaxLevel(){
         return maxLevel;
     }
+    public boolean setLevel(int i){
+        if(i > maxLevel){
+            return false;
+        }
+        int prev = this.level;
+        this.level = i;
+        if(prev < level){
+            onLevelUp();
+        }
+        return true;
+    }
+    public void onLevelUp(){}
     public void setMaxLevel(int ml){this.maxLevel = ml;}
     public int getLevel(){
         return level <= 0 ? 1 : level;
@@ -210,10 +219,6 @@ public abstract class Augment implements Comparable<Augment>, BounceReciever<Ene
     }
     @Override
     public void bounce(Enemy e, Bullet b){}
-
-    private void setLevel(int newLevel){
-        this.level = newLevel;
-    }
     public String baseStats(){
         return TextFormatter.getIsolatedClassName(this) + " val " + getValue() + " level " + getLevel() + " worth " + getWorth();
     }

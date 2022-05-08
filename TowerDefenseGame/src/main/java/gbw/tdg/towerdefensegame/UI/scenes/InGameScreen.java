@@ -11,6 +11,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.util.List;
+
 public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
 
     private final ProgressBar mainHealthBar;
@@ -22,6 +24,9 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
     public final static Color soulColor = new Color(0,199 / 255.0,199 / 255.0,1);
     private final Point2D roundDisplayDim = new Point2D(Main.canvasSize.getX() * 0.1, Main.canvasSize.getY() * 0.05);
     private final Font towerShopFont = Font.font("Impact",Main.canvasSize.getX() * 0.0182);
+
+    public static final OnScreenLog informationLog = new OnScreenLog(new Point2D(0,Main.canvasSize.getY() * 3/4D),new Point2D(Main.canvasSize.getX(),0));
+    public static final OnScreenLog errorLog = new OnScreenLog(new Point2D(0,Main.canvasSize.getY() * 1/4D),new Point2D(Main.canvasSize.getX(),0));
 
     public InGameScreen(WaveManager waveManager){
         super(75);
@@ -52,6 +57,16 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
                 roundDisplay.getPosition().add(roundDisplayDim.getX() / 8,roundDisplayDim.getY() * 1.9),roundDisplayDim,75,2,1
         );
 
+
+        super.group.is(List.of(
+                mainHealthBar,
+                towerShopButton,
+                roundDisplay,
+                augmentShopButton,
+                currencyDisplay,
+                informationLog,
+                errorLog
+        ));
     }
 
     @Override
@@ -68,22 +83,12 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
     public void spawn() {
         super.spawn();
         Tickable.newborn.add(this);
-        mainHealthBar.spawn();
-        towerShopButton.spawn();
-        roundDisplay.spawn();
-        augmentShopButton.spawn();
-        currencyDisplay.spawn();
     }
 
     @Override
     public void destroy() {
         super.destroy();
         Tickable.expended.add(this);
-        mainHealthBar.destroy();
-        towerShopButton.destroy();
-        roundDisplay.destroy();
-        augmentShopButton.destroy();
-        currencyDisplay.destroy();
     }
 
 }

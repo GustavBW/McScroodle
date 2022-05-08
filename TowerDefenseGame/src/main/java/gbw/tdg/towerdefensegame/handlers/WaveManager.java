@@ -1,7 +1,9 @@
 package gbw.tdg.towerdefensegame.handlers;
 
 import gbw.tdg.towerdefensegame.*;
+import gbw.tdg.towerdefensegame.UI.Message;
 import gbw.tdg.towerdefensegame.UI.OnScreenWarning;
+import gbw.tdg.towerdefensegame.UI.scenes.InGameScreen;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
 import javafx.geometry.Point2D;
 
@@ -57,16 +59,16 @@ public class WaveManager implements Tickable {
 
     }
     public void onNewRoundStart(){
-        new OnScreenWarning("ROUND " + getRoundNumber() + " START",Main.canvasSize.multiply(0.3),3).spawn();
+        InGameScreen.informationLog.add(new Message("ROUND " + getRoundNumber() + " START",3_000,InGameScreen.goldColor2));
     }
     public void onCurrentRoundEnd(){
-        new OnScreenWarning("ROUND " + getRoundNumber() + " WON...kinda",Main.canvasSize.multiply(0.4),3).spawn();
+        InGameScreen.informationLog.add(new Message("ROUND " + getRoundNumber() + " WON...kinda",3_000,InGameScreen.goldColor2));
     }
     public void onNewWaveStart(){
-        new OnScreenWarning("WAVE " + (waveCounter +1) + " INCOMMING",Main.canvasSize.multiply(0.5),3).spawn();
+        InGameScreen.informationLog.add(new Message("WAVE " + (waveCounter +1) + " INCOMMING",3_000,InGameScreen.goldColor2));
     }
     public void onWaveEnd(){
-        new OnScreenWarning("WAVE " + (waveCounter +1) + " WON", Main.canvasSize.multiply(0.6),3).spawn();
+        InGameScreen.informationLog.add(new Message("WAVE " + (waveCounter +1) + " WON",3_000,InGameScreen.goldColor2));
         if(isDoneWaiting()) {
             waveCounter++;
             currentBuff.increment((Main.totalGoldEarned / 500.0) + 1,0);

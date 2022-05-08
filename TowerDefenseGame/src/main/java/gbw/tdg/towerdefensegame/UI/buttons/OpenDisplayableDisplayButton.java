@@ -13,17 +13,9 @@ public class OpenDisplayableDisplayButton<T extends Displayable> extends Button{
     private final SmallDisplayableDisplay<T> invoDisplay;
     private boolean toggle = true;
 
-    public OpenDisplayableDisplayButton(Point2D position, Point2D dim, Clickable root, T t) {
-        super(t.getImage(),position, dim, RText.EMPTY, root);
-        Point2D posOfDisplay = new Point2D(
-                Main.canvasSize.getX() * 0.11,
-                Main.canvasSize.getY() * 0.3
-        );
-        Point2D dimOfDisplay = new Point2D(
-                Main.canvasSize.getX() * 0.13,
-                Main.canvasSize.getY() * 0.3
-        );
-        this.invoDisplay = new SmallDisplayableDisplay<>(posOfDisplay,dimOfDisplay,root,false,t);
+    public OpenDisplayableDisplayButton(Point2D position, Point2D dim, Clickable root, SmallDisplayableDisplay<T> sDD) {
+        super(sDD.getObj().getImage(),position, dim, RText.EMPTY, root);
+        this.invoDisplay = sDD;
     }
 
     @Override

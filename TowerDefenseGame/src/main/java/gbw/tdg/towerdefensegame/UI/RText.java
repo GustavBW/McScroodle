@@ -20,6 +20,7 @@ public class RText {
     protected Font font;
     private double defaulWidth;
     protected Color dropShadowColor;
+    private boolean renderDropshadow = true;
 
     public RText(String text, Point2D position, double dropShadowOffset, Color textColor, Font font){
         this.text = text;
@@ -31,6 +32,10 @@ public class RText {
         this.position = this.position.subtract(font.getSize() * 1.1,(-font.getSize() / 2) * 0.9);
         dropShadowColor = new Color(0,0,0,1);
     }
+    public RText(String text, Point2D pos, double dSO, Color c, Font font, boolean renderDropshadow){
+        this(text,pos,dSO,c,font);
+        this.renderDropshadow = renderDropshadow;
+    }
 
     public RText(Point2D p){
         this("",p,1,Color.BLACK,Font.font("Verdana", 20));
@@ -38,8 +43,11 @@ public class RText {
 
     public void render(GraphicsContext gc){
         gc.setFont(font);
-        gc.setFill(dropShadowColor);
-        gc.fillText(text, position.getX() + dropShadowOffset, position.getY() + dropShadowOffset,  defaulWidth);
+
+        if(renderDropshadow) {
+            gc.setFill(dropShadowColor);
+            gc.fillText(text, position.getX() + dropShadowOffset, position.getY() + dropShadowOffset, defaulWidth);
+        }
 
         gc.setFill(textColor);
         gc.fillText(text, position.getX(), position.getY(),defaulWidth);
@@ -62,6 +70,9 @@ public class RText {
     }
     public void setTextColor(Color color){
         this.textColor = color;
+    }
+    public Color getTextColor(){
+        return textColor;
     }
     public void setMaxTextWidth(double width){
         defaulWidth = width;

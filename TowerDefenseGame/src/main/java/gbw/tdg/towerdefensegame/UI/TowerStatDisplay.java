@@ -112,7 +112,35 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
     }
 
     public void addNewAugment(Augment aug){
-        augmentDisplay.addIfAbsent(new OpenDisplayableDisplayButton<>(Point2D.ZERO,Point2D.ZERO,tower,aug));
+        UpgradingDisplayableDisplay<Augment> uDD = new UpgradingDisplayableDisplay<>(
+                new Point2D(
+                        Main.canvasSize.getX() * 0.11,
+                        Main.canvasSize.getY() * 0.3
+                ),
+                new Point2D(
+                        Main.canvasSize.getX() * 0.13,
+                        Main.canvasSize.getY() * 0.3
+                ),tower,false,aug){
+            @Override
+            public void click(MouseEvent event){
+                Augment a = getObj();
+                if(a == null){return;}
+
+                if(Main.getSouls() >= a.getWorth() * .5) {
+                    if(a.setLevel(a.getLevel() + 1)){
+                        Main.alterSoulsAmount(- a.getWorth() * .5);
+                        getText().setText((a.getWorth() * .5) + "S");
+                        super.update();
+                    }else{
+                        InGameScreen.errorLog.add(new Message("Augment at max level!",3_000,Color.RED));
+                    }
+                }else{
+                    InGameScreen.errorLog.add(new Message("Insufficient Funds!", 3_000,Color.RED));
+                }
+            }
+        };
+        uDD.getText().setText((aug.getWorth() * .5) + "S");
+        augmentDisplay.addIfAbsent(new OpenDisplayableDisplayButton<>(Point2D.ZERO,Point2D.ZERO,tower, uDD));
         display.requestGUIReset(true);
     }
 
@@ -122,7 +150,16 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
 
     public void onInvocationSelected(Invocation invocation, Button b){
         invocation.applyToTower(tower);
-        upgradeButtons.replace(b,new OpenDisplayableDisplayButton<>(b.getPosition(),b.getDimensions(),tower,invocation));
+        upgradeButtons.replace(b,new OpenDisplayableDisplayButton<>(Point2D.ZERO,Point2D.ZERO,tower,
+                new SmallDisplayableDisplay<>(
+                        new Point2D(
+                                Main.canvasSize.getX() * 0.11,
+                                Main.canvasSize.getY() * 0.3
+                        ),
+                        new Point2D(
+                                Main.canvasSize.getX() * 0.13,
+                                Main.canvasSize.getY() * 0.3
+                        ),tower,false,invocation)));
     }
 
     private Button getInvocationSelectionButton(StatType t) {
