@@ -3,6 +3,7 @@ package gbw.tdg.towerdefensegame.tower;
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
 import gbw.tdg.towerdefensegame.UI.buttons.Button;
+import gbw.tdg.towerdefensegame.UI.scenes.InGameScreen;
 import gbw.tdg.towerdefensegame.augments.Augment;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
 import gbw.tdg.towerdefensegame.enemies.Enemy;
@@ -118,7 +119,7 @@ public class Tower extends Button implements Clickable, Renderable, Tickable{
 
         if(!possible){return -1;}
         if(Main.getGold() < getUpgradeCost()){
-            new OnScreenWarning("Not enough funds", Main.canvasSize.multiply(0.5),3).spawn();
+            InGameScreen.errorLog.add(new Message("Not enough funds!",3_000, Color.RED));
             return 0;
         }
 
@@ -198,10 +199,10 @@ public class Tower extends Button implements Clickable, Renderable, Tickable{
                 success = true;
                 display.getStatDisplay().addNewAugment(augment);
             }else{
-                new OnScreenWarning("Augmentation Failed! - Requirements Not Met", Main.canvasSize.multiply(0.4),3).spawn();
+                InGameScreen.informationLog.add(new Message("Augmentation Failed - Requirements not met",3_000,Color.RED));
             }
         }else {
-            new OnScreenWarning("Augmentation Failed! - Max Augments Reached", Main.canvasSize.multiply(0.4), 3).spawn();
+            InGameScreen.informationLog.add(new Message("Max Augments reached!",3_000,Color.RED));
         }
         return success;
     }

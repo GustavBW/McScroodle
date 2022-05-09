@@ -1,6 +1,7 @@
 package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.UI.*;
+import gbw.tdg.towerdefensegame.UI.scenes.InGameScreen;
 import gbw.tdg.towerdefensegame.backend.Decimals;
 import gbw.tdg.towerdefensegame.Main;
 import gbw.tdg.towerdefensegame.backend.TextFormatter;
@@ -129,7 +130,7 @@ public class AugmentBuyButton extends BounceBackButton{
             Main.alterSoulsAmount(-price);
             owner.onChildPress(this,event);
         }else{
-            new OnScreenWarning("Not enough Souls!", Main.canvasSize.multiply(0.5), 3).spawn();
+            InGameScreen.errorLog.add(new Message("Not Enough Souls!",3_000, Color.RED));
         }
     }
 

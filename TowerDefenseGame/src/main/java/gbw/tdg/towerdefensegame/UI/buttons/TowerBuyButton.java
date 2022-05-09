@@ -2,6 +2,7 @@ package gbw.tdg.towerdefensegame.UI.buttons;
 
 import gbw.tdg.towerdefensegame.*;
 import gbw.tdg.towerdefensegame.UI.*;
+import gbw.tdg.towerdefensegame.UI.scenes.InGameScreen;
 import gbw.tdg.towerdefensegame.tower.Tower;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -52,7 +53,7 @@ public class TowerBuyButton extends Button {
             Main.alterGoldAmount(-price);
             owner.onChildPress(this,event);
         }else{
-            new OnScreenWarning("Not enough gold!", Main.canvasSize.multiply(0.5), 3).spawn();
+            InGameScreen.informationLog.add(new Message("Not Enough Gold",3_000, Color.RED));
         }
     }
 }

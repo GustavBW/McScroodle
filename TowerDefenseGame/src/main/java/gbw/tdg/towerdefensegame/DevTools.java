@@ -1,6 +1,8 @@
 package gbw.tdg.towerdefensegame;
 
+import gbw.tdg.towerdefensegame.UI.Message;
 import gbw.tdg.towerdefensegame.UI.OnScreenWarning;
+import gbw.tdg.towerdefensegame.UI.scenes.InGameScreen;
 import gbw.tdg.towerdefensegame.handlers.KeyHandler;
 import javafx.scene.input.KeyCode;
 
@@ -11,14 +13,14 @@ public class DevTools implements Tickable{
     @Override
     public void spawn() {
         spawned = true;
-        new OnScreenWarning("Dev Tools Enabled", Main.canvasSize.multiply(0.4),5).spawn();
+        InGameScreen.informationLog.add(new Message("Dev Tools Enabled",3_000));
         Tickable.newborn.add(this);
     }
 
     @Override
     public void destroy() {
         spawned = false;
-        new OnScreenWarning("Dev Tools Disabled", Main.canvasSize.multiply(0.4),5).spawn();
+        InGameScreen.informationLog.add(new Message("Dev Tools Disabled",3_000));
         Tickable.expended.add(this);
     }
 

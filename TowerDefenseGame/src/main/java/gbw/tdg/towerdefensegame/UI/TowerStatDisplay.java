@@ -125,11 +125,12 @@ public class TowerStatDisplay extends Button implements Renderable, Tickable, Cl
             public void click(MouseEvent event){
                 Augment a = getObj();
                 if(a == null){return;}
+                double price = a.getWorth() * .5;
 
-                if(Main.getSouls() >= a.getWorth() * .5) {
+                if(Main.getSouls() >= price) {
                     if(a.setLevel(a.getLevel() + 1)){
-                        Main.alterSoulsAmount(- a.getWorth() * .5);
-                        getText().setText((a.getWorth() * .5) + "S");
+                        Main.alterSoulsAmount(- price);
+                        getText().setText(price + "S");
                         super.update();
                     }else{
                         InGameScreen.errorLog.add(new Message("Augment at max level!",3_000,Color.RED));
