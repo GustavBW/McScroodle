@@ -9,6 +9,10 @@ public class RenderHandler {
 
     private List<Renderable> currentFrame;
 
+    public RenderHandler(){
+        currentFrame = new LinkedList<>();
+    }
+
     public void render(GraphicsContext gc){
         cleanUp();
         getDrawOrder();
@@ -20,7 +24,8 @@ public class RenderHandler {
     }
 
     private void getDrawOrder(){
-        currentFrame = new LinkedList<>(Renderable.active);
+        currentFrame.clear();
+        currentFrame.addAll(Renderable.active);
         currentFrame.sort(Comparator.comparingDouble(Renderable::getRenderingPriority));
     }
 

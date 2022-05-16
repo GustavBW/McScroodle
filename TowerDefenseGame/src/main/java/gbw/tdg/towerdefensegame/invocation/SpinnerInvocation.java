@@ -19,16 +19,21 @@ public class SpinnerInvocation extends BasicDMGInvocation{
 
         Point2D oPos = getOwner().getPosition();
         List<Bullet> wave = new ArrayList<>();
-        double factor = (2D / getLevel()) - 1;
 
-        for(int i = 0; i <= getLevel(); i++){
-            double xVal = i * factor;
-            double yVal = (2D * i) / (i + getLevel());
-            Point2D vel = new Point2D(xVal,yVal).normalize();
+    }
 
-            wave.add(new Bullet());
+    private List<Point2D> getVelocities(int a){
+        List<Point2D> list = new ArrayList<>();
+        double factor = (2D / getLevel());
+        for(int i = 0; i <= a; i++){
+            double yVal = i * factor;
+            double xVal = 2 - yVal;
+            yVal -= 1;
+            xVal -= 1;
+
+            list.add(new Point2D(xVal,yVal).normalize());
         }
-
+        return list;
     }
 
     @Override

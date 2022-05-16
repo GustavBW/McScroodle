@@ -45,7 +45,7 @@ public class InvocationManagementScene extends GScene{
         this.invocations = Invocation.getAll();
 
         this.upgradeCount = ContentEngine.TEXT.getPersistentGameplayValue("invocation_upgrade_count");
-        this.cost = 5 * upgradeCount;
+        this.cost = 5 + upgradeCount;
         this.shards = ContentEngine.TEXT.getPersistentGameplayValue("invocation_shards");
         this.shardsButton = new Button(shardsPos, shardsDim.getX(), shardsDim.getY(),
                 new RText("Shards: " + shards, Point2D.ZERO,3,InGameScreen.soulColor, Font.font("Impact", 100 * Main.scale.getX())),
@@ -120,7 +120,7 @@ public class InvocationManagementScene extends GScene{
 
     private void reload(){
         upgradeCount = ContentEngine.TEXT.getPersistentGameplayValue("invocation_upgrade_count");
-        cost = 5 * upgradeCount;
+        cost = 5 + upgradeCount;
         shards = ContentEngine.TEXT.getPersistentGameplayValue("invocation_shards");
         upgradeButton.getText().setText(cost + " Shards");
         shardsButton.getText().setText(shards + " Shards");

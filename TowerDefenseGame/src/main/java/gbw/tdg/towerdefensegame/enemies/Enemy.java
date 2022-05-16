@@ -14,12 +14,12 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
-public class Enemy extends IEnemy implements Clickable, Tickable {
+public class Enemy extends IEnemy implements Tickable {
 
     private double renderingPriority = 40D;
     private WayPoint latest;
     private WayPoint next;
-    private Point2D position;
+    protected Point2D position;
     private double ogmvspeed = 5 * Main.scale.getX(),mvspeedToUse = ogmvspeed, minDistToPoint = mvspeedToUse;
     private final Path path;
     private final ProgressBar hpBar;
@@ -36,7 +36,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
     private final List<LifetimeEffect> lfToRemove = new ArrayList<>();
     private final Set<Tower> provokers = new HashSet<>();
     private final Map<Tower, Double> provokerDamageMap = new HashMap<>();
-    private final TimedEventBuffer<Double,OnScreenWarning> damageNumbersBuffer;
+    private final TimedEventBuffer<Double,OnScreenDamageNumber> damageNumbersBuffer;
 
     public Enemy(Point2D position, Path path){
         super(position,sizeX,sizeY);
@@ -54,7 +54,7 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
 
         this.damageNumbersBuffer = new TimedEventBuffer<>(500) {
             @Override
-            public OnScreenWarning evaluate(Deque<Double> buffer) {
+            public OnScreenDamageNumber evaluate(Deque<Double> buffer) {
                 double accNum = 0;
 
                 for(Double d : buffer){
@@ -63,14 +63,14 @@ public class Enemy extends IEnemy implements Clickable, Tickable {
 
                 Double numCompressed = Decimals.toXDecimalPlaces(accNum,1);
                 Point2D pos = Enemy.this.position.add(Point2G.getRandomVector().multiply(10));
-                OnScreenWarning oSW = new OnScreenDamageNumber(
+                OnScreenDamageNumber oSW = new OnScreenDamageNumber(
                         numCompressed + "", pos, 1);
 
                 return oSW;
             }
 
             @Override
-            public void execute(OnScreenWarning accumulated) {
+            public void execute(OnScreenDamageNumber accumulated) {
                 accumulated.spawn();
             }
         };

@@ -1,6 +1,6 @@
 GrapeShotInvocation=1;
 ComboInvocation=1;
-MultishotInvocation=6;
+MultishotInvocation=1;
 SniperInvocation=1;
 TempoInvocation=1;
 SlowFieldInvocation=1;

@@ -60,12 +60,14 @@ public class WaveManager implements Tickable {
     }
     public void onNewRoundStart(){
         InGameScreen.informationLog.add(new Message("ROUND " + getRoundNumber() + " START",3_000,InGameScreen.goldColor2));
+
     }
     public void onCurrentRoundEnd(){
         InGameScreen.informationLog.add(new Message("ROUND " + getRoundNumber() + " WON...kinda",3_000,InGameScreen.goldColor2));
     }
     public void onNewWaveStart(){
         InGameScreen.informationLog.add(new Message("WAVE " + (waveCounter +1) + " INCOMMING",3_000,InGameScreen.goldColor2));
+
     }
     public void onWaveEnd(){
         InGameScreen.informationLog.add(new Message("WAVE " + (waveCounter +1) + " WON",3_000,InGameScreen.goldColor2));

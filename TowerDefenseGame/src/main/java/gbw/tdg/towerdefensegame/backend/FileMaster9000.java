@@ -38,7 +38,6 @@ public class FileMaster9000 {
     private List<File> getFiles() throws NullPointerException {
         return getFiles("");
     }
-
     private List<File> getFiles(String dir) throws NullPointerException {
         List<File> filesKnown = knownDirContentsMap.get(dir);
 

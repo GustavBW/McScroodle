@@ -57,7 +57,6 @@ public class InGameScreen extends GScene implements Tickable, IRenderableOwner {
                 roundDisplay.getPosition().add(roundDisplayDim.getX() / 8,roundDisplayDim.getY() * 1.9),roundDisplayDim,75,2,1
         );
 
-
         super.group.is(List.of(
                 mainHealthBar,
                 towerShopButton,

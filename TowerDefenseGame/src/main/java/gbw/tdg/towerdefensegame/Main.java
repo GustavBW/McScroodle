@@ -144,7 +144,6 @@ public class Main extends Application {
         Renderable.newborn.clear();
         Renderable.expended.addAll(Renderable.active);
         Renderable.expended.clear();
-        
     }
 
     private synchronized void tick(){
