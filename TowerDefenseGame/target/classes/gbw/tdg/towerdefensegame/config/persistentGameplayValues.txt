@@ -1,4 +1,0 @@
-invocation_shards=100;
-augment_shards=100;
-invocation_upgrade_count=1;
-augment_upgrade_count=1;

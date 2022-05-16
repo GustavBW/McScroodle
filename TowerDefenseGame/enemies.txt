@@ -1,4 +1,0 @@
-Wobbler - High health low speed slime which happily gobbles up any turrets in it's path
-Smolderling - Fiery little bugger who's fast as fuck, explodes on death
-Whimp - Walks fast then slow, then fast, then slow... Pretty annoying. When they're walking fast they can't attack
-Qackle - Pretty tanky. Jumps then stands still for a while then attacks if possible, repeat. Got a short range but can get annoyed when pelleted upon.
