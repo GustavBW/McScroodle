@@ -1,8 +1,7 @@
 module gbw.circlerenderer {
     requires javafx.controls;
     requires javafx.fxml;
+    requires SwingUtils;
 
-
-    opens gbw.circlerenderer to javafx.fxml;
     exports gbw.circlerenderer;
 }
