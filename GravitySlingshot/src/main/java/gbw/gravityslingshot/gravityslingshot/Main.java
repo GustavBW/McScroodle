@@ -25,8 +25,10 @@ public class Main extends Application {
     private CollisionHandler collisionHandler;
     private KeyInputHandler keyInputHandler;
     private MouseInputHandler mouseInputHandler;
+    private PathTracer pathTracer;
 
     private Canvas mainCanvas;
+    private Canvas backgroundCanvas;
     private Pane mainPane;
     private Stage mainStage;
     private GraphicsContext gc;
@@ -41,13 +43,19 @@ public class Main extends Application {
         keyInputHandler = new KeyInputHandler();
 
         mainCanvas = new Canvas(dim.getX(),dim.getY());
+        backgroundCanvas = new Canvas(dim.getX(),dim.getY());
         mainCanvas.setOnMouseMoved(e -> mouseInputHandler.mouseMoved(e));
         mainPane = new Pane();
         mainStage = stage;
-        mainPane.getChildren().add(mainCanvas);
+        mainPane.getChildren().addAll(
+                backgroundCanvas,
+                mainCanvas
+        );
         Scene scene = new Scene(mainPane, dim.getX(),dim.getY());
         scene.setOnKeyPressed(e -> keyInputHandler.keyPress(e));
         scene.setOnKeyReleased(e -> keyInputHandler.keyReleased(e));
+
+        pathTracer = new PathTracer(backgroundCanvas);
 
         inGameTimer = new AnimationTimer() {
             @Override
@@ -74,9 +82,7 @@ public class Main extends Application {
     }
 
     private void render(GraphicsContext gc) {
-
-        gc.setFill(Color.LIGHTGRAY);
-        gc.fillRect(0,0,dim.getX(),dim.getY());
+        gc.clearRect(0,0,dim.getX(),dim.getY());
 
         for(Renderable r : Renderable.active){
             r.render(gc);
@@ -110,9 +116,17 @@ public class Main extends Application {
             new Cannon(0, dim.multiply(0.5))
         ));
 
+        List<GravityObject> tracables = new ArrayList<>();
         for(int i =  0; i < 10; i++){
-            level.add(new GravityObject(100,  new Point2D(rand.nextDouble() * dim.getX(), rand.nextDouble() * dim.getY())));
+            Point2D pos = new Point2D(rand.nextDouble() * dim.getX(), rand.nextDouble() * dim.getY());
+            GravityObject g = new GravityObject(10,
+                    pos,
+                    new Orbit(pos,10 + rand.nextDouble() * (.3 * dim.getX()),(fpsWanted * 3) + (rand.nextDouble() * 60)));
+            level.add(g);
+            tracables.add(g);
         }
+        pathTracer.traceLevel(tracables);
+
         System.out.println("Spawning objects");
         for(IGameObject g : level){
             g.spawn();
@@ -120,7 +134,7 @@ public class Main extends Application {
 
         if(inGameTimer != null) {
             inGameTimer.start();
-            System.out.println("Started Timer");
+            System.out.println("Started IGTimer");
         }
     }
 

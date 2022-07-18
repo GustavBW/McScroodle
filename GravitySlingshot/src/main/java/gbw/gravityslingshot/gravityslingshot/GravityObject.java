@@ -14,7 +14,7 @@ public class GravityObject implements Tickable, Renderable, StaticMass {
     public GravityObject(double mass, Point2D position) {
         this.mass = mass;
         this.position = position;
-        orbit = new Orbit(position,0,0);
+        orbit = new Orbit(position,1,1);
     }
     public GravityObject(double mass, Point2D position, Orbit orbit){
         this(mass, position);
@@ -49,6 +49,10 @@ public class GravityObject implements Tickable, Renderable, StaticMass {
         Tickable.newborn.add(this);
         Renderable.newborn.add(this);
         StaticMass.newborn.add(this);
+    }
+
+    public Orbit getOrbit(){
+        return orbit;
     }
 
     @Override

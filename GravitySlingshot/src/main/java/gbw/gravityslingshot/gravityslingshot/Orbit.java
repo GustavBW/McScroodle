@@ -2,15 +2,18 @@ package gbw.gravityslingshot.gravityslingshot;
 
 import javafx.geometry.Point2D;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Orbit {
 
     private Point2D center;
     private double radius, orbitingSpeed, currentTick,offset = 0;
 
-    public Orbit(Point2D center, double radius, double orbitingSpeed){
+    public Orbit(Point2D center, double radius, double ticksPerOrbit){
         this.center = center;
         this.radius = radius;
-        this.orbitingSpeed = orbitingSpeed;
+        this.orbitingSpeed = ticksPerOrbit;
     }
     public Orbit(Point2D center, double radius, double orbitingSpeed,double offsetRadians){
         this(center,radius,orbitingSpeed);
@@ -25,6 +28,17 @@ public class Orbit {
 
         currentTick++;
         return new Point2D(xVal,yVal);
+    }
+    public List<Point2D> getPath(){
+        List<Point2D> path = new ArrayList<>((int) orbitingSpeed);
+        double tempCurrentTick = currentTick;
+
+        for(int i = 0; i < orbitingSpeed; i++){
+            path.add(getNext());
+        }
+
+        currentTick = tempCurrentTick;  //Resetting value in case the orbit is in use somewhere else
+        return path;
     }
 
     public void setCenter(Point2D pos){
